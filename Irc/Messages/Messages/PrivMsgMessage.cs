@@ -46,5 +46,17 @@ namespace Irc.Messages.Messages
 
             return true;
         }
+
+        public new static PrivMsgMessage Parse(string message)
+        {
+            var messageSplit = message.Split();
+
+            var target = messageSplit[1];
+
+            var text = message.Substring(message.IndexOf(messageSplit[0]) + messageSplit[0].Length).TrimStart();
+            text = message.Substring(message.IndexOf(messageSplit[1]) + messageSplit[1].Length).TrimStart();
+
+            return new PrivMsgMessage(target, text);
+        }
     }
 }

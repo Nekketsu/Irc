@@ -25,7 +25,12 @@ namespace Irc.Messages
                     Message messageInstance;
                     try
                     {
-                        messageInstance = (Message)Activator.CreateInstance(messageType, parameters);
+                        var parseMethod = messageType.GetMethod(nameof(Parse), BindingFlags.Public | BindingFlags.Static);
+
+                        messageInstance = (parseMethod != null)
+                            ? (Message)parseMethod.Invoke(null, new [] { message })
+                            : (Message)Activator.CreateInstance(messageType, parameters);
+
                         return messageInstance;
                     }
                     catch { };
