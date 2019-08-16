@@ -20,8 +20,14 @@ namespace Irc.Messages.Messages
 
         public override async Task<bool> ManageMessageAsync(IrcClient ircClient)
         {
-            var userHost = new UserHostReply($"{ircClient.Profile.NickName} :Your host is {ircClient.Address}, running version {IrcClient.IrcServer.Version}");
-            await ircClient.StreamWriter.WriteMessageAsync(userHost);
+            var message = ircClient.Profile.NickName;
+            if (ircClient.Profile.User != null)
+            {
+                message += $"=+~{ircClient.Profile.User.UserName}";
+            }
+            message += $"@{ircClient.Address}";
+            var userHost = new UserHostReply(ircClient.Profile.NickName, $"{message}");
+            await ircClient.WriteMessageAsync(userHost);
 
             return true;
         }

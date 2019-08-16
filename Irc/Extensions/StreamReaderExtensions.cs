@@ -12,18 +12,6 @@ namespace Irc.Extensions
             var text = await streamReader.ReadLineAsync();
             var message = Message.Parse(text);
 
-            if (message != null)
-            {
-                Console.WriteLine($"Client: {text}");
-            }
-            else
-            {
-                var foregroundColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine($"Client: {text}");
-                Console.ForegroundColor = foregroundColor;
-            }
-
             return message;
         }
     }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -17,23 +18,26 @@ namespace Irc
     {
         public static IrcServer IrcServer { get; set; }
         TcpClient tcpClient;
-        public StreamReader StreamReader { get; set; }
-        public StreamWriter StreamWriter { get; set; }
-        public Profile Profile {get; set; }
-        public IPAddress Address { get; set; }
+        StreamReader streamReader;
+        StreamWriter streamWriter;
+        public Profile Profile {get; private set; }
+        public IPAddress Address { get; private set; }
 
-        public PingMessage PingMessage { get; set; }
+        public PingMessage PingMessage { get; private set; }
+
+        public Dictionary<string, Channel> Channels { get; private set; }
 
         public IrcClient(TcpClient tcpClient)
         {
             this.tcpClient = tcpClient;
             var stream = tcpClient.GetStream();
-            StreamReader = new StreamReader(stream);
-            StreamWriter = new StreamWriter(stream) { AutoFlush = true };
+            streamReader = new StreamReader(stream);
+            streamWriter = new StreamWriter(stream) { AutoFlush = true };
 
             Address = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address;
 
             Profile = new Profile();
+            Channels = new Dictionary<string, Channel>();
         }
 
         public async void RunAsync()
@@ -45,12 +49,11 @@ namespace Irc
                 var cancellationTokenSource = new CancellationTokenSource();
                 DoPeriodicPingAsync(TimeSpan.FromMinutes(1), cancellationTokenSource.Token);
 
-                Message message;
                 var isRunning = true;
                 do
                 {
-                    message = await StreamReader.ReadMessageAsync();
-                    isRunning = await (message?.ManageMessageAsync(this) ?? Task.FromResult(false));
+                    var message = await streamReader.ReadMessageAsync();
+                    isRunning = await (message?.ManageMessageAsync(this) ?? Task.FromResult(true));
                 } while (isRunning);
                 cancellationTokenSource.Cancel();
             }
@@ -65,24 +68,24 @@ namespace Irc
             Message message;
             do
             {
-                message = await StreamReader.ReadMessageAsync();
+                message = await ReadMessageAsync();
             } while (!(message is NickMessage));
             await message.ManageMessageAsync(this);
             
-            message = await StreamReader.ReadMessageAsync();
+            message = await ReadMessageAsync();
             if (!(message is UserMessage userMessage))
             {
                 return false;
             }
             await message.ManageMessageAsync(this);
 
-            // await streamWriter.WriteMessageAsync(new NoticeMessage("AUTH", "*** Looking up your hostname"));
-            // await streamWriter.WriteMessageAsync(new NoticeMessage("AUTH", "*** Checking Ident"));
+            // await SendMessageAsync(new NoticeMessage("AUTH", "*** Looking up your hostname"));
+            // await SendMessageAsync(new NoticeMessage("AUTH", "*** Checking Ident"));
 
-            await StreamWriter.WriteMessageAsync(new WelcomeReply($"{Profile.NickName} :Welcome to the IRC Network, {Profile.NickName}"));
-            await StreamWriter.WriteMessageAsync(new YourHostReply($"{Profile.NickName} :Your host is {IrcServer.HostName}, running version {IrcServer.Version}"));
-            await StreamWriter.WriteMessageAsync(new CreatedReply($"{Profile.NickName} :This server was created {IrcServer.CreatedDateTime}"));
-            await StreamWriter.WriteMessageAsync(new MyInfoReply($"{Profile.NickName} {IrcServer.HostName} u2.10.12.19 diOoswkgx biklmnopstvrDdRcC bklov"));
+            await WriteMessageAsync(new WelcomeReply(Profile.NickName, $"Welcome to the IRC Network, {Profile.NickName}"));
+            await WriteMessageAsync(new YourHostReply(Profile.NickName, $"Your host is {IrcServer.ServerName}, running version {IrcServer.Version}"));
+            await WriteMessageAsync(new CreatedReply(Profile.NickName, $"This server was created {IrcServer.CreatedDateTime}"));
+            await WriteMessageAsync(new MyInfoReply(Profile.NickName, $"{IrcServer.ServerName} {IrcServer.Version} diOoswkgx biklmnopstvrDdRcC bklov"));
 
             return true;
         }
@@ -94,10 +97,51 @@ namespace Irc
                 do
                 {
                     await Task.Delay(delay, cancellationToken);
-                    PingMessage = new PingMessage($"{DateTime.Now.Ticks / TimeSpan.TicksPerSecond}");
-                    await StreamWriter.WriteMessageAsync(PingMessage, cancellationToken);
+                    PingMessage = new PingMessage($"{DateTime.Now.ToUnixTime()}");
+                    await WriteMessageAsync(PingMessage, cancellationToken);
                 } while (!cancellationToken.IsCancellationRequested);
             } catch { };
+        }
+
+        public async Task WriteMessageAsync(IMessage message)
+        {
+            var source = IrcServer.ServerName;
+            var destination = Profile.NickName ?? Address.ToString();
+
+            await streamWriter.WriteLineAsync(message.ToString());
+            Console.WriteLine($"-> {destination}: {message}");
+        }
+        
+        public async Task WriteMessageAsync(IMessage message, CancellationToken cancellationToken)
+        {
+            var source = IrcServer.ServerName;
+            var destination = Profile.NickName ?? Address.ToString();
+
+            await streamWriter.WriteLineAsync(message.ToString().AsMemory(), cancellationToken);
+            Console.WriteLine($"-> {destination}: {message}");
+        }
+
+        public async Task<Message> ReadMessageAsync()
+        {
+            var text = await streamReader.ReadLineAsync();
+            var message = Message.Parse(text);
+
+            var source = Profile.NickName ?? Address.ToString();
+            var destination = IrcServer.ServerName;
+
+            if (message != null)
+            {
+                Console.WriteLine($"<- {source}: {text}");
+            }
+            else
+            {
+                var foregroundColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine($"{source}: {text}");
+                Console.ForegroundColor = foregroundColor;
+            }
+
+            return message;
         }
     }
 }

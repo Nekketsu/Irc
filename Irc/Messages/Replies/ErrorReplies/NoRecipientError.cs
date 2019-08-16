@@ -2,19 +2,19 @@ using Irc.Messages;
 
 namespace Messages.Replies.ErrorReplies
 {
-    public class NoRecipientError : IMessage
+    public class NoRecipientError : Reply
     {
         public const string ERR_NORECIPIENT = "401";
         public string Message { get; set; }
 
-        public NoRecipientError(string message)
+        public NoRecipientError(string target, string message) : base(target, ERR_NORECIPIENT)
         {
             Message = message;
         }
 
-        public override string ToString()
+        public override string InnerToString()
         {
-            return $"{ERR_NORECIPIENT} {Message}";
+            return Message;
         }
     }
 }

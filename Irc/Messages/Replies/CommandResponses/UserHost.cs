@@ -2,19 +2,19 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
-    public class UserHostReply : IMessage
+    public class UserHostReply : Reply
     {
-        const string RPL_USERHOST = "003";
+        const string RPL_USERHOST = "302";
         public string Message { get; private set; }
 
-        public UserHostReply(string message)
+        public UserHostReply(string target, string message) : base(target, RPL_USERHOST)
         {
             Message = message;
         }
 
-        public override string ToString()
+        public override string InnerToString()
         {
-            return $"{RPL_USERHOST} {Message}";
+            return $":{Message}";
         }
     }
 }

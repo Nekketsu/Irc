@@ -10,29 +10,32 @@ namespace Irc
     public class IrcServer
     {
         int port;
-        public List<IrcClient> IrcClients { get; set; }
 
-        public string HostName { get; private set; }
+        public string ServerName { get; private set; }
         public Version Version { get; private set; }
         public DateTime CreatedDateTime { get; private set; }
 
+        public List<IrcClient> IrcClients { get; set; }
+        public Dictionary<string, Channel> Channels { get; set; }
+
         public IrcServer(int port = 6667)
         {
-            HostName = System.Environment.MachineName;
+            ServerName = System.Environment.MachineName;
             Version = Assembly.GetExecutingAssembly().GetName().Version;
 
             this.port = port;
             
             IrcClients = new List<IrcClient>();
             IrcClient.IrcServer = this;
+            Channels = new Dictionary<string, Channel>();
         }
 
         public async Task RunAsync()
         {
-            Console.WriteLine("IRC Server started");
-
             var tcpListener = new TcpListener(IPAddress.Any, port);
             tcpListener.Start();
+            CreatedDateTime = DateTime.Now;
+            Console.WriteLine($"IRC Server started, {CreatedDateTime}");
 
             while (true)
             {

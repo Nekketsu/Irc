@@ -2,19 +2,19 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
-    public class MyInfoReply : IMessage
+    public class MyInfoReply : Reply
     {
         const string RPL_MYINFO = "004";
         public string Message { get; private set; }
 
-        public MyInfoReply(string message)
+        public MyInfoReply(string target, string message) : base(target, RPL_MYINFO)
         {
             Message = message;
         }
 
-        public override string ToString()
+        public override string InnerToString()
         {
-            return $"{RPL_MYINFO} {Message}";
+            return $":{Message}";
         }
     }
 }
