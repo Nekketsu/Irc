@@ -10,7 +10,7 @@ namespace Irc
 
         public Topic(string topicMessage, string nickName)
         {
-            TopicMessage = TopicMessage;
+            TopicMessage = topicMessage;
             NickName = nickName;
             SetAt = DateTime.Now;
         }

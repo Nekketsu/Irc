@@ -13,7 +13,9 @@ namespace Irc.Messages.Messages
         public PartMessage(string channelName, string message)
         {
             ChannelName = channelName;
-            Message = message;
+            Message = message.StartsWith(':')
+                ? message.Substring(1)
+                : message;
         }
 
         public PartMessage(string from, string channelName, string message) : this(channelName, message)
@@ -27,7 +29,7 @@ namespace Irc.Messages.Messages
                 ? $"{Command} {ChannelName}"
                 : $":{From} {Command} {ChannelName}";
 
-            if (!string.IsNullOrEmpty(Message))
+            if (Message != null)
             {
                 text = $"{text} :{Message}";
             }
@@ -40,7 +42,7 @@ namespace Irc.Messages.Messages
             if (ircClient.Channels.TryGetValue(ChannelName, out var partChannel))
             {
                 var partMessage = new PartMessage(ircClient.Profile.NickName, ChannelName, Message);
-                foreach (var client in partChannel.IrcClients.Where(c => c != ircClient))
+                foreach (var client in partChannel.IrcClients)
                 {
                     await client.WriteMessageAsync(partMessage);
                 }
@@ -54,11 +56,11 @@ namespace Irc.Messages.Messages
             }
             else if (IrcClient.IrcServer.Channels.ContainsKey(ChannelName))
             {
-                await ircClient.WriteMessageAsync(new NotOnChannelReply(ircClient.Profile.NickName, ChannelName, "You're not on that channel"));
+                await ircClient.WriteMessageAsync(new NotOnChannelReply(ircClient.Profile.NickName, ChannelName, NotOnChannelReply.DefaultMessage));
             }
             else
             {
-                await ircClient.WriteMessageAsync(new NoSuchChannelReply(ircClient.Profile.NickName, ChannelName, "No such channel"));
+                await ircClient.WriteMessageAsync(new NoSuchChannelReply(ircClient.Profile.NickName, ChannelName, NoSuchChannelReply.DefaultMessage));
             }
 
             return true;
@@ -71,6 +73,11 @@ namespace Irc.Messages.Messages
 
             var text = message.Substring(message.IndexOf(messageSplit[0]) + messageSplit[0].Length).TrimStart();
             text = message.Substring(message.IndexOf(messageSplit[1]) + messageSplit[1].Length).TrimStart();
+
+            if (text.Length == 0)
+            {
+                text = null;
+            }
 
             return new PartMessage(channelName, text);
         }

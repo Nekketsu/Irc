@@ -4,6 +4,8 @@ namespace Messages.Replies.CommandResponses
 {
     public class NotOnChannelReply : Reply
     {
+        public const string DefaultMessage = "You're not on that channel";
+        
         const string ERR_NOTONCHANNEL = "442";
         public string ChannelName { get; set; }
         public string Message { get; private set; }

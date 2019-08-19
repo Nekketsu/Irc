@@ -4,6 +4,8 @@ namespace Messages.Replies.CommandResponses
 {
     public class NoSuchChannelReply : Reply
     {
+        public const string DefaultMessage = "No such channel";
+        
         const string ERR_NOSUCHCHANNEL = "403";
         public string ChannelName { get; set; }
         public string Message { get; private set; }

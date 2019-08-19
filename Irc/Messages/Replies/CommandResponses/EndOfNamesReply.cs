@@ -4,8 +4,9 @@ namespace Messages.Replies.CommandResponses
 {
     public class EndOfNamesReply : Reply
     {
-        const string RPL_ENDOFNAMES = "366";
+        public const string DefaultMessage = "End of NAMES list";
 
+        const string RPL_ENDOFNAMES = "366";
         public string ChannelName { get; set; }
         public string Message { get; private set; }
 
