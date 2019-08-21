@@ -59,7 +59,7 @@ namespace Irc.Messages.Messages
         {
             if (IrcClient.IrcServer.Channels.TryGetValue(Target, out var targetChannel))
             {
-                var from = ircClient.Profile.NickName;
+                var from = ircClient.Profile.Nickname;
                 var privMsgMessage = new PrivMsgMessage(from, Target, Text);
                 foreach (var targetClient in targetChannel.IrcClients.Where(client => client != ircClient))
                 {
@@ -68,22 +68,22 @@ namespace Irc.Messages.Messages
             }
             else
             {
-                await ircClient.WriteMessageAsync(new CannotSendToChannelError(ircClient.Profile.NickName, Target, "Cannot send to channel"));
+                await ircClient.WriteMessageAsync(new CannotSendToChannelError(ircClient.Profile.Nickname, Target, "Cannot send to channel"));
             }
         }
 
         private async Task SendMessageToUser(IrcClient ircClient)
         {            
-            var targetClient = IrcClient.IrcServer.IrcClients.SingleOrDefault(client => client.Profile.NickName == Target);
+            var targetClient = IrcClient.IrcServer.IrcClients.SingleOrDefault(client => client.Profile.Nickname == Target);
             if (targetClient != null)
             {
-                // var from = $"{ircClient.Profile.NickName}!{ircClient.Profile.User.UserName}@{ircClient.Address}";
-                var from = ircClient.Profile.NickName;
+                // var from = $"{ircClient.Profile.Nickname}!{ircClient.Profile.User.UserName}@{ircClient.Address}";
+                var from = ircClient.Profile.Nickname;
                 await targetClient.WriteMessageAsync(new PrivMsgMessage(from, Target, Text));
             }
             else
             {
-                await ircClient.WriteMessageAsync(new NoRecipientError(ircClient.Profile.NickName, $":No recipient given ({this})"));
+                await ircClient.WriteMessageAsync(new NoRecipientError(ircClient.Profile.Nickname, $":No recipient given ({this})"));
             }
         }
     }

@@ -24,6 +24,7 @@ namespace Irc
         public IPAddress Address { get; private set; }
 
         public PingMessage PingMessage { get; private set; }
+        public DateTime LastMessageDateTime { get; private set; }
 
         public Dictionary<string, Channel> Channels { get; private set; }
 
@@ -35,6 +36,8 @@ namespace Irc
             streamWriter = new StreamWriter(stream) { AutoFlush = true };
 
             Address = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address;
+
+            LastMessageDateTime = DateTime.Now;
 
             Profile = new Profile();
             Channels = new Dictionary<string, Channel>();
@@ -52,7 +55,7 @@ namespace Irc
                 var isRunning = true;
                 do
                 {
-                    var message = await streamReader.ReadMessageAsync();
+                    var message = await ReadMessageAsync();
                     isRunning = await (message?.ManageMessageAsync(this) ?? Task.FromResult(true));
                 } while (isRunning);
                 cancellationTokenSource.Cancel();
@@ -82,10 +85,10 @@ namespace Irc
             // await SendMessageAsync(new NoticeMessage("AUTH", "*** Looking up your hostname"));
             // await SendMessageAsync(new NoticeMessage("AUTH", "*** Checking Ident"));
 
-            await WriteMessageAsync(new WelcomeReply(Profile.NickName, $"Welcome to the IRC Network, {Profile.NickName}"));
-            await WriteMessageAsync(new YourHostReply(Profile.NickName, $"Your host is {IrcServer.ServerName}, running version {IrcServer.Version}"));
-            await WriteMessageAsync(new CreatedReply(Profile.NickName, $"This server was created {IrcServer.CreatedDateTime}"));
-            await WriteMessageAsync(new MyInfoReply(Profile.NickName, $"{IrcServer.ServerName} {IrcServer.Version} diOoswkgx biklmnopstvrDdRcC bklov"));
+            await WriteMessageAsync(new WelcomeReply(Profile.Nickname, $"Welcome to the IRC Network, {Profile.Nickname}"));
+            await WriteMessageAsync(new YourHostReply(Profile.Nickname, $"Your host is {IrcServer.ServerName}, running version {IrcServer.Version}"));
+            await WriteMessageAsync(new CreatedReply(Profile.Nickname, $"This server was created {IrcServer.CreatedDateTime}"));
+            await WriteMessageAsync(new MyInfoReply(Profile.Nickname, $"{IrcServer.ServerName} {IrcServer.Version} diOoswkgx biklmnopstvrDdRcC bklov"));
 
             return true;
         }
@@ -106,7 +109,7 @@ namespace Irc
         public async Task WriteMessageAsync(IMessage message)
         {
             var source = IrcServer.ServerName;
-            var destination = Profile.NickName ?? Address.ToString();
+            var destination = Profile.Nickname ?? Address.ToString();
 
             await streamWriter.WriteLineAsync(message.ToString());
             Console.WriteLine($"-> {destination}: {message}");
@@ -115,7 +118,7 @@ namespace Irc
         public async Task WriteMessageAsync(IMessage message, CancellationToken cancellationToken)
         {
             var source = IrcServer.ServerName;
-            var destination = Profile.NickName ?? Address.ToString();
+            var destination = Profile.Nickname ?? Address.ToString();
 
             await streamWriter.WriteLineAsync(message.ToString().AsMemory(), cancellationToken);
             Console.WriteLine($"-> {destination}: {message}");
@@ -124,9 +127,11 @@ namespace Irc
         public async Task<Message> ReadMessageAsync()
         {
             var text = await streamReader.ReadLineAsync();
+            LastMessageDateTime = DateTime.Now;
+            
             var message = Message.Parse(text);
 
-            var source = Profile.NickName ?? Address.ToString();
+            var source = Profile.Nickname ?? Address.ToString();
             var destination = IrcServer.ServerName;
 
             if (message != null)

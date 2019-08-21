@@ -4,21 +4,21 @@ namespace Irc.Messages.Messages
 {
     public class NickMessage : Message
     {
-        public string NickName { get; private set; }
+        public string Nickname { get; private set; }
 
-        public NickMessage(string nickName)
+        public NickMessage(string nickname)
         {
-            NickName = nickName;
+            Nickname = nickname;
         }
 
         public override string ToString()
         {
-            return $"{Command} {NickName}";
+            return $"{Command} {Nickname}";
         }
 
         public override Task<bool> ManageMessageAsync(IrcClient ircClient)
         {
-            ircClient.Profile.NickName = NickName;
+            ircClient.Profile.Nickname = Nickname;
             return Task.FromResult(true);
         }
     }

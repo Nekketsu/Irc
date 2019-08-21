@@ -27,7 +27,7 @@ namespace Irc.Messages.Messages
 
         public override async Task<bool> ManageMessageAsync(IrcClient ircClient)
         {
-            var quitMessage = new QuitMessage(ircClient.Profile.NickName, $"Quit: {Reason}");
+            var quitMessage = new QuitMessage(ircClient.Profile.Nickname, $"Quit: {Reason}");
             foreach (var channel in ircClient.Channels.Values)
             {
                 foreach (var client in channel.IrcClients)
@@ -39,7 +39,7 @@ namespace Irc.Messages.Messages
                 ircClient.Channels.Remove(channel.Name);
             }
 
-            Console.WriteLine($"{ircClient.Profile.NickName} has disconnected IRC.");
+            Console.WriteLine($"{ircClient.Profile.Nickname} has disconnected IRC.");
 
             return false;
         }

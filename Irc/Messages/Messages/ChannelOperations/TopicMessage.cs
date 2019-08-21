@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Messages.Replies.CommandResponses;
+using Messages.Replies.ErrorReplies;
 
 namespace Irc.Messages.Messages
 {
@@ -38,22 +39,22 @@ namespace Irc.Messages.Messages
                 {
                     if (channel.Topic == null)
                     {
-                        await ircClient.WriteMessageAsync(new NoTopicReply(ircClient.Profile.NickName, ChannelName, NoTopicReply.DefaultMessage));
+                        await ircClient.WriteMessageAsync(new NoTopicReply(ircClient.Profile.Nickname, ChannelName, NoTopicReply.DefaultMessage));
                     }
                     else
                     {
-                        await ircClient.WriteMessageAsync(new TopicReply(ircClient.Profile.NickName, ChannelName, channel.Topic.TopicMessage));
-                        await ircClient.WriteMessageAsync(new TopicWhoTimeReply(ircClient.Profile.NickName, ChannelName, channel.Topic.NickName, channel.Topic.SetAt));
+                        await ircClient.WriteMessageAsync(new TopicReply(ircClient.Profile.Nickname, ChannelName, channel.Topic.TopicMessage));
+                        await ircClient.WriteMessageAsync(new TopicWhoTimeReply(ircClient.Profile.Nickname, ChannelName, channel.Topic.Nickname, channel.Topic.SetAt));
                     }
                 }
                 // Set topic
                 else
                 {
                     var topic = (Topic == string.Empty) ? null : Topic;
-                    channel.Topic = new Topic(topic, ircClient.Profile.NickName);
+                    channel.Topic = new Topic(topic, ircClient.Profile.Nickname);
 
-                    var topicReply = new TopicReply(ircClient.Profile.NickName, ChannelName, channel.Topic.TopicMessage);
-                    var topicWhoTimeReply = new TopicWhoTimeReply(ircClient.Profile.NickName, ChannelName, channel.Topic.NickName, channel.Topic.SetAt);
+                    var topicReply = new TopicReply(ircClient.Profile.Nickname, ChannelName, channel.Topic.TopicMessage);
+                    var topicWhoTimeReply = new TopicWhoTimeReply(ircClient.Profile.Nickname, ChannelName, channel.Topic.Nickname, channel.Topic.SetAt);
                     foreach (var client in channel.IrcClients)
                     {
                         await client.WriteMessageAsync(topicReply);
@@ -64,12 +65,12 @@ namespace Irc.Messages.Messages
             // No on channel
             else if (IrcClient.IrcServer.Channels.ContainsKey(ChannelName))
             {
-                await ircClient.WriteMessageAsync(new NotOnChannelReply(ircClient.Profile.NickName, ChannelName, NotOnChannelReply.DefaultMessage));
+                await ircClient.WriteMessageAsync(new NotOnChannelError(ircClient.Profile.Nickname, ChannelName, NotOnChannelError.DefaultMessage));
             }
             // No such channel
             else
             {
-                await ircClient.WriteMessageAsync(new NoSuchChannelReply(ircClient.Profile.NickName, ChannelName, NoSuchChannelReply.DefaultMessage));
+                await ircClient.WriteMessageAsync(new NoSuchChannelError(ircClient.Profile.Nickname, ChannelName, NoSuchChannelError.DefaultMessage));
             }
 
             return true;

@@ -8,20 +8,20 @@ namespace Messages.Replies.CommandResponses
     {
         const string RPL_TOPICWHOTIME = "333";
         public string ChannelName { get; private set; }
-        public string NickName { get; set; }
+        public string Nickname { get; set; }
         public DateTime SetAt { get; set; }
 
-        public TopicWhoTimeReply(string target, string channelName, string nickName, DateTime setAt) : base(target, RPL_TOPICWHOTIME)
+        public TopicWhoTimeReply(string target, string channelName, string nickname, DateTime setAt) : base(target, RPL_TOPICWHOTIME)
         {
             ChannelName = channelName;
-            NickName = nickName;
+            Nickname = nickname;
             SetAt = setAt;
 
         }
 
         public override string InnerToString()
         {
-            return $"{ChannelName} {NickName} {SetAt.ToUnixTime()}";
+            return $"{ChannelName} {Nickname} {SetAt.ToUnixTime()}";
         }
     }
 }

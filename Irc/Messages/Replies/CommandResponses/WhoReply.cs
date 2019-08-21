@@ -9,22 +9,22 @@ namespace Messages.Replies.CommandResponses
         public string User { get; set; }
         public string Host { get; set; }
         public string Server { get; set; }
-        public string NickName { get; set; }
+        public string Nickname { get; set; }
         public string RealName { get; set; }
 
-        public WhoReply(string target, string channelName, string user, string host, string server, string nickName, string realName) : base(target, RPL_WHOREPLY)
+        public WhoReply(string target, string channelName, string user, string host, string server, string nickname, string realName) : base(target, RPL_WHOREPLY)
         {
             ChannelName = channelName;
             User = user;
             Host = host;
             Server = server;
-            NickName = nickName;
+            Nickname = nickname;
             RealName = realName;
         }
 
         public override string InnerToString()
         {
-            return $"{ChannelName} {User} {Host} {Server} {NickName} H :0 {RealName}";
+            return $"{ChannelName} {User} {Host} {Server} {Nickname} H :0 {RealName}";
         }
     }
 }

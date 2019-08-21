@@ -6,27 +6,27 @@ namespace Irc.Messages.Messages
 {
     public class UserHostMessage : Message
     {
-        public string NickName { get; set; }
+        public string Nickname { get; set; }
 
-        public UserHostMessage(string nickName)
+        public UserHostMessage(string nickname)
         {
-            NickName = nickName;
+            Nickname = nickname;
         }
 
         public override string ToString()
         {
-            return $"{Command} {NickName}";
+            return $"{Command} {Nickname}";
         }
 
         public override async Task<bool> ManageMessageAsync(IrcClient ircClient)
         {
-            var message = ircClient.Profile.NickName;
+            var message = ircClient.Profile.Nickname;
             if (ircClient.Profile.User != null)
             {
                 message += $"=+~{ircClient.Profile.User.UserName}";
             }
             message += $"@{ircClient.Address}";
-            var userHost = new UserHostReply(ircClient.Profile.NickName, $"{message}");
+            var userHost = new UserHostReply(ircClient.Profile.Nickname, $"{message}");
             await ircClient.WriteMessageAsync(userHost);
 
             return true;

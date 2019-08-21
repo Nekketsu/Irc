@@ -22,9 +22,9 @@ namespace Irc.Messages.Messages
         {
             if (IrcClient.IrcServer.Channels.TryGetValue(ChannelName, out var channel))
             {
-                var nickNames = channel.IrcClients.Select(client => client.Profile.NickName).ToArray();
-                await ircClient.WriteMessageAsync(new NameReply(ircClient.Profile.NickName, channel.Name, nickNames));
-                await ircClient.WriteMessageAsync(new EndOfNamesReply(ircClient.Profile.NickName, channel.Name, EndOfNamesReply.DefaultMessage));
+                var nicknames = channel.IrcClients.Select(client => client.Profile.Nickname).ToArray();
+                await ircClient.WriteMessageAsync(new NameReply(ircClient.Profile.Nickname, channel.Name, nicknames));
+                await ircClient.WriteMessageAsync(new EndOfNamesReply(ircClient.Profile.Nickname, channel.Name, EndOfNamesReply.DefaultMessage));
             }
 
             return true;

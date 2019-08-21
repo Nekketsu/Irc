@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Messages.Replies.CommandResponses;
+using Messages.Replies.ErrorReplies;
 
 namespace Irc.Messages.Messages
 {
@@ -41,7 +42,7 @@ namespace Irc.Messages.Messages
         {
             if (ircClient.Channels.TryGetValue(ChannelName, out var partChannel))
             {
-                var partMessage = new PartMessage(ircClient.Profile.NickName, ChannelName, Message);
+                var partMessage = new PartMessage(ircClient.Profile.Nickname, ChannelName, Message);
                 foreach (var client in partChannel.IrcClients)
                 {
                     await client.WriteMessageAsync(partMessage);
@@ -56,11 +57,11 @@ namespace Irc.Messages.Messages
             }
             else if (IrcClient.IrcServer.Channels.ContainsKey(ChannelName))
             {
-                await ircClient.WriteMessageAsync(new NotOnChannelReply(ircClient.Profile.NickName, ChannelName, NotOnChannelReply.DefaultMessage));
+                await ircClient.WriteMessageAsync(new NotOnChannelError(ircClient.Profile.Nickname, ChannelName, NotOnChannelError.DefaultMessage));
             }
             else
             {
-                await ircClient.WriteMessageAsync(new NoSuchChannelReply(ircClient.Profile.NickName, ChannelName, NoSuchChannelReply.DefaultMessage));
+                await ircClient.WriteMessageAsync(new NoSuchChannelError(ircClient.Profile.Nickname, ChannelName, NoSuchChannelError.DefaultMessage));
             }
 
             return true;

@@ -1,16 +1,16 @@
 using Irc.Messages;
 
-namespace Messages.Replies.CommandResponses
+namespace Messages.Replies.ErrorReplies
 {
-    public class NoSuchChannelReply : Reply
+    public class NotOnChannelError : Reply
     {
-        public const string DefaultMessage = "No such channel";
+        public const string DefaultMessage = "You're not on that channel";
         
-        const string ERR_NOSUCHCHANNEL = "403";
+        const string ERR_NOTONCHANNEL = "442";
         public string ChannelName { get; set; }
         public string Message { get; private set; }
 
-        public NoSuchChannelReply(string target, string channelName, string message) : base(target, ERR_NOSUCHCHANNEL)
+        public NotOnChannelError(string target, string channelName, string message) : base(target, ERR_NOTONCHANNEL)
         {
             ChannelName = channelName;
             Message = message;

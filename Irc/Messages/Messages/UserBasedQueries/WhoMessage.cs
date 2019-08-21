@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Irc.Helpers;
 using Irc.Messages;
 using Messages.Replies.CommandResponses;
 
@@ -34,7 +35,7 @@ namespace Irc.Messages.Messages
             }
             else
             {
-                var regex = new Regex(GetPattern(Mask));
+                var regex = MaskHelper.GetRegex(Mask);
 
                 // Channel mask
                 if (Mask.StartsWith("#"))
@@ -50,7 +51,7 @@ namespace Irc.Messages.Messages
                         regex.IsMatch(client.Address.ToString()) ||
                         regex.IsMatch(IrcClient.IrcServer.ServerName) ||
                         regex.IsMatch(client.Profile.User.RealName) ||
-                        regex.IsMatch(client.Profile.NickName));
+                        regex.IsMatch(client.Profile.Nickname));
                 }
             }
                 
@@ -58,27 +59,18 @@ namespace Irc.Messages.Messages
             {
                 await ircClient.WriteMessageAsync(
                     new WhoReply(
-                        ircClient.Profile.NickName,
+                        ircClient.Profile.Nickname,
                         client.Channels.Values?.LastOrDefault()?.Name ?? "*",
                         client.Profile.User.UserName,
                         client.Address.ToString(),
                         IrcClient.IrcServer.ServerName,
-                        client.Profile.NickName,
+                        client.Profile.Nickname,
                         client.Profile.User.RealName
                         ));
             }
-            await ircClient.WriteMessageAsync(new EndOfWhoReply(ircClient.Profile.NickName, Mask, EndOfWhoReply.DefaultMessage));
+            await ircClient.WriteMessageAsync(new EndOfWhoReply(ircClient.Profile.Nickname, Mask, EndOfWhoReply.DefaultMessage));
 
             return true;
-        }
-
-        private string GetPattern(string mask)
-        {
-            var pattern = Regex.Escape(mask);
-            pattern = pattern.Replace("\\*", ".*");
-            pattern = pattern.Replace("\\?", ".");
-
-            return pattern;
         }
     }
 }

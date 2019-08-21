@@ -45,7 +45,7 @@ namespace Irc.Messages.Messages
                 ircClient.Channels.Add(ChannelName, channel);
             }
 
-            var from = ircClient.Profile.NickName;
+            var from = ircClient.Profile.Nickname;
             var joinMessage = new JoinMessage(from, ChannelName);
             foreach (var client in channel.IrcClients)
             {
@@ -54,14 +54,14 @@ namespace Irc.Messages.Messages
 
             if (channel.Topic != null)
             {
-                await ircClient.WriteMessageAsync(new TopicReply(ircClient.Profile.NickName, channel.Name, channel.Topic.TopicMessage));
-                await ircClient.WriteMessageAsync(new TopicWhoTimeReply(ircClient.Profile.NickName, channel.Name, channel.Topic.NickName, channel.Topic.SetAt));
+                await ircClient.WriteMessageAsync(new TopicReply(ircClient.Profile.Nickname, channel.Name, channel.Topic.TopicMessage));
+                await ircClient.WriteMessageAsync(new TopicWhoTimeReply(ircClient.Profile.Nickname, channel.Name, channel.Topic.Nickname, channel.Topic.SetAt));
             }
 
-            var nickNames = channel.IrcClients.Select(client => client.Profile.NickName).ToArray();
-            await ircClient.WriteMessageAsync(new NameReply(ircClient.Profile.NickName, channel.Name, nickNames));
-            await ircClient.WriteMessageAsync(new EndOfNamesReply(ircClient.Profile.NickName, channel.Name, "End of NAMES list"));
-            await ircClient.WriteMessageAsync(new CreationTimeReply(ircClient.Profile.NickName, channel.Name, channel.CreationTime));
+            var nicknames = channel.IrcClients.Select(client => client.Profile.Nickname).ToArray();
+            await ircClient.WriteMessageAsync(new NameReply(ircClient.Profile.Nickname, channel.Name, nicknames));
+            await ircClient.WriteMessageAsync(new EndOfNamesReply(ircClient.Profile.Nickname, channel.Name, "End of NAMES list"));
+            await ircClient.WriteMessageAsync(new CreationTimeReply(ircClient.Profile.Nickname, channel.Name, channel.CreationTime));
 
             return true;
         }

@@ -20,7 +20,7 @@ namespace Irc.Messages.Messages
 
         public override async Task<bool> ManageMessageAsync(IrcClient ircClient)
         {
-            await ircClient.WriteMessageAsync(new ChannelModeIsReply(ircClient.Profile.NickName, ChannelName, "+nt"));
+            await ircClient.WriteMessageAsync(new ChannelModeIsReply(ircClient.Profile.Nickname, ChannelName, "+nt"));
             
             return true;
         }
