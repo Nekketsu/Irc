@@ -12,6 +12,7 @@ namespace Messages.Replies.ErrorReplies
 
         public NoSuchNickError(string target, string nickname, string message) : base(target, ERR_NOSUCHNICK)
         {
+            Nickname = nickname;
             Message = message;
         }
 
