@@ -6,6 +6,7 @@ namespace Irc.Messages.Messages
 {
     public class TopicMessage : Message
     {
+        public string From { get; set; }
         public string ChannelName { get; set; }
         public string Topic { get; set; }
 
@@ -19,15 +20,19 @@ namespace Irc.Messages.Messages
             Topic = topic;
         }
 
+        public TopicMessage(string from, string channelName, string topic) : this(channelName, topic)
+        {
+            From = from;
+        }
+        
+
         public override string ToString()
         {
-            var text = $"{Command} {ChannelName}";
-            if (Topic != null)
-            {
-                text = $"{text} :{Topic}";
-            }
-
-            return text;
+            return Topic == null
+                ? $"{Command} {ChannelName}"
+                : From == null
+                    ? $"{Command} {ChannelName} :{Topic}"
+                    : $":{From} {Command} {ChannelName} :{Topic}";
         }
 
         public override async Task<bool> ManageMessageAsync(IrcClient ircClient)
@@ -52,13 +57,11 @@ namespace Irc.Messages.Messages
                 {
                     var topic = (Topic == string.Empty) ? null : Topic;
                     channel.Topic = new Topic(topic, ircClient.Profile.Nickname);
-
-                    var topicReply = new TopicReply(ircClient.Profile.Nickname, ChannelName, channel.Topic.TopicMessage);
-                    var topicWhoTimeReply = new TopicWhoTimeReply(ircClient.Profile.Nickname, ChannelName, channel.Topic.Nickname, channel.Topic.SetAt);
-                    foreach (var client in channel.IrcClients)
+                    
+                    var topicMessage = new TopicMessage(ircClient.Profile.Nickname, ChannelName, Topic);
+                    foreach (var client in channel.IrcClients.Values)
                     {
-                        await client.WriteMessageAsync(topicReply);
-                        await client.WriteMessageAsync(topicWhoTimeReply);
+                        await client.WriteMessageAsync(topicMessage);
                     }
                 }
             }

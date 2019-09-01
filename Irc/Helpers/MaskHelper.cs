@@ -7,7 +7,7 @@ namespace Irc.Helpers
         public static Regex GetRegex(string mask)
         {
             var pattern = GetPattern(mask);
-            var regex = new Regex(pattern);
+            var regex = new Regex(pattern, RegexOptions.IgnoreCase);
 
             return regex;
         }

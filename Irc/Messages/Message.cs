@@ -44,7 +44,7 @@ namespace Irc.Messages
         {
             var command = typeName.Substring(0, typeName.Length - nameof(Message).Length);
             
-            return string.Equals(command, commandName, StringComparison.InvariantCultureIgnoreCase);
+            return string.Equals(command, commandName, StringComparison.OrdinalIgnoreCase);
         }
 
         public string Command { get; private set; }

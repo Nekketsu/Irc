@@ -14,7 +14,7 @@ namespace Irc.Messages.Messages
     {
         public string Mask { get; set; }
 
-        public WhoMessage(string mask)
+        public WhoMessage(string mask = null)
         {
             Mask = mask;
         }
@@ -29,7 +29,7 @@ namespace Irc.Messages.Messages
             IEnumerable<IrcClient> clients;
 
             // No mask
-            if ((Mask == null) || (Mask == "0"))
+            if (string.IsNullOrEmpty(Mask) || (Mask == "0"))
             {
                 clients = IrcClient.IrcServer.IrcClients;
             }
@@ -42,7 +42,7 @@ namespace Irc.Messages.Messages
                 {
                     clients = IrcClient.IrcServer.Channels.Values
                         .Where(channel => regex.IsMatch(channel.Name))
-                        .SelectMany(channel => channel.IrcClients);
+                        .SelectMany(channel => channel.IrcClients.Values);
                 }
                 // Client mask
                 else

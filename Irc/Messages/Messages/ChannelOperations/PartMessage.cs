@@ -14,7 +14,7 @@ namespace Irc.Messages.Messages
         public PartMessage(string channelName, string message)
         {
             ChannelName = channelName;
-            Message = message.StartsWith(':')
+            Message = message?.StartsWith(':') ?? false
                 ? message.Substring(1)
                 : message;
         }
@@ -43,13 +43,13 @@ namespace Irc.Messages.Messages
             if (ircClient.Channels.TryGetValue(ChannelName, out var partChannel))
             {
                 var partMessage = new PartMessage(ircClient.Profile.Nickname, ChannelName, Message);
-                foreach (var client in partChannel.IrcClients)
+                foreach (var client in partChannel.IrcClients.Values)
                 {
                     await client.WriteMessageAsync(partMessage);
                 }
 
+                partChannel.IrcClients.Remove(ircClient.Profile.Nickname);
                 ircClient.Channels.Remove(ChannelName);
-                partChannel.IrcClients.Remove(ircClient);
                 if (!partChannel.IrcClients.Any())
                 {
                     IrcClient.IrcServer.Channels.Remove(ChannelName);

@@ -22,7 +22,7 @@ namespace Irc.Messages.Messages
         {
             if (IrcClient.IrcServer.Channels.TryGetValue(ChannelName, out var channel))
             {
-                var nicknames = channel.IrcClients.Select(client => client.Profile.Nickname).ToArray();
+                var nicknames = channel.IrcClients.Values.Select(client => client.Profile.Nickname).ToArray();
                 await ircClient.WriteMessageAsync(new NameReply(ircClient.Profile.Nickname, channel.Name, nicknames));
                 await ircClient.WriteMessageAsync(new EndOfNamesReply(ircClient.Profile.Nickname, channel.Name, EndOfNamesReply.DefaultMessage));
             }

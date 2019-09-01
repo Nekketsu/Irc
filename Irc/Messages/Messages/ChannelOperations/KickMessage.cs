@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Messages.Replies.ErrorReplies;
@@ -31,27 +32,40 @@ namespace Irc.Messages.Messages
 
         public override async Task<bool> ManageMessageAsync(IrcClient ircClient)
         {
-            var kickChannel = IrcClient.IrcServer.Channels.Values.SingleOrDefault(channel => channel.Name == ChannelName);
-            if (kickChannel == null)
+            if (IrcClient.IrcServer.Channels.TryGetValue(ChannelName, out var kickChannel))
+            {
+                if (kickChannel.IrcClients.TryGetValue(Nickname, out var kickClient))
+                {
+                    if (!ircClient.Channels.ContainsKey(ChannelName))
+                    {
+                        await ircClient.WriteMessageAsync(new NotOnChannelError(ircClient.Profile.Nickname, ChannelName, NotOnChannelError.DefaultMessage));
+                        return true;
+                    }
+
+                    var kickMessage = new KickMessage(ircClient.Profile.Nickname, ChannelName, Nickname, Message);
+                    foreach (var client in kickChannel.IrcClients.Values)
+                    {
+                        await client.WriteMessageAsync(kickMessage);
+                    }
+
+                    kickChannel.IrcClients.Remove(Nickname);
+                    kickClient.Channels.Remove(ChannelName);
+                    
+                    if (!kickChannel.IrcClients.Any())
+                    {
+                        ircClient.Channels.Remove(ChannelName);
+                    }
+                }
+                else
+                {
+                    await ircClient.WriteMessageAsync(new UserNotInChannelError(ircClient.Profile.Nickname, Nickname, ChannelName, UserNotInChannelError.DefaultMessage));
+                    return true;
+                }
+            }
+            else
             {
                 await ircClient.WriteMessageAsync(new NoSuchChannelError(ircClient.Profile.Nickname, ChannelName, NoSuchChannelError.DefaultMessage));
                 return true;
-            }
-            if (!kickChannel.IrcClients.Any(client => client.Profile.Nickname == Nickname))
-            {
-                await ircClient.WriteMessageAsync(new UserNotInChannelError(ircClient.Profile.Nickname, Nickname, ChannelName, UserNotInChannelError.DefaultMessage));
-                return true;
-            }
-            if (!ircClient.Channels.Values.Any(channel => channel.Name == ChannelName))
-            {
-                await ircClient.WriteMessageAsync(new NotOnChannelError(ircClient.Profile.Nickname, ChannelName, NotOnChannelError.DefaultMessage));
-                return true;
-            }
-
-            var kickMessage = new KickMessage(ircClient.Profile.Nickname, ChannelName, Nickname, Message);
-            foreach (var client in kickChannel.IrcClients)
-            {
-                await client.WriteMessageAsync(kickMessage);
             }
             
             return true;

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Irc.Extensions;
@@ -61,7 +62,7 @@ namespace Irc.Messages.Messages
             {
                 var from = ircClient.Profile.Nickname;
                 var privMsgMessage = new PrivMsgMessage(from, Target, Text);
-                foreach (var targetClient in targetChannel.IrcClients.Where(client => client != ircClient))
+                foreach (var targetClient in targetChannel.IrcClients.Values.Where(client => client != ircClient))
                 {
                     await targetClient.WriteMessageAsync(privMsgMessage);
                 }
@@ -74,7 +75,7 @@ namespace Irc.Messages.Messages
 
         private async Task SendMessageToUser(IrcClient ircClient)
         {            
-            var targetClient = IrcClient.IrcServer.IrcClients.SingleOrDefault(client => client.Profile.Nickname == Target);
+            var targetClient = IrcClient.IrcServer.IrcClients.SingleOrDefault(client => client.Profile.Nickname.Equals(Target, StringComparison.OrdinalIgnoreCase));
             if (targetClient != null)
             {
                 // var from = $"{ircClient.Profile.Nickname}!{ircClient.Profile.User.UserName}@{ircClient.Address}";

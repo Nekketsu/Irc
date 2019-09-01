@@ -40,7 +40,7 @@ namespace Irc
             LastMessageDateTime = DateTime.Now;
 
             Profile = new Profile();
-            Channels = new Dictionary<string, Channel>();
+            Channels = new Dictionary<string, Channel>(StringComparer.OrdinalIgnoreCase);
         }
 
         public async void RunAsync()
@@ -142,7 +142,7 @@ namespace Irc
             {
                 var foregroundColor = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine($"{source}: {text}");
+                Console.Error.WriteLine($"{source}: {text}");
                 Console.ForegroundColor = foregroundColor;
             }
 

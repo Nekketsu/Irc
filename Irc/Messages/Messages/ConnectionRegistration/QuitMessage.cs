@@ -30,12 +30,12 @@ namespace Irc.Messages.Messages
             var quitMessage = new QuitMessage(ircClient.Profile.Nickname, $"Quit: {Reason}");
             foreach (var channel in ircClient.Channels.Values)
             {
-                foreach (var client in channel.IrcClients)
+                foreach (var client in channel.IrcClients.Values)
                 {
                     await client.WriteMessageAsync(quitMessage);
                 }
 
-                channel.IrcClients.Remove(ircClient);
+                channel.IrcClients.Remove(ircClient.Profile.Nickname);
                 ircClient.Channels.Remove(channel.Name);
             }
 

@@ -11,7 +11,7 @@ namespace Irc.Messages.Messages
     {
         public string Mask { get; set; }
 
-        public WhoisMessage(string mask)
+        public WhoisMessage(string mask = null)
         {
             Mask = mask;
         }
