@@ -10,7 +10,7 @@ namespace Messages.Replies.CommandResponses
         public string ChannelName { get; private set; }
         public string Message { get; set; }
 
-        public NoTopicReply(string target, string channelName, string message) : base(target, RPL_NOTOPIC)
+        public NoTopicReply(string sender, string target, string channelName, string message) : base(sender, target, RPL_NOTOPIC)
         {
             ChannelName = channelName;
             Message = message;

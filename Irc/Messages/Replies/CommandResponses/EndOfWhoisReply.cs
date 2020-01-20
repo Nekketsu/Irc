@@ -10,7 +10,7 @@ namespace Messages.Replies.CommandResponses
         public string Nickname { get; set; }
         public string Message { get; set; }
 
-        public EndOfWhoisReply(string target, string nickname, string message) : base(target, RPL_ENDOFWHOIS)
+        public EndOfWhoisReply(string sender, string target, string nickname, string message) : base(sender, target, RPL_ENDOFWHOIS)
         {
             Nickname = nickname;
             Message = message;

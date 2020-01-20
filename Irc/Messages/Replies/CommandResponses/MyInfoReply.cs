@@ -7,7 +7,7 @@ namespace Messages.Replies.CommandResponses
         const string RPL_MYINFO = "004";
         public string Message { get; private set; }
 
-        public MyInfoReply(string target, string message) : base(target, RPL_MYINFO)
+        public MyInfoReply(string sender, string target, string message) : base(sender, target, RPL_MYINFO)
         {
             Message = message;
         }

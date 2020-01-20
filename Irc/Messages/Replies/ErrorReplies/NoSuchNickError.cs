@@ -10,7 +10,7 @@ namespace Messages.Replies.ErrorReplies
         public string Nickname { get; set; }
         public string Message { get; private set; }
 
-        public NoSuchNickError(string target, string nickname, string message) : base(target, ERR_NOSUCHNICK)
+        public NoSuchNickError(string sender, string target, string nickname, string message) : base(sender, target, ERR_NOSUCHNICK)
         {
             Nickname = nickname;
             Message = message;

@@ -13,16 +13,5 @@ namespace Irc.Messages.Messages
         {
             return $"{Command}";
         }
-        
-        public override async Task<bool> ManageMessageAsync(IrcClient ircClient)
-        {
-            foreach (var channel in IrcClient.IrcServer.Channels.Values)
-            {
-                await ircClient.WriteMessageAsync(new ListReply(ircClient.Profile.Nickname, channel.Name, channel.IrcClients.Count, channel.Topic?.TopicMessage));
-            }
-            await ircClient.WriteMessageAsync(new ListEndReply(ircClient.Profile.Nickname, ListEndReply.DefaultMessage));
-
-            return true;
-        }
     }
 }

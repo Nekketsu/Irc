@@ -8,7 +8,7 @@ namespace Messages.Replies.CommandResponses
         public string ChannelName { get; private set; }
         public string Topic { get; set; }
 
-        public TopicReply(string target, string channelName, string topic) : base(target, RPL_TOPIC)
+        public TopicReply(string sender, string target, string channelName, string topic) : base(sender, target, RPL_TOPIC)
         {
             ChannelName = channelName;
             Topic = topic;

@@ -8,7 +8,7 @@ namespace Messages.Replies.CommandResponses
         public string ChannelName { get; set; }
         public string[] Nicknames { get; private set; }
 
-        public NameReply(string target, string channelName, params string[] nicknames) : base(target, RPL_NAMREPLY)
+        public NameReply(string sender, string target, string channelName, params string[] nicknames) : base(sender, target, RPL_NAMREPLY)
         {
             ChannelName = channelName.StartsWith("#")
                 ? channelName.Substring(1)

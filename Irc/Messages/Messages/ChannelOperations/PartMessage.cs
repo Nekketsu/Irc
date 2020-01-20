@@ -38,35 +38,6 @@ namespace Irc.Messages.Messages
             return text;
         }
 
-        public override async Task<bool> ManageMessageAsync(IrcClient ircClient)
-        {
-            if (ircClient.Channels.TryGetValue(ChannelName, out var partChannel))
-            {
-                var partMessage = new PartMessage(ircClient.Profile.Nickname, ChannelName, Message);
-                foreach (var client in partChannel.IrcClients.Values)
-                {
-                    await client.WriteMessageAsync(partMessage);
-                }
-
-                partChannel.IrcClients.Remove(ircClient.Profile.Nickname);
-                ircClient.Channels.Remove(ChannelName);
-                if (!partChannel.IrcClients.Any())
-                {
-                    IrcClient.IrcServer.Channels.Remove(ChannelName);
-                }
-            }
-            else if (IrcClient.IrcServer.Channels.ContainsKey(ChannelName))
-            {
-                await ircClient.WriteMessageAsync(new NotOnChannelError(ircClient.Profile.Nickname, ChannelName, NotOnChannelError.DefaultMessage));
-            }
-            else
-            {
-                await ircClient.WriteMessageAsync(new NoSuchChannelError(ircClient.Profile.Nickname, ChannelName, NoSuchChannelError.DefaultMessage));
-            }
-
-            return true;
-        }
-
         public new static PartMessage Parse(string message)
         {
             var messageSplit = message.Split();

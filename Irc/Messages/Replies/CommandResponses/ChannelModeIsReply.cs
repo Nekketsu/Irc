@@ -9,7 +9,7 @@ namespace Messages.Replies.CommandResponses
         public string Mode { get; set; }
         public string ModeParams { get; set; }
 
-        public ChannelModeIsReply(string target, string channelName, string mode, string modeParams = null) : base(target, RPL_CHANNELMODEIS)
+        public ChannelModeIsReply(string sender, string target, string channelName, string mode, string modeParams = null) : base(sender, target, RPL_CHANNELMODEIS)
         {
             ChannelName = channelName;
             Mode = mode;

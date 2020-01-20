@@ -17,17 +17,5 @@ namespace Irc.Messages.Messages
         {
             return $"{Command} {ChannelName}";
         }
-
-        public override async Task<bool> ManageMessageAsync(IrcClient ircClient)
-        {
-            if (IrcClient.IrcServer.Channels.TryGetValue(ChannelName, out var channel))
-            {
-                var nicknames = channel.IrcClients.Values.Select(client => client.Profile.Nickname).ToArray();
-                await ircClient.WriteMessageAsync(new NameReply(ircClient.Profile.Nickname, channel.Name, nicknames));
-                await ircClient.WriteMessageAsync(new EndOfNamesReply(ircClient.Profile.Nickname, channel.Name, EndOfNamesReply.DefaultMessage));
-            }
-
-            return true;
-        }
     }
 }

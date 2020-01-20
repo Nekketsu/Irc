@@ -8,7 +8,7 @@ namespace Messages.Replies.ErrorReplies
         public string ChannelName { get; set; }
         public string Message { get; set; }
 
-        public CannotSendToChannelError(string target, string channelName, string message) : base(target, ERR_CANNOTSENDTOCHAN)
+        public CannotSendToChannelError(string sender, string target, string channelName, string message) : base(sender, target, ERR_CANNOTSENDTOCHAN)
         {
             ChannelName = channelName;
             Message = message;

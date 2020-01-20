@@ -11,7 +11,7 @@ namespace Messages.Replies.CommandResponses
         public string Nickname { get; set; }
         public DateTime SetAt { get; set; }
 
-        public TopicWhoTimeReply(string target, string channelName, string nickname, DateTime setAt) : base(target, RPL_TOPICWHOTIME)
+        public TopicWhoTimeReply(string sender, string target, string channelName, string nickname, DateTime setAt) : base(sender, target, RPL_TOPICWHOTIME)
         {
             ChannelName = channelName;
             Nickname = nickname;

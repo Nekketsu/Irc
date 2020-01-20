@@ -10,7 +10,7 @@ namespace Messages.Replies.ErrorReplies
         public string ChannelName { get; set; }
         public string Message { get; private set; }
 
-        public NotOnChannelError(string target, string channelName, string message) : base(target, ERR_NOTONCHANNEL)
+        public NotOnChannelError(string sender, string target, string channelName, string message) : base(sender, target, ERR_NOTONCHANNEL)
         {
             ChannelName = channelName;
             Message = message;

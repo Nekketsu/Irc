@@ -12,7 +12,7 @@ namespace Messages.Replies.CommandResponses
         public string Nickname { get; set; }
         public string RealName { get; set; }
 
-        public WhoReply(string target, string channelName, string user, string host, string server, string nickname, string realName) : base(target, RPL_WHOREPLY)
+        public WhoReply(string sender, string target, string channelName, string user, string host, string server, string nickname, string realName) : base(sender, target, RPL_WHOREPLY)
         {
             ChannelName = channelName;
             User = user;

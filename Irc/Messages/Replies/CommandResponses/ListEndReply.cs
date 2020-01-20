@@ -9,7 +9,7 @@ namespace Messages.Replies.CommandResponses
         const string RPL_LISTEND = "323";
         public string Message { get; set; }
 
-        public ListEndReply(string target, string message) : base(target, RPL_LISTEND)
+        public ListEndReply(string sender, string target, string message) : base(sender, target, RPL_LISTEND)
         {
             Message = message;
         }

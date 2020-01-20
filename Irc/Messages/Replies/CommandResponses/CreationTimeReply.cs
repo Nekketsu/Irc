@@ -10,7 +10,7 @@ namespace Messages.Replies.CommandResponses
         public string ChannelName { get; private set; }
         public DateTime CreationTime { get; private set; }
 
-        public CreationTimeReply(string target, string channelName, DateTime creationTime) : base(target, RPL_CREATIONTIME)
+        public CreationTimeReply(string sender, string target, string channelName, DateTime creationTime) : base(sender, target, RPL_CREATIONTIME)
         {
             ChannelName = channelName;
             CreationTime = creationTime;

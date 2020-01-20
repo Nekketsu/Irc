@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Irc
+namespace Irc.Server
 {
     public class Channel
     {

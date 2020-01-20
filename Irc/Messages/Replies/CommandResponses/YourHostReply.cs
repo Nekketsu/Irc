@@ -7,7 +7,7 @@ namespace Messages.Replies.CommandResponses
         const string RPL_YOURHOST = "002";
         public string Message { get; set; }
 
-        public YourHostReply(string target, string message) : base(target, RPL_YOURHOST)
+        public YourHostReply(string sender, string target, string message) : base(sender, target, RPL_YOURHOST)
         {
             Message = message;
         }

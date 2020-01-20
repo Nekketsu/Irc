@@ -10,7 +10,7 @@ namespace Messages.Replies.CommandResponses
         public string Mask { get; set; }
         public string Message { get; set; }
 
-        public EndOfWhoReply(string target, string mask, string message) : base(target, RPL_ENDOFWHO)
+        public EndOfWhoReply(string sender, string target, string mask, string message) : base(sender, target, RPL_ENDOFWHO)
         {
             Mask = mask;
             Message = message;

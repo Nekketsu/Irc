@@ -10,7 +10,7 @@ namespace Messages.Replies.CommandResponses
         public string Host { get; set; }
         public string RealName { get; set; }
 
-        public WhoisReply(string target, string nickname, string user, string host, string realName) : base(target, RPL_WHOISREPLY)
+        public WhoisReply(string sender, string target, string nickname, string user, string host, string realName) : base(sender, target, RPL_WHOISREPLY)
         {
             Nickname = nickname;
             User = user;

@@ -17,19 +17,5 @@ namespace Irc.Messages.Messages
         {
             return $"{Command} {Nickname}";
         }
-
-        public override async Task<bool> ManageMessageAsync(IrcClient ircClient)
-        {
-            var message = ircClient.Profile.Nickname;
-            if (ircClient.Profile.User != null)
-            {
-                message += $"=+~{ircClient.Profile.User.UserName}";
-            }
-            message += $"@{ircClient.Address}";
-            var userHost = new UserHostReply(ircClient.Profile.Nickname, $"{message}");
-            await ircClient.WriteMessageAsync(userHost);
-
-            return true;
-        }
     }
 }

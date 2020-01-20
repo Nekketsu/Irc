@@ -7,7 +7,7 @@ namespace Messages.Replies.CommandResponses
         const string RPL_WELCOME = "001";
         public string Message { get; private set; }
 
-        public WelcomeReply(string target, string message) : base(target, RPL_WELCOME)
+        public WelcomeReply(string sender, string target, string message) : base(sender, target, RPL_WELCOME)
         {
             Message = message;
         }

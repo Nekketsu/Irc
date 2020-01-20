@@ -15,11 +15,5 @@ namespace Irc.Messages.Messages
         {
             return $"{Command} {Nickname}";
         }
-
-        public override Task<bool> ManageMessageAsync(IrcClient ircClient)
-        {
-            ircClient.Profile.Nickname = Nickname;
-            return Task.FromResult(true);
-        }
     }
 }

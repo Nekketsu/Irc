@@ -9,7 +9,7 @@ namespace Messages.Replies.ErrorReplies
         const string ERR_NONicknameGIVEN = "431";
         public string Message { get; private set; }
 
-        public NoNicknameGivenError(string target, string message) : base(target, ERR_NONicknameGIVEN)
+        public NoNicknameGivenError(string sender, string target, string message) : base(sender, target, ERR_NONicknameGIVEN)
         {
             Message = message;
         }

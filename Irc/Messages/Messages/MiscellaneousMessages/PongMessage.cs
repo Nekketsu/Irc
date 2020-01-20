@@ -19,10 +19,5 @@ namespace Irc.Messages.Messages
         {
             return $"PONG :{Server}";
         }
-
-        public override Task<bool> ManageMessageAsync(IrcClient ircClient)
-        {
-            return Task.FromResult(ircClient.PingMessage.Server == Server);
-        }
     }
 }

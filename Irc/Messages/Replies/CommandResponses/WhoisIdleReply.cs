@@ -12,7 +12,7 @@ namespace Messages.Replies.CommandResponses
         public int Idle { get; set; }
         public string Message { get; set; }
 
-        public WhoisIdleReply(string target, string nickname, int idle, string message) : base(target, RPL_WHOISIDLE)
+        public WhoisIdleReply(string sender, string target, string nickname, int idle, string message) : base(sender, target, RPL_WHOISIDLE)
         {
             Nickname = nickname;
             Idle = idle;

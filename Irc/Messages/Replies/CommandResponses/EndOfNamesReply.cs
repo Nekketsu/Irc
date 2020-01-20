@@ -10,7 +10,7 @@ namespace Messages.Replies.CommandResponses
         public string ChannelName { get; set; }
         public string Message { get; private set; }
 
-        public EndOfNamesReply(string target, string channelName, string message) : base(target, RPL_ENDOFNAMES)
+        public EndOfNamesReply(string sender, string target, string channelName, string message) : base(sender, target, RPL_ENDOFNAMES)
         {
             ChannelName = channelName;
             Message = message;

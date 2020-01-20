@@ -8,7 +8,7 @@ namespace Messages.Replies.CommandResponses
         public string ChannelName { get; set; }
         public string Nickname { get; set; }
 
-        public InvitingReply(string target, string channelName, string nickname) : base(target, RPL_INVITING)
+        public InvitingReply(string sender, string target, string channelName, string nickname) : base(sender, target, RPL_INVITING)
         {
             ChannelName = channelName;
             Nickname = nickname;

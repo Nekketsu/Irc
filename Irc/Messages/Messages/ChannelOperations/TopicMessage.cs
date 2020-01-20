@@ -35,50 +35,6 @@ namespace Irc.Messages.Messages
                     : $":{From} {Command} {ChannelName} :{Topic}";
         }
 
-        public override async Task<bool> ManageMessageAsync(IrcClient ircClient)
-        {
-            if (ircClient.Channels.TryGetValue(ChannelName, out var channel))
-            {
-                // Query topic
-                if (Topic == null)
-                {
-                    if (channel.Topic == null)
-                    {
-                        await ircClient.WriteMessageAsync(new NoTopicReply(ircClient.Profile.Nickname, ChannelName, NoTopicReply.DefaultMessage));
-                    }
-                    else
-                    {
-                        await ircClient.WriteMessageAsync(new TopicReply(ircClient.Profile.Nickname, ChannelName, channel.Topic.TopicMessage));
-                        await ircClient.WriteMessageAsync(new TopicWhoTimeReply(ircClient.Profile.Nickname, ChannelName, channel.Topic.Nickname, channel.Topic.SetAt));
-                    }
-                }
-                // Set topic
-                else
-                {
-                    var topic = (Topic == string.Empty) ? null : Topic;
-                    channel.Topic = new Topic(topic, ircClient.Profile.Nickname);
-                    
-                    var topicMessage = new TopicMessage(ircClient.Profile.Nickname, ChannelName, Topic);
-                    foreach (var client in channel.IrcClients.Values)
-                    {
-                        await client.WriteMessageAsync(topicMessage);
-                    }
-                }
-            }
-            // No on channel
-            else if (IrcClient.IrcServer.Channels.ContainsKey(ChannelName))
-            {
-                await ircClient.WriteMessageAsync(new NotOnChannelError(ircClient.Profile.Nickname, ChannelName, NotOnChannelError.DefaultMessage));
-            }
-            // No such channel
-            else
-            {
-                await ircClient.WriteMessageAsync(new NoSuchChannelError(ircClient.Profile.Nickname, ChannelName, NoSuchChannelError.DefaultMessage));
-            }
-
-            return true;
-        }
-
         public new static TopicMessage Parse(string message)
         {
             var messageSplit = message.Split();

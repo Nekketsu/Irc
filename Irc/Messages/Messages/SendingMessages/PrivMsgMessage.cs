@@ -30,62 +30,29 @@ namespace Irc.Messages.Messages
                 : $":{From} {Command} {Target} :{Text}";
         }
 
-        public override async Task<bool> ManageMessageAsync(IrcClient ircClient)
-        {
-            if (Target.StartsWith("#"))
-            {
-                await SendMessageToChannel(ircClient);
-            }
-            else
-            {
-                await SendMessageToUser(ircClient);
-            }
-
-            return true;
-        }
-
         public new static PrivMsgMessage Parse(string message)
         {
-            var messageSplit = message.Split();
+            var text = message;
+            var messageSplit = text.Split();
+
+            string from = null;
+            if (messageSplit[0].StartsWith(":"))
+            {
+                from = messageSplit[0].Substring(1);
+                text = text.Substring(messageSplit[0].Length).TrimStart();
+                messageSplit = messageSplit.Skip(1).ToArray();
+            }
 
             var target = messageSplit[1];
 
-            var text = message.Substring(message.IndexOf(messageSplit[0]) + messageSplit[0].Length).TrimStart();
-            text = message.Substring(message.IndexOf(messageSplit[1]) + messageSplit[1].Length).TrimStart();
+            text = text.Substring(messageSplit[0].Length).TrimStart();
+            text = text.Substring(messageSplit[1].Length).TrimStart();
 
-            return new PrivMsgMessage(target, text);
-        }
+            var privMsgMessage = from == null
+                ? new PrivMsgMessage(target, text)
+                : new PrivMsgMessage(from, target, text);
 
-        private async Task SendMessageToChannel(IrcClient ircClient)
-        {
-            if (IrcClient.IrcServer.Channels.TryGetValue(Target, out var targetChannel))
-            {
-                var from = ircClient.Profile.Nickname;
-                var privMsgMessage = new PrivMsgMessage(from, Target, Text);
-                foreach (var targetClient in targetChannel.IrcClients.Values.Where(client => client != ircClient))
-                {
-                    await targetClient.WriteMessageAsync(privMsgMessage);
-                }
-            }
-            else
-            {
-                await ircClient.WriteMessageAsync(new CannotSendToChannelError(ircClient.Profile.Nickname, Target, "Cannot send to channel"));
-            }
-        }
-
-        private async Task SendMessageToUser(IrcClient ircClient)
-        {            
-            var targetClient = IrcClient.IrcServer.IrcClients.SingleOrDefault(client => client.Profile.Nickname.Equals(Target, StringComparison.OrdinalIgnoreCase));
-            if (targetClient != null)
-            {
-                // var from = $"{ircClient.Profile.Nickname}!{ircClient.Profile.User.UserName}@{ircClient.Address}";
-                var from = ircClient.Profile.Nickname;
-                await targetClient.WriteMessageAsync(new PrivMsgMessage(from, Target, Text));
-            }
-            else
-            {
-                await ircClient.WriteMessageAsync(new NoRecipientError(ircClient.Profile.Nickname, $":No recipient given ({this})"));
-            }
+            return privMsgMessage;
         }
     }
 }

@@ -10,10 +10,16 @@ namespace Irc.Messages
         public static Message Parse(string message)
         {
             var messageSplit = message.Split();
-            if (messageSplit.Length > 0)
+            if (messageSplit.Any())
             {
                 var command = messageSplit.First();
                 var parameters = messageSplit.Skip(1).ToArray();
+
+                if (command.StartsWith(":") && messageSplit.Length >= 2)
+                {
+                    command = messageSplit[1];
+                    parameters = parameters.Skip(1).Prepend(messageSplit[0]).ToArray();
+                }
 
                 var messageType = Assembly
                     .GetExecutingAssembly()
@@ -58,11 +64,6 @@ namespace Irc.Messages
             }
 
             Command = name.Substring(0, name.Length - nameof(Message).Length).ToUpper();
-        }
-
-        public virtual Task<bool> ManageMessageAsync(IrcClient ircClient)
-        {
-            return Task.FromResult(true);
         }
     }
 }

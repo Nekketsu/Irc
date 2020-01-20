@@ -7,7 +7,7 @@ namespace Messages.Replies.CommandResponses
         const string RPL_CREATED = "003";
         public string Message { get; private set; }
 
-        public CreatedReply(string target, string message) : base(target, RPL_CREATED)
+        public CreatedReply(string sender, string target, string message) : base(sender, target, RPL_CREATED)
         {
             Message = message;
         }

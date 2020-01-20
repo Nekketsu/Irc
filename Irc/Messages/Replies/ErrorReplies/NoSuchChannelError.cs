@@ -10,7 +10,7 @@ namespace Messages.Replies.ErrorReplies
         public string ChannelName { get; set; }
         public string Message { get; private set; }
 
-        public NoSuchChannelError(string target, string channelName, string message) : base(target, ERR_NOSUCHCHANNEL)
+        public NoSuchChannelError(string sender, string target, string channelName, string message) : base(sender, target, ERR_NOSUCHCHANNEL)
         {
             ChannelName = channelName;
             Message = message;

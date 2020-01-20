@@ -9,7 +9,7 @@ namespace Messages.Replies.CommandResponses
         public string Nickname { get; set; }
         public IEnumerable<string> ChannelNames { get; set; }
 
-        public WhoisChannelsReply(string target, string nickname, IEnumerable<string> channelNames) : base(target, RPL_WHOISCHANNELS)
+        public WhoisChannelsReply(string sender, string target, string nickname, IEnumerable<string> channelNames) : base(sender, target, RPL_WHOISCHANNELS)
         {
             Nickname = nickname;
             ChannelNames = channelNames;

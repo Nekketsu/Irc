@@ -11,7 +11,7 @@ namespace Messages.Replies.ErrorReplies
         public string ChannelName { get; set; }
         public string Message { get; private set; }
 
-        public UserNotInChannelError(string target, string nickname, string channelName, string message) : base(target, ERR_USERNOTINCHANNEL)
+        public UserNotInChannelError(string sender, string target, string nickname, string channelName, string message) : base(sender, target, ERR_USERNOTINCHANNEL)
         {
             Nickname = nickname;
             ChannelName = channelName;

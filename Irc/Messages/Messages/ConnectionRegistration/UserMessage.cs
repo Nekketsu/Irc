@@ -22,12 +22,6 @@ namespace Irc.Messages.Messages
             return $"{Command} {User} {Mode} {Unused} :{RealName}";
         }
 
-        public override Task<bool> ManageMessageAsync(IrcClient ircClient)
-        {
-            ircClient.Profile.User = new User(User, Mode, Unused, RealName);
-            return Task.FromResult(true);
-        }
-
         public new static UserMessage Parse(string message)
         {
             var messageSplit = message.Split();

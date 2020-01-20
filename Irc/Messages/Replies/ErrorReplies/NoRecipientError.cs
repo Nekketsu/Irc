@@ -7,7 +7,7 @@ namespace Messages.Replies.ErrorReplies
         public const string ERR_NORECIPIENT = "401";
         public string Message { get; set; }
 
-        public NoRecipientError(string target, string message) : base(target, ERR_NORECIPIENT)
+        public NoRecipientError(string sender, string target, string message) : base(sender, target, ERR_NORECIPIENT)
         {
             Message = message;
         }

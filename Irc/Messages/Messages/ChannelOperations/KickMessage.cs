@@ -30,47 +30,6 @@ namespace Irc.Messages.Messages
                 : $":{From} {Command} {ChannelName} :{Nickname}";
         }
 
-        public override async Task<bool> ManageMessageAsync(IrcClient ircClient)
-        {
-            if (IrcClient.IrcServer.Channels.TryGetValue(ChannelName, out var kickChannel))
-            {
-                if (kickChannel.IrcClients.TryGetValue(Nickname, out var kickClient))
-                {
-                    if (!ircClient.Channels.ContainsKey(ChannelName))
-                    {
-                        await ircClient.WriteMessageAsync(new NotOnChannelError(ircClient.Profile.Nickname, ChannelName, NotOnChannelError.DefaultMessage));
-                        return true;
-                    }
-
-                    var kickMessage = new KickMessage(ircClient.Profile.Nickname, ChannelName, Nickname, Message);
-                    foreach (var client in kickChannel.IrcClients.Values)
-                    {
-                        await client.WriteMessageAsync(kickMessage);
-                    }
-
-                    kickChannel.IrcClients.Remove(Nickname);
-                    kickClient.Channels.Remove(ChannelName);
-                    
-                    if (!kickChannel.IrcClients.Any())
-                    {
-                        ircClient.Channels.Remove(ChannelName);
-                    }
-                }
-                else
-                {
-                    await ircClient.WriteMessageAsync(new UserNotInChannelError(ircClient.Profile.Nickname, Nickname, ChannelName, UserNotInChannelError.DefaultMessage));
-                    return true;
-                }
-            }
-            else
-            {
-                await ircClient.WriteMessageAsync(new NoSuchChannelError(ircClient.Profile.Nickname, ChannelName, NoSuchChannelError.DefaultMessage));
-                return true;
-            }
-            
-            return true;
-        }
-
         public new static KickMessage Parse(string message)
         {
             var messageSplit = message.Split();

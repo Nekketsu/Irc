@@ -9,7 +9,7 @@ namespace Messages.Replies.CommandResponses
         public int Visible { get; set; }
         public string Topic { get; set; }
 
-        public ListReply(string target, string channelName, int visible, string topic) : base(target, RPL_LIST)
+        public ListReply(string sender, string target, string channelName, int visible, string topic) : base(sender, target, RPL_LIST)
         {
             ChannelName = channelName;
             Visible = visible;

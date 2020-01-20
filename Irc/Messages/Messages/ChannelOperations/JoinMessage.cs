@@ -26,44 +26,5 @@ namespace Irc.Messages.Messages
                 ? $"{Command} {ChannelName}"
                 : $":{From} {Command} {ChannelName}";
         }
-
-        public override async Task<bool> ManageMessageAsync(IrcClient ircClient)
-        {
-            Channel channel;
-            
-            // Create channel if doesn't exist
-            if (!IrcClient.IrcServer.Channels.TryGetValue(ChannelName, out channel))
-            {
-                channel = new Channel(ChannelName);
-                IrcClient.IrcServer.Channels.Add(ChannelName, channel);
-            }
-
-            // Add client to channel and viceversa
-            if (!channel.IrcClients.ContainsKey(ircClient.Profile.Nickname))
-            {
-                channel.IrcClients.Add(ircClient.Profile.Nickname, ircClient);
-                ircClient.Channels.Add(ChannelName, channel);
-            }
-
-            var from = ircClient.Profile.Nickname;
-            var joinMessage = new JoinMessage(from, ChannelName);
-            foreach (var client in channel.IrcClients.Values)
-            {
-                await client.WriteMessageAsync(joinMessage);
-            }
-
-            if (channel.Topic != null)
-            {
-                await ircClient.WriteMessageAsync(new TopicReply(ircClient.Profile.Nickname, channel.Name, channel.Topic.TopicMessage));
-                await ircClient.WriteMessageAsync(new TopicWhoTimeReply(ircClient.Profile.Nickname, channel.Name, channel.Topic.Nickname, channel.Topic.SetAt));
-            }
-
-            var nicknames = channel.IrcClients.Values.Select(client => client.Profile.Nickname).ToArray();
-            await ircClient.WriteMessageAsync(new NameReply(ircClient.Profile.Nickname, channel.Name, nicknames));
-            await ircClient.WriteMessageAsync(new EndOfNamesReply(ircClient.Profile.Nickname, channel.Name, EndOfNamesReply.DefaultMessage));
-            await ircClient.WriteMessageAsync(new CreationTimeReply(ircClient.Profile.Nickname, channel.Name, channel.CreationTime));
-
-            return true;
-        }
     }
 }
