@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Irc.Domain.Extensions;
+using Irc.Messages;
+using Irc.Messages.Messages;
+using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Irc.Domain.Extensions;
-using Irc.Messages;
-using Irc.Messages.Messages;
 
 namespace Irc.Client
 {

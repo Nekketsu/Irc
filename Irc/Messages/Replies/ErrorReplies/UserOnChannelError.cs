@@ -5,7 +5,7 @@ namespace Messages.Replies.ErrorReplies
     public class UserOnChannelError : Reply
     {
         public const string DefaultMessage = "is already on channel";
-        
+
         const string ERR_USERONCHANNEL = "443";
         public string Nickname { get; set; }
         public string ChannelName { get; set; }

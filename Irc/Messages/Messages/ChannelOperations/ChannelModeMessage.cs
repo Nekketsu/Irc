@@ -1,6 +1,3 @@
-using System.Threading.Tasks;
-using Messages.Replies.CommandResponses;
-
 namespace Irc.Messages.Messages
 {
     public class ChannelModeMessage : Message

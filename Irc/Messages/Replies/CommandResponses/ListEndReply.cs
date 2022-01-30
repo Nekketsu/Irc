@@ -5,7 +5,7 @@ namespace Messages.Replies.CommandResponses
     public class ListEndReply : Reply
     {
         public const string DefaultMessage = "End of LIST";
-        
+
         const string RPL_LISTEND = "323";
         public string Message { get; set; }
 

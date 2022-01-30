@@ -1,5 +1,4 @@
 using Irc.Domain.Extensions;
-using Irc.Messages;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

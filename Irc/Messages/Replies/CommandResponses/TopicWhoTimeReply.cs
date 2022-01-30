@@ -1,6 +1,6 @@
-using System;
 using Irc.Extensions;
 using Irc.Messages;
+using System;
 
 namespace Messages.Replies.CommandResponses
 {

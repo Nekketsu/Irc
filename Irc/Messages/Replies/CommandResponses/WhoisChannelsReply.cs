@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using Irc.Messages;
+using System.Collections.Generic;
 
 namespace Messages.Replies.CommandResponses
 {

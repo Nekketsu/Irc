@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29025.244
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Irc.Server.Console", "Irc.Server.Console\Irc.Server.Console.csproj", "{DE789552-D5C9-4C7F-B9E0-2104BE622F82}"
 EndProject
@@ -11,13 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Irc", "Irc\Irc.csproj", "{D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Irc.Server.Service", "Irc.Server.Service\Irc.Server.Service.csproj", "{7938920E-FC93-47CE-8749-569CB5F0B411}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Irc.Client.Blazor", "Irc.Client.Blazor\Irc.Client.Blazor.csproj", "{9EE9C5E3-C9F5-44D6-B65D-99A0EBBD1110}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Irc.Client.Wpf", "Irc.Client.Wpf\Irc.Client.Wpf.csproj", "{D17BEDB2-522F-4536-90D0-98C413DCEF24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Irc.Client.Wpf", "Irc.Client.Wpf\Irc.Client.Wpf.csproj", "{D17BEDB2-522F-4536-90D0-98C413DCEF24}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Irc.Client", "Irc.Client\Irc.Client.csproj", "{5EFDEC07-956A-4D0C-9F6E-F56F603B8870}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Irc.Domain", "Irc.Domain\Irc.Domain.csproj", "{FE3C188F-9638-40B5-B41B-F505E0E3A3F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Irc.Client", "Irc.Client\Irc.Client.csproj", "{5EFDEC07-956A-4D0C-9F6E-F56F603B8870}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +37,6 @@ Global
 		{7938920E-FC93-47CE-8749-569CB5F0B411}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7938920E-FC93-47CE-8749-569CB5F0B411}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7938920E-FC93-47CE-8749-569CB5F0B411}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9EE9C5E3-C9F5-44D6-B65D-99A0EBBD1110}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9EE9C5E3-C9F5-44D6-B65D-99A0EBBD1110}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9EE9C5E3-C9F5-44D6-B65D-99A0EBBD1110}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9EE9C5E3-C9F5-44D6-B65D-99A0EBBD1110}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D17BEDB2-522F-4536-90D0-98C413DCEF24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D17BEDB2-522F-4536-90D0-98C413DCEF24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D17BEDB2-522F-4536-90D0-98C413DCEF24}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -53,10 +45,6 @@ Global
 		{5EFDEC07-956A-4D0C-9F6E-F56F603B8870}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EFDEC07-956A-4D0C-9F6E-F56F603B8870}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EFDEC07-956A-4D0C-9F6E-F56F603B8870}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FE3C188F-9638-40B5-B41B-F505E0E3A3F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FE3C188F-9638-40B5-B41B-F505E0E3A3F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FE3C188F-9638-40B5-B41B-F505E0E3A3F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FE3C188F-9638-40B5-B41B-F505E0E3A3F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

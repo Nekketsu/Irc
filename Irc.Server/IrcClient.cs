@@ -1,13 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using Irc.Domain.Extensions;
 using Irc.Extensions;
 using Irc.Messages;
@@ -15,6 +5,15 @@ using Irc.Messages.Messages;
 using Irc.Server.MessageHandlers;
 using Messages.Replies.CommandResponses;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Irc.Server
 {

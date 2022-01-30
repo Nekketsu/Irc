@@ -1,7 +1,3 @@
-using System.Threading.Tasks;
-using Messages.Replies.CommandResponses;
-using Messages.Replies.ErrorReplies;
-
 namespace Irc.Messages.Messages
 {
     public class TopicMessage : Message
@@ -24,7 +20,7 @@ namespace Irc.Messages.Messages
         {
             From = from;
         }
-        
+
 
         public override string ToString()
         {

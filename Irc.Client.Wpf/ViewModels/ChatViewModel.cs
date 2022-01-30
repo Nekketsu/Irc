@@ -3,10 +3,7 @@ using Irc.Messages;
 using Irc.Messages.Messages;
 using Prism.Commands;
 using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Threading;
 using System.Windows.Input;
 
@@ -87,7 +84,7 @@ namespace Irc.Client.Wpf.ViewModels
         }
 
         public string Host
-        { 
+        {
             get => host;
             set => SetProperty(ref host, value);
         }
@@ -98,14 +95,14 @@ namespace Irc.Client.Wpf.ViewModels
             set => SetProperty(ref nickname, value);
         }
 
-        public ObservableCollection<string> Chat 
-        { 
-            get => chat; 
+        public ObservableCollection<string> Chat
+        {
+            get => chat;
             set => SetProperty(ref chat, value);
         }
 
         public string TextMessage
-        { 
+        {
             get => textMessage;
             set => SetProperty(ref textMessage, value);
         }

@@ -1,9 +1,6 @@
 ﻿using Irc.Messages.Messages;
 using Messages.Replies.CommandResponses;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Irc.Server.MessageHandlers.ChannelOperations

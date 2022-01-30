@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace Irc.Messages.Messages
 {
     public class UserMessage : Message

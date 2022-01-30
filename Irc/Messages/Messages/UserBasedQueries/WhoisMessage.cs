@@ -1,10 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Irc.Helpers;
-using Messages.Replies.CommandResponses;
-using Messages.Replies.ErrorReplies;
-
 namespace Irc.Messages.Messages
 {
     public class WhoisMessage : Message

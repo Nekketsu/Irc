@@ -1,8 +1,4 @@
-using System;
 using System.Linq;
-using System.Threading.Tasks;
-using Irc.Extensions;
-using Messages.Replies.ErrorReplies;
 
 namespace Irc.Messages.Messages
 {

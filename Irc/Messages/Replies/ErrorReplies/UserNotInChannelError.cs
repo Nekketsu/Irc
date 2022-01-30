@@ -5,7 +5,7 @@ namespace Messages.Replies.ErrorReplies
     public class UserNotInChannelError : Reply
     {
         public const string DefaultMessage = "They aren't on that channel";
-        
+
         const string ERR_USERNOTINCHANNEL = "441";
         public string Nickname { get; set; }
         public string ChannelName { get; set; }

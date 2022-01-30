@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Irc.Client.Wpf.Model
+﻿namespace Irc.Client.Wpf.Model
 {
     public enum ConnectionState
     {

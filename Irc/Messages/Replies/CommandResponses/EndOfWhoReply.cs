@@ -5,7 +5,7 @@ namespace Messages.Replies.CommandResponses
     public class EndOfWhoReply : Reply
     {
         public const string DefaultMessage = "End of WHO list";
-        
+
         const string RPL_ENDOFWHO = "315";
         public string Mask { get; set; }
         public string Message { get; set; }

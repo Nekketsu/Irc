@@ -1,8 +1,5 @@
 ﻿using Irc.Messages.Messages;
 using Messages.Replies.CommandResponses;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Irc.Server.MessageHandlers.OptionalFeatures

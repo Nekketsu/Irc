@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses

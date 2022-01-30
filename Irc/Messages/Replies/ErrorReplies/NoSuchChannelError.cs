@@ -5,7 +5,7 @@ namespace Messages.Replies.ErrorReplies
     public class NoSuchChannelError : Reply
     {
         public const string DefaultMessage = "No such channel";
-        
+
         const string ERR_NOSUCHCHANNEL = "403";
         public string ChannelName { get; set; }
         public string Message { get; private set; }

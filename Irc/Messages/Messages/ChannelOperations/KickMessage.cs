@@ -1,8 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Messages.Replies.ErrorReplies;
-
 namespace Irc.Messages.Messages
 {
     public class KickMessage : Message

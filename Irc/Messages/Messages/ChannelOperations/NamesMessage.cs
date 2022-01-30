@@ -1,7 +1,3 @@
-using System.Linq;
-using System.Threading.Tasks;
-using Messages.Replies.CommandResponses;
-
 namespace Irc.Messages.Messages
 {
     public class NamesMessage : Message

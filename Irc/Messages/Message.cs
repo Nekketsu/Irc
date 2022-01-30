@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Irc.Messages
 {
@@ -34,7 +33,7 @@ namespace Irc.Messages
                         var parseMethod = messageType.GetMethod(nameof(Parse), BindingFlags.Public | BindingFlags.Static);
 
                         messageInstance = (parseMethod != null)
-                            ? (Message)parseMethod.Invoke(null, new [] { message })
+                            ? (Message)parseMethod.Invoke(null, new[] { message })
                             : (Message)Activator.CreateInstance(messageType, parameters);
 
                         return messageInstance;
@@ -49,7 +48,7 @@ namespace Irc.Messages
         private static bool IsMessage(string typeName, string commandName)
         {
             var command = typeName.Substring(0, typeName.Length - nameof(Message).Length);
-            
+
             return string.Equals(command, commandName, StringComparison.OrdinalIgnoreCase);
         }
 
