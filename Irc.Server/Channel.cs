@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace Irc.Server
 {
     public class Channel

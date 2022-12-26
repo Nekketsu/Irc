@@ -1,5 +1,3 @@
-using System;
-
 namespace Irc.Extensions
 {
     public static class DateTimeExtensions

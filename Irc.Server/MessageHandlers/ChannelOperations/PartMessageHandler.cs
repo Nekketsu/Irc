@@ -1,7 +1,5 @@
 ﻿using Irc.Messages.Messages;
 using Messages.Replies.ErrorReplies;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Irc.Server.MessageHandlers.ChannelOperations
 {

@@ -1,5 +1,3 @@
-using System;
-
 namespace Irc
 {
     public class Topic

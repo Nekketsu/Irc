@@ -1,6 +1,5 @@
 ﻿using Irc.Messages.Messages;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace Irc.Server.MessageHandlers.ConnectionRegistration
 {

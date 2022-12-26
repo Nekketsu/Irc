@@ -1,5 +1,4 @@
 ﻿using Irc.Messages;
-using System.Threading.Tasks;
 
 namespace Irc.Server.MessageHandlers
 {

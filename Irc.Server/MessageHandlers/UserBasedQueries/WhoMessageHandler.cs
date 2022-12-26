@@ -1,9 +1,6 @@
 ﻿using Irc.Helpers;
 using Irc.Messages.Messages;
 using Messages.Replies.CommandResponses;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Irc.Server.MessageHandlers.UserBasedQueries
 {

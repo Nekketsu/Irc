@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Irc.Domain.Extensions
+﻿namespace Irc.Domain.Extensions
 {
     public static class TaskExtensions
     {

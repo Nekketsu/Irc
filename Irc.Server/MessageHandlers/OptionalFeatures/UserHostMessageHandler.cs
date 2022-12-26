@@ -1,6 +1,5 @@
 ﻿using Irc.Messages.Messages;
 using Messages.Replies.CommandResponses;
-using System.Threading.Tasks;
 
 namespace Irc.Server.MessageHandlers.OptionalFeatures
 {

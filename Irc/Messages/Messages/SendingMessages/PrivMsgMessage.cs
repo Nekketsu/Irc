@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace Irc.Messages.Messages
 {
     public class PrivMsgMessage : Message

@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
-
-namespace Irc.Server.Service
+﻿namespace Irc.Server.Service
 {
     public class ConsoleLogger : ILogger
     {
