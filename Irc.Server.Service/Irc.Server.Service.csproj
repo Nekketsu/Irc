@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-Irc.Server.Service-DB7C9463-6DDB-45D2-B6C5-4880985F0857</UserSecretsId>
   </PropertyGroup>
