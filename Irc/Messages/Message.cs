@@ -45,6 +45,6 @@ namespace Irc.Messages
             return null;
         }
 
-        public string Command => this.GetType().GetCustomAttribute<CommandAttribute>().Command;
+        public string Command => GetType().GetCustomAttribute<CommandAttribute>().Command;
     }
 }

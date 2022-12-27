@@ -58,7 +58,7 @@ namespace Irc.Client.Wpf.ViewModels
                 .ObservesProperty(() => TextMessage);
 
 
-            this.PropertyChanged += IrcViewModel_PropertyChanged;
+            PropertyChanged += IrcViewModel_PropertyChanged;
         }
 
         private void IrcViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
