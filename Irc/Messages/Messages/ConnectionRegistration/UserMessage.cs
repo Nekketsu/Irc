@@ -1,5 +1,6 @@
 namespace Irc.Messages.Messages
 {
+    [Command("USER")]
     public class UserMessage : Message
     {
         public string User { get; private set; }

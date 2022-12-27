@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
+    [Command(RPL_WHOREPLY)]
     public class WhoReply : Reply
     {
         const string RPL_WHOREPLY = "352";

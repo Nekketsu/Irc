@@ -3,11 +3,11 @@
 namespace Irc.Client.Wpf.Views
 {
     /// <summary>
-    /// Interaction logic for ChatView.xaml
+    /// Interaction logic for IrcView.xaml
     /// </summary>
-    public partial class ChatView : UserControl
+    public partial class IrcView : UserControl
     {
-        public ChatView()
+        public IrcView()
         {
             InitializeComponent();
         }

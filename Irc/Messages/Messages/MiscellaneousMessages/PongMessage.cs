@@ -1,5 +1,6 @@
 namespace Irc.Messages.Messages
 {
+    [Command("PONG")]
     public class PongMessage : Message
     {
         public string Server { get; set; }

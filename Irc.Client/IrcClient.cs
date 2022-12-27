@@ -12,6 +12,9 @@ namespace Irc.Client
         public int Port { get; }
 
         public event EventHandler<Message> MessageReceived;
+        public event EventHandler<Message> MessageSent;
+        public event EventHandler<string> RawMessageReceived;
+        public event EventHandler<string> RawMessageSent;
 
         TcpClient tcpClient;
         private StreamReader streamReader;
@@ -42,25 +45,52 @@ namespace Irc.Client
         {
             await SendMessageAsync(new NickMessage(Nickname));
             await SendMessageAsync(new UserMessage(Nickname, Nickname, Host, Nickname));
+
+            PingMessage pingMessage;
+            do
+            {
+                var message = await ReadMessageAsync();
+                pingMessage = message as PingMessage;
+            } while (pingMessage is null);
+
+            var pongMessage = new PongMessage(pingMessage.Server);
+            await SendMessageAsync(pongMessage);
         }
 
         public async Task SendMessageAsync<T>(T message) where T : Message
         {
-            await streamWriter.WriteLineAsync(message.ToString());
+            var text = message.ToString();
+            RawMessageSent?.Invoke(this, text);
+
+            await streamWriter.WriteLineAsync(text);
+            MessageSent?.Invoke(this, message);
+        }
+
+        private async Task<Message> ReadMessageAsync()
+        {
+            var text = await streamReader.ReadLineAsync();
+            RawMessageReceived?.Invoke(this, text);
+
+            var message = Message.Parse(text) ??
+                            new NoticeMessage(string.Empty, text);
+
+            MessageReceived?.Invoke(this, message);
+
+            return message;
         }
 
         private async void HandleMessagesAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                var text = await streamReader.ReadLineAsync();
-                var message = Message.Parse(text) ??
-                              new NoticeMessage(Host, text);
+                Message message = await ReadMessageAsync();
 
-                MessageReceived?.Invoke(this, message);
+                if (message is PingMessage pingMessage)
+                {
+                    var pongMessage = new PongMessage(pingMessage.Server);
+                    await SendMessageAsync(pongMessage);
+                }
             }
         }
-
-
     }
 }

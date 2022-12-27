@@ -1,5 +1,6 @@
 namespace Irc.Messages.Messages
 {
+    [Command("QUIT")]
     public class QuitMessage : Message
     {
         public string Target { get; set; }

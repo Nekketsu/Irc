@@ -14,16 +14,18 @@ namespace Irc.Messages
 
                 if (command.StartsWith(":") && messageSplit.Length >= 2)
                 {
+                    var prefix = command;
                     command = messageSplit[1];
-                    parameters = parameters.Skip(1).Prepend(messageSplit[0]).ToArray();
+                    parameters[0] = prefix;
                 }
 
                 var messageType = Assembly
                     .GetExecutingAssembly()
                     .GetTypes()
-                    .SingleOrDefault(type => type.IsSubclassOf(typeof(Message)) && IsMessage(type.Name, command));
+                    .SingleOrDefault(type => type.IsSubclassOf(typeof(Message))
+                                          && string.Equals(type.GetCustomAttribute<CommandAttribute>()?.Command, command, StringComparison.InvariantCultureIgnoreCase));
 
-                if (messageType != null)
+                if (messageType is not null)
                 {
                     Message messageInstance;
                     try
@@ -43,24 +45,6 @@ namespace Irc.Messages
             return null;
         }
 
-        private static bool IsMessage(string typeName, string commandName)
-        {
-            var command = typeName.Substring(0, typeName.Length - nameof(Message).Length);
-
-            return string.Equals(command, commandName, StringComparison.OrdinalIgnoreCase);
-        }
-
-        public string Command { get; private set; }
-
-        public Message()
-        {
-            var name = GetType().Name;
-            if (!name.EndsWith(nameof(Message)))
-            {
-                throw new ArgumentException($"The class \"{name}\" doesn't follow convention of ending with \"{nameof(Message)}\"");
-            }
-
-            Command = name.Substring(0, name.Length - nameof(Message).Length).ToUpper();
-        }
+        public string Command => this.GetType().GetCustomAttribute<CommandAttribute>().Command;
     }
 }

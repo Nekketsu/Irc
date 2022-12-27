@@ -1,5 +1,6 @@
 namespace Irc.Messages.Messages
 {
+    [Command("WHOIS")]
     public class WhoisMessage : Message
     {
         public string Mask { get; set; }

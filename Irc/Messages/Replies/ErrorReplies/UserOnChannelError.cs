@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.ErrorReplies
 {
+    [Command(ERR_USERONCHANNEL)]
     public class UserOnChannelError : Reply
     {
         public const string DefaultMessage = "is already on channel";

@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
+    [Command(RPL_MYINFO)]
     public class MyInfoReply : Reply
     {
         const string RPL_MYINFO = "004";

@@ -1,10 +1,13 @@
 namespace Irc.Messages.Messages
 {
-    public class ChannelModeMessage : Message
+    [Command("MODE")]
+    public class ModeMessage : Message
     {
+        public static string Command = "MODE";
+
         public string ChannelName { get; set; }
 
-        public ChannelModeMessage(string channelName)
+        public ModeMessage(string channelName)
         {
             ChannelName = channelName;
         }

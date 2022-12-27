@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.ErrorReplies
 {
+    [Command(ERR_NONicknameGIVEN)]
     public class NoNicknameGivenError : Reply
     {
         public const string DefaultMessage = "No nickname given";

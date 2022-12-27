@@ -1,5 +1,6 @@
 namespace Irc.Messages.Messages
 {
+    [Command("NOTICE")]
     public class NoticeMessage : Message
     {
         public string MsgTarget { get; set; }

@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
+    [Command(RPL_ENDOFWHOIS)]
     public class EndOfWhoisReply : Reply
     {
         public const string DefaultMessage = "End of WHOIS list";

@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.ErrorReplies
 {
+    [Command(ERR_USERNOTINCHANNEL)]
     public class UserNotInChannelError : Reply
     {
         public const string DefaultMessage = "They aren't on that channel";

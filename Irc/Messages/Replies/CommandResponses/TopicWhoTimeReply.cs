@@ -3,6 +3,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
+    [Command(RPL_TOPICWHOTIME)]
     public class TopicWhoTimeReply : Reply
     {
         const string RPL_TOPICWHOTIME = "333";

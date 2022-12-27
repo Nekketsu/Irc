@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
+    [Command(RPL_INVITING)]
     public class InvitingReply : Reply
     {
         const string RPL_INVITING = "341";

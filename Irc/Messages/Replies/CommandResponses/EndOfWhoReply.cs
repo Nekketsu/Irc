@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
+    [Command(RPL_ENDOFWHO)]
     public class EndOfWhoReply : Reply
     {
         public const string DefaultMessage = "End of WHO list";

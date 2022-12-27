@@ -1,5 +1,6 @@
 namespace Irc.Messages.Messages
 {
+    [Command("INVITE")]
     public class InviteMessage : Message
     {
         public string From { get; set; }

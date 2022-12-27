@@ -1,5 +1,6 @@
 namespace Irc.Messages.Messages
 {
+    [Command("PRIVMSG")]
     public class PrivMsgMessage : Message
     {
         public string From { get; set; }

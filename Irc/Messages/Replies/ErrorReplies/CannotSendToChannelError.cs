@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.ErrorReplies
 {
+    [Command(ERR_CANNOTSENDTOCHAN)]
     public class CannotSendToChannelError : Reply
     {
         public const string ERR_CANNOTSENDTOCHAN = "404";

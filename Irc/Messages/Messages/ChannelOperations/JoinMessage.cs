@@ -1,5 +1,6 @@
 namespace Irc.Messages.Messages
 {
+    [Command("JOIN")]
     public class JoinMessage : Message
     {
         public string ChannelName { get; set; }
@@ -7,7 +8,7 @@ namespace Irc.Messages.Messages
 
         public JoinMessage(string channelName)
         {
-            ChannelName = channelName;
+            ChannelName = channelName.TrimStart(':');
         }
 
         public JoinMessage(string from, string channelName) : this(channelName)

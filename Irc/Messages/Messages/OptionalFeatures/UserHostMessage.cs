@@ -1,10 +1,11 @@
 namespace Irc.Messages.Messages
 {
-    public class UserHostMessage : Message
+    [Command("USERHOST")]
+    public class UserhostMessage : Message
     {
         public string Nickname { get; set; }
 
-        public UserHostMessage(string nickname)
+        public UserhostMessage(string nickname)
         {
             Nickname = nickname;
         }

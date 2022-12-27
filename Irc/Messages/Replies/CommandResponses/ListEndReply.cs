@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
+    [Command(RPL_LISTEND)]
     public class ListEndReply : Reply
     {
         public const string DefaultMessage = "End of LIST";

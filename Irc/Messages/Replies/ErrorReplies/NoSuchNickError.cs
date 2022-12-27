@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.ErrorReplies
 {
+    [Command(ERR_NOSUCHNICK)]
     public class NoSuchNickError : Reply
     {
         public const string DefaultMessage = "No such nick";

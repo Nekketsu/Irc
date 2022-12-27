@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
+    [Command(RPL_TOPIC)]
     public class TopicReply : Reply
     {
         const string RPL_TOPIC = "332";

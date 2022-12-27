@@ -1,5 +1,6 @@
 namespace Irc.Messages.Messages
 {
+    [Command("NAMES")]
     public class NamesMessage : Message
     {
         public string ChannelName { get; set; }

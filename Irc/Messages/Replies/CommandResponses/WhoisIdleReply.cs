@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
+    [Command(RPL_WHOISIDLE)]
     public class WhoisIdleReply : Reply
     {
         public const string DefaultMessage = "seconds idle";

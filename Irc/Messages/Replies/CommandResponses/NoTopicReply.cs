@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
+    [Command(RPL_NOTOPIC)]
     public class NoTopicReply : Reply
     {
         public const string DefaultMessage = "No topic is set";

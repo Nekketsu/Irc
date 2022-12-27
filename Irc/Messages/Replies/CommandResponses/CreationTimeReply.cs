@@ -3,6 +3,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
+    [Command(RPL_CREATIONTIME)]
     public class CreationTimeReply : Reply
     {
         const string RPL_CREATIONTIME = "329";

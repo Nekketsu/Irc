@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.ErrorReplies
 {
+    [Command(ERR_NOSUCHCHANNEL)]
     public class NoSuchChannelError : Reply
     {
         public const string DefaultMessage = "No such channel";

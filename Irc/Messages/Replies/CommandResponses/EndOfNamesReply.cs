@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
+    [Command(RPL_ENDOFNAMES)]
     public class EndOfNamesReply : Reply
     {
         public const string DefaultMessage = "End of NAMES list";

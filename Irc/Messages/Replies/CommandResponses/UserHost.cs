@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
+    [Command(RPL_USERHOST)]
     public class UserHostReply : Reply
     {
         const string RPL_USERHOST = "302";

@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
+    [Command(RPL_WHOISREPLY)]
     public class WhoisReply : Reply
     {
         const string RPL_WHOISREPLY = "311";

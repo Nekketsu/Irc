@@ -1,5 +1,6 @@
 namespace Irc.Messages.Messages
 {
+    [Command("TOPIC")]
     public class TopicMessage : Message
     {
         public string From { get; set; }

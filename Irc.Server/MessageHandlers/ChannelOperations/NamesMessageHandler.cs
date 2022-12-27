@@ -10,7 +10,7 @@ namespace Irc.Server.MessageHandlers.ChannelOperations
             if (ircClient.IrcServer.Channels.TryGetValue(message.ChannelName, out var channel))
             {
                 var nicknames = channel.IrcClients.Values.Select(client => client.Profile.Nickname).ToArray();
-                await ircClient.WriteMessageAsync(new NameReply(ircClient.IrcServer.ServerName, ircClient.Profile.Nickname, channel.Name, nicknames));
+                await ircClient.WriteMessageAsync(new NameReply(ircClient.IrcServer.ServerName, ircClient.Profile.Nickname, "=", channel.Name, nicknames));
                 await ircClient.WriteMessageAsync(new EndOfNamesReply(ircClient.IrcServer.ServerName, ircClient.Profile.Nickname, channel.Name, EndOfNamesReply.DefaultMessage));
             }
 

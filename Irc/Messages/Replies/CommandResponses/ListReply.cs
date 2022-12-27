@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
+    [Command(RPL_LIST)]
     public class ListReply : Reply
     {
         const string RPL_LIST = "322";

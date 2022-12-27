@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
+    [Command(RPL_WHOISCHANNELS)]
     public class WhoisChannelsReply : Reply
     {
         const string RPL_WHOISCHANNELS = "319";

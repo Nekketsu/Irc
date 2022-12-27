@@ -1,5 +1,6 @@
 namespace Irc.Messages.Messages
 {
+    [Command("KICK")]
     public class KickMessage : Message
     {
         public string From { get; set; }

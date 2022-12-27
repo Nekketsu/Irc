@@ -2,6 +2,7 @@ using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
 {
+    [Command(RPL_CHANNELMODEIS)]
     public class ChannelModeIsReply : Reply
     {
         const string RPL_CHANNELMODEIS = "324";

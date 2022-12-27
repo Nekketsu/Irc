@@ -3,9 +3,9 @@ using Messages.Replies.CommandResponses;
 
 namespace Irc.Server.MessageHandlers.OptionalFeatures
 {
-    public class UserHostMessageHandler : MessageHandler<UserHostMessage>
+    public class UserHostMessageHandler : MessageHandler<UserhostMessage>
     {
-        public async override Task<bool> HandleAsync(UserHostMessage _, IrcClient ircClient)
+        public async override Task<bool> HandleAsync(UserhostMessage _, IrcClient ircClient)
         {
             var message = ircClient.Profile.Nickname;
             if (ircClient.Profile.User != null)

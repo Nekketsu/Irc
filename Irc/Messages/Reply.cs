@@ -1,6 +1,6 @@
 namespace Irc.Messages
 {
-    public abstract class Reply : IMessage
+    public abstract class Reply : Message
     {
         public static string Sender { get; private set; }
         public string Target { get; private set; }
