@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using Irc.Client.Wpf.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
+using System.Windows.Controls;
 
 namespace Irc.Client.Wpf.Views
 {
@@ -10,6 +12,8 @@ namespace Irc.Client.Wpf.Views
         public IrcView()
         {
             InitializeComponent();
+
+            DataContext = App.Current.Services.GetService<IrcViewModel>();
         }
     }
 }

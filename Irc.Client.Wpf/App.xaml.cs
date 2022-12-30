@@ -1,5 +1,6 @@
-﻿using Prism.Ioc;
-using Prism.Unity;
+﻿using Irc.Client.Wpf.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Windows;
 
 namespace Irc.Client.Wpf
@@ -7,16 +8,24 @@ namespace Irc.Client.Wpf
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : PrismApplication
+    public partial class App : Application
     {
-        protected override Window CreateShell()
+        public IServiceProvider Services { get; }
+
+        public new static App Current => (App)Application.Current;
+
+        public App()
         {
-            return Container.Resolve<MainWindow>();
+            Services = ConfigureServices();
         }
 
-        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        private IServiceProvider ConfigureServices()
         {
+            var services = new ServiceCollection();
 
+            services.AddTransient<IrcViewModel>();
+
+            return services.BuildServiceProvider();
         }
     }
 }
