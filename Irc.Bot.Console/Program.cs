@@ -2,7 +2,6 @@
 using Irc.Client;
 using Irc.Messages;
 using Irc.Messages.Messages;
-using System;
 using System.Diagnostics;
 
 var apiKey = await File.ReadAllTextAsync("ApiKey.user");

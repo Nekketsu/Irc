@@ -73,7 +73,7 @@
             <TextBox Grid.Column="1" Text="{Binding Host}" />
             <TextBlock Grid.Column="2" Text="Nickname:" />
             <TextBox Grid.Column="3" Text="{Binding Nickname}" />
-            <Button Grid.Column="4" Content="Connect" Command="{Binding ConnectCommand}" />
+            <Button Grid.Column="4" Content="Connect" Command="{Binding ConnectAsyncCommand}" />
         </Grid>
 
         <TabControl Grid.Row="1" SelectedItem="{Binding SelectedTab}" SelectedIndex="{Binding SelectedTabIndex}" ContentTemplateSelector="{StaticResource ChatDataTemplateSelector}">
@@ -99,7 +99,7 @@
 
         <TextBox Grid.Row="2" Text="{Binding TextMessage, UpdateSourceTrigger=PropertyChanged}" AttachedProperties:FocusExtension.IsFocused="{Binding IsTextMessageFocused}">
             <TextBox.InputBindings>
-                <KeyBinding Key="Return" Command="{Binding SendCommand}" />
+                <KeyBinding Key="Return" Command="{Binding SendAsyncCommand}" />
             </TextBox.InputBindings>
             <i:Interaction.Behaviors>
                 <Behaviors:TextBoxHistoryBehavior />

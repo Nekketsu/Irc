@@ -1,13 +1,16 @@
-﻿using Irc.Client.Wpf.ViewModels.Tabs.Messages;
-using Prism.Mvvm;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using System.Collections.ObjectModel;
 
 namespace Irc.Client.Wpf.ViewModels.Tabs
 {
-    public class ChatViewModel : BindableBase
+    public partial class ChatViewModel : ObservableObject
     {
+        [ObservableProperty]
         private string target;
+        [ObservableProperty]
         private ObservableCollection<MessageViewModel> chat;
+        [ObservableProperty]
         private bool isDirty;
 
         public ChatViewModel(string target)
@@ -15,24 +18,6 @@ namespace Irc.Client.Wpf.ViewModels.Tabs
             Target = target;
             Chat = new();
             IsDirty = false;
-        }
-
-        public string Target
-        {
-            get => target;
-            set => SetProperty(ref target, value);
-        }
-
-        public ObservableCollection<MessageViewModel> Chat
-        {
-            get => chat;
-            set => SetProperty(ref chat, value);
-        }
-
-        public bool IsDirty
-        {
-            get => isDirty;
-            set => SetProperty(ref isDirty, value);
         }
     }
 }

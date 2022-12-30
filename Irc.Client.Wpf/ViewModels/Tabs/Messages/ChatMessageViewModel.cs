@@ -1,9 +1,11 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 
 namespace Irc.Client.Wpf.ViewModels.Tabs.Messages
 {
-    public class ChatMessageViewModel : MessageViewModel
+    public partial class ChatMessageViewModel : MessageViewModel
     {
+        [ObservableProperty]
         private string nickname;
 
         public ChatMessageViewModel(string nickname, string message) : base(message)
@@ -14,12 +16,6 @@ namespace Irc.Client.Wpf.ViewModels.Tabs.Messages
         public ChatMessageViewModel(DateTime dateTime, string nickname, string message) : base(dateTime, message)
         {
             Nickname = nickname;
-        }
-
-        public string Nickname
-        {
-            get => nickname;
-            set => SetProperty(ref nickname, value);
         }
     }
 }

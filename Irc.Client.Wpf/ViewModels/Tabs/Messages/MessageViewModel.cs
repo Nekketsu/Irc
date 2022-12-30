@@ -1,11 +1,13 @@
-﻿using Prism.Mvvm;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 
 namespace Irc.Client.Wpf.ViewModels.Tabs.Messages
 {
-    public class MessageViewModel : BindableBase
+    public partial class MessageViewModel : ObservableObject
     {
+        [ObservableProperty]
         private DateTime dateTime;
+        [ObservableProperty]
         private string message;
 
         public MessageViewModel(string message) : this(DateTime.Now, message)
@@ -17,18 +19,6 @@ namespace Irc.Client.Wpf.ViewModels.Tabs.Messages
         {
             DateTime = dateTime;
             Message = message;
-        }
-
-        public DateTime DateTime
-        {
-            get => dateTime;
-            set => SetProperty(ref dateTime, value);
-        }
-
-        public string Message
-        {
-            get => message;
-            set => SetProperty(ref message, value);
         }
     }
 }

@@ -1,42 +1,55 @@
-﻿using Irc.Client.Wpf.Model;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Irc.Client.Wpf.Model;
 using Irc.Client.Wpf.ViewModels.Tabs;
 using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using Irc.Messages;
 using Irc.Messages.Messages;
 using Messages.Replies.CommandResponses;
-using Prism.Commands;
-using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Windows.Input;
 
 namespace Irc.Client.Wpf.ViewModels
 {
-    public class IrcViewModel : BindableBase
+    public partial class IrcViewModel : ObservableObject
     {
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ConnectAsyncCommand))]
         private ConnectionState state;
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ConnectAsyncCommand))]
         private string host;
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ConnectAsyncCommand))]
         private string nickname;
 
+
+        [ObservableProperty]
         private StatusViewModel status;
+
+        [ObservableProperty]
         private ObservableCollection<ChatViewModel> chats;
+
+        [ObservableProperty]
         private object selectedTab;
+
+        [ObservableProperty]
         private int selectedTabIndex;
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(SendAsyncCommand))]
         private string textMessage;
 
+
+        [ObservableProperty]
         private bool isTextMessageFocused;
 
-
-        public ICommand ConnectCommand { get; set; }
-        public ICommand SendCommand { get; set; }
-        public ICommand NextTabCommand { get; set; }
-        public ICommand PreviousTabCommand { get; set; }
-        public ICommand SelectTabCommand { get; set; }
-        public ICommand CloseChatCommand { get; set; }
 
         private IrcClient ircClient;
         private CancellationTokenSource cancellationTokenSource;
@@ -49,27 +62,14 @@ namespace Irc.Client.Wpf.ViewModels
             Host = "irc.irc-hispano.org";
             Nickname = "Nekketsu";
 
-            Status = new StatusViewModel();
-            Chats = new ObservableCollection<ChatViewModel>();
+            Status = new();
+            Chats = new();
 
             IsTextMessageFocused = true;
 
-
-            ConnectCommand = new DelegateCommand(ConnectAsync, () => State == ConnectionState.Disconnected && !string.IsNullOrEmpty(Host) && !string.IsNullOrEmpty(Nickname))
-                .ObservesProperty(() => State)
-                .ObservesProperty(() => Host)
-                .ObservesProperty(() => Nickname);
-
-            SendCommand = new DelegateCommand(SendAsync, () => !string.IsNullOrEmpty(TextMessage))
-                .ObservesProperty(() => TextMessage);
-
-            NextTabCommand = new DelegateCommand(NextTab);
-            PreviousTabCommand = new DelegateCommand(PreviousTab);
-            SelectTabCommand = new DelegateCommand<string>(SelectTab, CanSelectTab);
-            CloseChatCommand = new DelegateCommand<ChatViewModel>(CloseChat, CanCloseChat);
+            Irc = new();
 
             PropertyChanged += IrcViewModel_PropertyChanged;
-            Irc = new Model.Irc();
         }
 
         private void IrcViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -83,6 +83,8 @@ namespace Irc.Client.Wpf.ViewModels
             }
         }
 
+
+        [RelayCommand(CanExecute = nameof(CanConnect))]
         private async void ConnectAsync()
         {
             State = ConnectionState.Connecting;
@@ -103,6 +105,11 @@ namespace Irc.Client.Wpf.ViewModels
             Irc.Users.Add(Nickname, new Model.User(Nickname));
         }
 
+        private bool CanConnect() =>
+            State == ConnectionState.Disconnected
+                  && !string.IsNullOrEmpty(Host)
+                  && !string.IsNullOrEmpty(Nickname);
+
         private void Disconnect()
         {
             ircClient.MessageReceived -= IrcClient_MessageReceived;
@@ -114,6 +121,7 @@ namespace Irc.Client.Wpf.ViewModels
             State = ConnectionState.Disconnected;
         }
 
+        [RelayCommand(CanExecute = nameof(CanSend))]
         private async void SendAsync()
         {
             var isProcessed = ProcessClientCommand();
@@ -141,10 +149,15 @@ namespace Irc.Client.Wpf.ViewModels
             TextMessage = null;
         }
 
+        private bool CanSend() => !string.IsNullOrEmpty(TextMessage);
+
+        [RelayCommand]
         private void NextTab() => SelectedTabIndex = (SelectedTabIndex + 1) % (Chats.Count + 1);
 
+        [RelayCommand]
         private void PreviousTab() => SelectedTabIndex = (SelectedTabIndex + Chats.Count) % (Chats.Count + 1);
 
+        [RelayCommand(CanExecute = nameof(CanSelectTab))]
         private void SelectTab(string tabIndexString)
         {
             if (!int.TryParse(tabIndexString, out var tabIndex))
@@ -157,6 +170,7 @@ namespace Irc.Client.Wpf.ViewModels
 
         private bool CanSelectTab(string tabIndexString) => int.TryParse(tabIndexString, out var tabIndex) && tabIndex >= 0 && tabIndex <= Chats.Count;
 
+        [RelayCommand(CanExecute = nameof(CanCloseChat))]
         private async void CloseChat(object chat)
         {
             if (chat is ChatViewModel chatViewModel)
@@ -396,60 +410,6 @@ namespace Irc.Client.Wpf.ViewModels
             }
 
             return chat;
-        }
-
-        public ConnectionState State
-        {
-            get => state;
-            set => SetProperty(ref state, value);
-        }
-
-        public string Host
-        {
-            get => host;
-            set => SetProperty(ref host, value);
-        }
-
-        public string Nickname
-        {
-            get => nickname;
-            set => SetProperty(ref nickname, value);
-        }
-
-        public StatusViewModel Status
-        {
-            get => status;
-            set => SetProperty(ref status, value);
-        }
-
-        public ObservableCollection<ChatViewModel> Chats
-        {
-            get => chats;
-            set => SetProperty(ref chats, value);
-        }
-
-        public object SelectedTab
-        {
-            get => selectedTab;
-            set => SetProperty(ref selectedTab, value);
-        }
-
-        public int SelectedTabIndex
-        {
-            get => selectedTabIndex;
-            set => SetProperty(ref selectedTabIndex, value);
-        }
-
-        public string TextMessage
-        {
-            get => textMessage;
-            set => SetProperty(ref textMessage, value);
-        }
-
-        public bool IsTextMessageFocused
-        {
-            get => isTextMessageFocused;
-            set => SetProperty(ref isTextMessageFocused, value);
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using Irc.Client.Wpf.ViewModels.Tabs;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace Irc.Client.Wpf.Views.Tabs
 {
