@@ -13,7 +13,7 @@ namespace Irc.Messages.Messages
 
         public JoinMessage(string from, string channelName) : this(channelName)
         {
-            From = from;
+            From = from.TrimStart(':');
         }
 
         public override string ToString()

@@ -8,14 +8,14 @@ namespace Irc.Client.Wpf.Behaviors
     {
         protected override void OnAttached()
         {
-            var itemsSource = AssociatedObject.ItemsSource as INotifyCollectionChanged;
-            if (itemsSource != null)
+            var items = AssociatedObject.Items as INotifyCollectionChanged;
+            if (items != null)
             {
-                itemsSource.CollectionChanged += ItemsSource_CollectionChanged;
+                items.CollectionChanged += Items_CollectionChanged;
             }
         }
 
-        private void ItemsSource_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
@@ -25,10 +25,10 @@ namespace Irc.Client.Wpf.Behaviors
 
         protected override void OnDetaching()
         {
-            var itemsSource = AssociatedObject.ItemsSource as INotifyCollectionChanged;
-            if (itemsSource != null)
+            var items = AssociatedObject.Items as INotifyCollectionChanged;
+            if (items != null)
             {
-                itemsSource.CollectionChanged -= ItemsSource_CollectionChanged;
+                items.CollectionChanged -= Items_CollectionChanged;
             }
         }
     }

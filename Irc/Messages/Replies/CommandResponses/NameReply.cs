@@ -22,5 +22,28 @@ namespace Messages.Replies.CommandResponses
         {
             return $"{ChannelMode} {ChannelName} :{string.Join(' ', Nicknames)}";
         }
+
+        public new static NameReply Parse(string message)
+        {
+            var messageSplit = message.Split();
+
+            var sender = messageSplit[0].TrimStart(':');
+            message = message.Substring(messageSplit[0].Length).Trim();
+
+            message = message.Substring(messageSplit[1].Length).Trim(); // Command
+
+            var target = messageSplit[2];
+            message = message.Substring(messageSplit[2].Length).Trim();
+
+            var channelMode = messageSplit[3];
+            message = message.Substring(messageSplit[3].Length).Trim();
+
+            var channelName = messageSplit[4];
+            message = message.Substring(messageSplit[4].Length).Trim().TrimStart(':');
+
+            var nicknames = message.Split();
+
+            return new NameReply(sender, target, channelMode, channelName, nicknames);
+        }
     }
 }

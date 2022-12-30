@@ -1,19 +1,17 @@
 ﻿using Prism.Mvvm;
 using System.Collections.ObjectModel;
 
-namespace Irc.Client.Wpf.ViewModels
+namespace Irc.Client.Wpf.ViewModels.Tabs
 {
-    public class ChatViewModel : BindableBase
+    public class ChatViewModel : BindableBase, ITabViewModel
     {
         private string target;
-        private string title;
         private ObservableCollection<string> chat;
         private bool isDirty;
 
-        public ChatViewModel(string title, string target = null)
+        public ChatViewModel(string target)
         {
             Target = target;
-            Title = title;
             Chat = new ObservableCollection<string>();
             IsDirty = false;
         }
@@ -22,12 +20,6 @@ namespace Irc.Client.Wpf.ViewModels
         {
             get => target;
             set => SetProperty(ref target, value);
-        }
-
-        public string Title
-        {
-            get => title;
-            set => SetProperty(ref title, value);
         }
 
         public ObservableCollection<string> Chat

@@ -26,15 +26,23 @@ namespace Irc.Messages.Messages
 
         public new static QuitMessage Parse(string message)
         {
+            string target = null;
+            int index = 0;
+
             var messageSplit = message.Split();
 
-            var reason = message.Substring(message.IndexOf(messageSplit[0]) + messageSplit[0].Length).TrimStart();
-            if (reason.StartsWith(':'))
+            if (messageSplit[0].StartsWith(':'))
             {
-                reason = reason.Substring(1);
+                target = messageSplit[index].Substring(1);
+                message = message.Substring(messageSplit[index].Length).TrimStart();
+                index++;
             }
 
-            return new QuitMessage(reason);
+            var reason = message.Substring(messageSplit[index + 1].Length).TrimStart().TrimStart(':');
+
+            return target is null
+                ? new QuitMessage(reason)
+                : new QuitMessage(target, reason);
         }
     }
 }

@@ -7,9 +7,13 @@ namespace Irc.Messages.Messages
         public string ChannelName { get; set; }
         public string Message { get; set; }
 
-        public PartMessage(string channelName, string message)
+        public PartMessage(string channelName)
         {
             ChannelName = channelName;
+        }
+
+        public PartMessage(string channelName, string message) : this(channelName)
+        {
             Message = message?.StartsWith(':') ?? false
                 ? message.Substring(1)
                 : message;
@@ -36,18 +40,27 @@ namespace Irc.Messages.Messages
 
         public new static PartMessage Parse(string message)
         {
+            string from = null;
+            int index = 0;
+
             var messageSplit = message.Split();
-            var channelName = messageSplit[1];
 
-            var text = message.Substring(message.IndexOf(messageSplit[0]) + messageSplit[0].Length).TrimStart();
-            text = message.Substring(message.IndexOf(messageSplit[1]) + messageSplit[1].Length).TrimStart();
-
-            if (text.Length == 0)
+            if (messageSplit[0].StartsWith(':'))
             {
-                text = null;
+                from = messageSplit[index].Substring(1);
+                message = message.Substring(messageSplit[index].Length).TrimStart();
+                index++;
             }
 
-            return new PartMessage(channelName, text);
+            message = message.Substring(messageSplit[index].Length).TrimStart(); // Command
+
+            var channelName = messageSplit[index + 1].TrimStart(':');
+
+            message = message.Substring(messageSplit[index + 1].Length).TrimStart().TrimStart(':');
+
+            return from is null
+                ? new PartMessage(channelName, message)
+                : new PartMessage(from, channelName, message);
         }
     }
 }

@@ -3,7 +3,7 @@ using Messages.Replies.CommandResponses;
 
 namespace Irc.Server.MessageHandlers.ChannelOperations
 {
-    public class ChannelModeMessageHandler : MessageHandler<ModeMessage>
+    public class ModeMessageHandler : MessageHandler<ModeMessage>
     {
         public async override Task<bool> HandleAsync(ModeMessage message, IrcClient ircClient)
         {

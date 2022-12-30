@@ -8,13 +8,50 @@
              xmlns:Behaviors="clr-namespace:Irc.Client.Wpf.Behaviors"
              xmlns:AttachedProperties="clr-namespace:Irc.Client.Wpf.AttachedProperties"
              xmlns:Converters="clr-namespace:Irc.Client.Wpf.Converters"
+             xmlns:DataTemplateSelectors="clr-namespace:Irc.Client.Wpf.DataTemplateSelectors"
+             xmlns:TabViews="clr-namespace:Irc.Client.Wpf.Views.Tabs"
+             xmlns:TabViewModels="clr-namespace:Irc.Client.Wpf.ViewModels.Tabs"
              xmlns:Prism="http://prismlibrary.com/"
+             xmlns:sys="clr-namespace:System;assembly=netstandard"
              Prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             KeyboardNavigation.ControlTabNavigation="None"
+             KeyboardNavigation.TabNavigation="None">
     <UserControl.Resources>
         <Converters:IsDirtyToBrushConverter x:Key="IsDirtyToBrushConverter" CleanBrush="Black" DirtyBrush="Blue" />
+        
+        <CollectionViewSource x:Key="Chats" Source="{Binding Chats}" />
+        
+        <DataTemplate x:Key="ChatDataTemplate" DataType="TabViewModels:ChatViewModel">
+            <TabViews:ChatView DataContext="{Binding}" />
+        </DataTemplate>
+        <DataTemplate x:Key="ChannelDataTemplate" DataType="TabViewModels:ChannelViewModel">
+            <TabViews:ChannelView DataContext="{Binding}" />
+        </DataTemplate>
+        
+        <DataTemplateSelectors:ChatDataTemplateSelector x:Key="ChatDataTemplateSelector"
+                ChannelDataTemplate="{StaticResource ChannelDataTemplate}"
+                ChatDataTemplate="{StaticResource ChatDataTemplate}" />
     </UserControl.Resources>
+    
+    <UserControl.InputBindings>
+        <KeyBinding Key="Tab" Modifiers="Ctrl" Command="{Binding NextTabCommand}" />
+        <KeyBinding Key="Tab" Modifiers="Ctrl+Shift" Command="{Binding PreviousTabCommand}" />
+        <KeyBinding Key="D1" Modifiers="Alt" Command="{Binding SelectTabCommand}" CommandParameter="1" />
+        <KeyBinding Key="D2" Modifiers="Alt" Command="{Binding SelectTabCommand}" CommandParameter="2" />
+        <KeyBinding Key="D3" Modifiers="Alt" Command="{Binding SelectTabCommand}" CommandParameter="3" />
+        <KeyBinding Key="D4" Modifiers="Alt" Command="{Binding SelectTabCommand}" CommandParameter="4" />
+        <KeyBinding Key="D5" Modifiers="Alt" Command="{Binding SelectTabCommand}" CommandParameter="5" />
+        <KeyBinding Key="D6" Modifiers="Alt" Command="{Binding SelectTabCommand}" CommandParameter="6" />
+        <KeyBinding Key="D7" Modifiers="Alt" Command="{Binding SelectTabCommand}" CommandParameter="7" />
+        <KeyBinding Key="D8" Modifiers="Alt" Command="{Binding SelectTabCommand}" CommandParameter="8" />
+        <KeyBinding Key="D9" Modifiers="Alt" Command="{Binding SelectTabCommand}" CommandParameter="9" />
+        <KeyBinding Key="D0" Modifiers="Alt" Command="{Binding SelectTabCommand}" CommandParameter="0" />
+        <KeyBinding Key="C" Modifiers="Alt" Command="{Binding CloseChatCommand}" CommandParameter="{Binding SelectedTab}" />
+        <KeyBinding Key="W" Modifiers="Ctrl" Command="{Binding CloseChatCommand}" CommandParameter="{Binding SelectedTab}" />
+    </UserControl.InputBindings>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -38,21 +75,25 @@
             <Button Grid.Column="4" Content="Connect" Command="{Binding ConnectCommand}" />
         </Grid>
 
-        <TabControl Grid.Row="1" ItemsSource="{Binding Chats}" SelectedItem="{Binding SelectedChat}">
+        <TabControl Grid.Row="1" SelectedItem="{Binding SelectedTab}" SelectedIndex="{Binding SelectedTabIndex}" ContentTemplateSelector="{StaticResource ChatDataTemplateSelector}">
+            
+            <TabControl.ItemsSource>
+                <CompositeCollection>
+                    <TabItem Header="Status">
+                        <TabViews:StatusView DataContext="{Binding DataContext.Status, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                    </TabItem>
+                    <CollectionContainer Collection="{Binding Source={StaticResource Chats}}" />
+                </CompositeCollection>
+            </TabControl.ItemsSource>
             <TabControl.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Title}" Foreground="{Binding IsDirty, Converter={StaticResource IsDirtyToBrushConverter}}" />
+                    <TextBlock Text="{Binding Target}" Foreground="{Binding IsDirty, Converter={StaticResource IsDirtyToBrushConverter}}">
+                        <TextBlock.InputBindings>
+                            <MouseBinding Command="{Binding DataContext.CloseChatCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Gesture="MiddleClick" />
+                        </TextBlock.InputBindings>
+                    </TextBlock>
                 </DataTemplate>
             </TabControl.ItemTemplate>
-            <TabControl.ContentTemplate>
-                <DataTemplate>
-                    <ListBox Grid.Row="1" ItemsSource="{Binding Chat}">
-                        <i:Interaction.Behaviors>
-                            <Behaviors:ScrollIntoViewBehavior />
-                        </i:Interaction.Behaviors>
-                    </ListBox>
-                </DataTemplate>
-            </TabControl.ContentTemplate>
         </TabControl>
 
         <TextBox Grid.Row="2" Text="{Binding TextMessage, UpdateSourceTrigger=PropertyChanged}" AttachedProperties:FocusExtension.IsFocused="{Binding IsTextMessageFocused}">
