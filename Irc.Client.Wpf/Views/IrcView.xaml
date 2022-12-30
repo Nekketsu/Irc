@@ -30,9 +30,10 @@
             <TabViews:ChannelView DataContext="{Binding}" />
         </DataTemplate>
         
-        <DataTemplateSelectors:ChatDataTemplateSelector x:Key="ChatDataTemplateSelector"
-                ChannelDataTemplate="{StaticResource ChannelDataTemplate}"
-                ChatDataTemplate="{StaticResource ChatDataTemplate}" />
+        <DataTemplateSelectors:ChatDataTemplateSelector
+            x:Key="ChatDataTemplateSelector"
+            ChannelDataTemplate="{StaticResource ChannelDataTemplate}"
+            ChatDataTemplate="{StaticResource ChatDataTemplate}" />
     </UserControl.Resources>
     
     <UserControl.InputBindings>

@@ -1,5 +1,6 @@
 ﻿using Irc.Client.Wpf.Model;
 using Irc.Client.Wpf.ViewModels.Tabs;
+using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using Irc.Messages;
 using Irc.Messages.Messages;
 using Messages.Replies.CommandResponses;
@@ -11,7 +12,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace Irc.Client.Wpf.ViewModels
@@ -131,7 +131,8 @@ namespace Irc.Client.Wpf.ViewModels
 
             if (message is null)
             {
-                Status.Log.Add($"Error - Message not found: {TextMessage}");
+                var log = new MessageViewModel($"Error - Message not found: {TextMessage}");
+                Status.Log.Add(log);
                 return;
             }
 
@@ -250,7 +251,6 @@ namespace Irc.Client.Wpf.ViewModels
         {
             if (message is PrivMsgMessage privMsgMessage)
             {
-                var now = TimeOnly.FromDateTime(DateTime.Now);
                 string from;
                 string target;
                 if (privMsgMessage.From is null)
@@ -266,15 +266,16 @@ namespace Irc.Client.Wpf.ViewModels
                         : privMsgMessage.Target;
                 }
 
-                var text = $"[{now}] <{from}> {privMsgMessage.Text}";
-                DrawMessageToTarget(target, text);
+                var messageViewModel = new ChatMessageViewModel(from, privMsgMessage.Text);
+                DrawMessageToTarget(target, messageViewModel);
             }
             else if (message is JoinMessage joinMessage)
             {
                 ChannelViewModel channel = null;
                 if (joinMessage.From is null)
                 {
-                    channel = (ChannelViewModel)DrawMessageToTarget(joinMessage.ChannelName, $"Now talking in {joinMessage.ChannelName}");
+                    var messageViewModel = new MessageViewModel($"Now talking in {joinMessage.ChannelName}");
+                    channel = (ChannelViewModel)DrawMessageToTarget(joinMessage.ChannelName, messageViewModel);
                     FocusChat(channel);
 
                     Irc.Join(joinMessage.ChannelName, nickname);
@@ -282,7 +283,8 @@ namespace Irc.Client.Wpf.ViewModels
                 else
                 {
                     var from = GetNickName(joinMessage.From);
-                    channel = (ChannelViewModel)DrawMessageToTarget(joinMessage.ChannelName, $"{from} has joined {joinMessage.ChannelName}");
+                    var messageViewModel = new MessageViewModel($"{from} has joined {joinMessage.ChannelName}");
+                    channel = (ChannelViewModel)DrawMessageToTarget(joinMessage.ChannelName, messageViewModel);
 
                     Irc.Join(joinMessage.ChannelName, from);
                 }
@@ -302,7 +304,8 @@ namespace Irc.Client.Wpf.ViewModels
                     {
                         return;
                     }
-                    DrawMessageToTarget(partMessage.ChannelName, $"{from} has left {partMessage.ChannelName}");
+                    var messageViewModel = new MessageViewModel($"{from} has left {partMessage.ChannelName}");
+                    DrawMessageToTarget(partMessage.ChannelName, messageViewModel);
 
                     Irc.Part(partMessage.ChannelName, from);
 
@@ -320,7 +323,8 @@ namespace Irc.Client.Wpf.ViewModels
             //}
             else if (message is NameReply nameReply)
             {
-                var channel = (ChannelViewModel)DrawMessageToTarget(nameReply.ChannelName, nameReply.ToString());
+                var messageViewModel = new MessageViewModel(nameReply.ToString());
+                var channel = (ChannelViewModel)DrawMessageToTarget(nameReply.ChannelName, messageViewModel);
 
                 Irc.Join(nameReply.ChannelName, nameReply.Nicknames);
 
@@ -332,7 +336,8 @@ namespace Irc.Client.Wpf.ViewModels
             //}
             else if (message is Reply reply)
             {
-                DrawMessageToTarget(reply.Target, reply.ToString());
+                var messageViewModel = new MessageViewModel(reply.ToString());
+                DrawMessageToTarget(reply.Target, messageViewModel);
             }
             else if (message is QuitMessage quitMessage)
             {
@@ -343,7 +348,8 @@ namespace Irc.Client.Wpf.ViewModels
                     {
                         if (string.Equals(chat.Target, target, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            DrawMessageToTarget(target, quitMessage.Reason);
+                            var messageViewModel = new MessageViewModel(quitMessage.Reason);
+                            DrawMessageToTarget(target, messageViewModel);
                         }
                     }
 
@@ -356,13 +362,14 @@ namespace Irc.Client.Wpf.ViewModels
             }
             else
             {
-                status.Log.Add(message.ToString());
+                var messageViewModel = new MessageViewModel(message.ToString());
+                status.Log.Add(messageViewModel);
             }
         }
 
         private string GetNickName(string target) => target.Split('!')[0];
 
-        private ChatViewModel DrawMessageToTarget(string target, string message)
+        private ChatViewModel DrawMessageToTarget(string target, MessageViewModel message)
         {
             var chat = GetOrCreateChat(target);
 

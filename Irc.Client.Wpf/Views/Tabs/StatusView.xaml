@@ -15,5 +15,13 @@
             <Behaviors:ScrollIntoViewBehavior />
             <Behaviors:ScrollToBottomOnFocusBehavior />
         </i:Interaction.Behaviors>
+        
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <TextBlock>
+                    <Run Text="{Binding Message}" />
+                </TextBlock>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
     </ListBox>
 </UserControl>
