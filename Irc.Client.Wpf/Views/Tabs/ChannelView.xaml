@@ -17,6 +17,18 @@
 
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
 
-        <ListBox Grid.Column="2" ItemsSource="{Binding Users}" />
+        <ListBox Grid.Column="2" ItemsSource="{Binding Users}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}">
+                        <TextBlock.InputBindings>
+                            <MouseBinding Gesture="LeftDoubleClick"
+                                          Command="{Binding DataContext.QueryNicknameCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                          CommandParameter="{Binding}" />
+                        </TextBlock.InputBindings>
+                    </TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </UserControl>

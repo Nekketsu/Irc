@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Irc.Client.Wpf.Messages;
 using Irc.Client.Wpf.Model;
 using Irc.Client.Wpf.ViewModels.Tabs;
 using Irc.Client.Wpf.ViewModels.Tabs.Messages;
@@ -56,7 +58,7 @@ namespace Irc.Client.Wpf.ViewModels
 
         private Model.Irc Irc { get; }
 
-        public IrcViewModel()
+        public IrcViewModel(IMessenger messenger)
         {
             State = ConnectionState.Disconnected;
             Host = "irc.irc-hispano.org";
@@ -65,11 +67,16 @@ namespace Irc.Client.Wpf.ViewModels
             Status = new();
             Chats = new();
 
-            IsTextMessageFocused = true;
+            FocusInput();
 
             Irc = new();
 
             PropertyChanged += IrcViewModel_PropertyChanged;
+
+            messenger.Register<QueryNicknameMessage>(this, (r, m) =>
+            {
+                Query(m.Nickname);
+            });
         }
 
         private void IrcViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -100,7 +107,7 @@ namespace Irc.Client.Wpf.ViewModels
 
             State = ConnectionState.Connected;
 
-            IsTextMessageFocused = true;
+            FocusInput();
 
             Irc.Users.Add(Nickname, new Model.User(Nickname));
         }
@@ -222,8 +229,7 @@ namespace Irc.Client.Wpf.ViewModels
                 if (messageSplit.Length > 1)
                 {
                     var target = messageSplit[1];
-                    var chat = GetOrCreateChat(target);
-                    FocusChat(chat);
+                    Query(target);
                 }
 
                 TextMessage = null;
@@ -234,9 +240,22 @@ namespace Irc.Client.Wpf.ViewModels
             return false;
         }
 
+        private void Query(string target)
+        {
+            var chat = GetOrCreateChat(target);
+            FocusChat(chat);
+            FocusInput();
+        }
+
         private void FocusChat(ChatViewModel chat)
         {
             SelectedTab = chat;
+        }
+
+        private void FocusInput()
+        {
+            IsTextMessageFocused = false;
+            IsTextMessageFocused = true;
         }
 
         private void IrcClient_MessageSent(object sender, Message message)

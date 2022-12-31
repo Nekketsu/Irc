@@ -11,7 +11,5 @@ namespace Irc.Client.Wpf.Views.Tabs
         {
             InitializeComponent();
         }
-
-
     }
 }

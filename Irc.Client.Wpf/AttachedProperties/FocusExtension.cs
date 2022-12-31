@@ -27,8 +27,7 @@ namespace Irc.Client.Wpf.AttachedProperties
             var uie = (UIElement)d;
             if ((bool)e.NewValue)
             {
-                Dispatcher.CurrentDispatcher.BeginInvoke(() => uie.Focus());
-                //uie.Focus(); // Don't care about false values.
+                uie.Focus(); // Don't care about false values.
             }
         }
     }

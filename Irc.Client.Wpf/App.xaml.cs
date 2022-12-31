@@ -1,4 +1,5 @@
-﻿using Irc.Client.Wpf.ViewModels;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Irc.Client.Wpf.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Windows;
@@ -23,6 +24,7 @@ namespace Irc.Client.Wpf
         {
             var services = new ServiceCollection();
 
+            services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
             services.AddTransient<IrcViewModel>();
 
             return services.BuildServiceProvider();
