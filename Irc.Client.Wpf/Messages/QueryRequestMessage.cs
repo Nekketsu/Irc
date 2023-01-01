@@ -2,11 +2,11 @@
 
 namespace Irc.Client.Wpf.Messages
 {
-    public class QueryNicknameMessage
+    public class QueryRequestMessage
     {
         public string Nickname { get; }
 
-        public QueryNicknameMessage(string nickname)
+        public QueryRequestMessage(string nickname)
         {
             Nickname = nickname;
         }

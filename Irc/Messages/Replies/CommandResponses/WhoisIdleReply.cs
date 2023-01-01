@@ -7,7 +7,7 @@ namespace Messages.Replies.CommandResponses
     {
         public const string DefaultMessage = "seconds idle";
 
-        const string RPL_WHOISIDLE = "312";
+        const string RPL_WHOISIDLE = "317";
         public string Nickname { get; set; }
         public int Idle { get; set; }
         public string Message { get; set; }

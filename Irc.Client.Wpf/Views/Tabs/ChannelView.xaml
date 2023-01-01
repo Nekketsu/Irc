@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Irc.Client.Wpf.Views.Tabs"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             x:Name="channelView">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -23,9 +24,20 @@
                     <TextBlock Text="{Binding}">
                         <TextBlock.InputBindings>
                             <MouseBinding Gesture="LeftDoubleClick"
-                                          Command="{Binding DataContext.QueryNicknameCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                          Command="{Binding DataContext.QueryCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                           CommandParameter="{Binding}" />
                         </TextBlock.InputBindings>
+
+                        <TextBlock.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Query"
+                                          Command="{Binding DataContext.QueryCommand, Source={x:Reference channelView}}"
+                                          CommandParameter="{Binding}" />
+                                <MenuItem Header="Whois"
+                                          Command="{Binding DataContext.WhoisCommand, Source={x:Reference channelView}}"
+                                          CommandParameter="{Binding}" />
+                            </ContextMenu>
+                        </TextBlock.ContextMenu>
                     </TextBlock>
                 </DataTemplate>
             </ListBox.ItemTemplate>

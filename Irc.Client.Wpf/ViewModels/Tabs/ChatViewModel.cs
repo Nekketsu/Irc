@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace Irc.Client.Wpf.ViewModels.Tabs
 {
-    public partial class ChatViewModel : ObservableObject
+    public partial class ChatViewModel : ObservableObject, ITabViewModel
     {
         [ObservableProperty]
         private string target;

@@ -38,7 +38,7 @@ namespace Irc.Messages.Messages
                 index++;
             }
 
-            var reason = message.Substring(messageSplit[index + 1].Length).TrimStart().TrimStart(':');
+            var reason = message.Substring(messageSplit[index].Length).TrimStart().TrimStart(':');
 
             return target is null
                 ? new QuitMessage(reason)

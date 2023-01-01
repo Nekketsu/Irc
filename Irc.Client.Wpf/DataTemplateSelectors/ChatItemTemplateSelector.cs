@@ -4,14 +4,14 @@ using System.Windows.Controls;
 
 namespace Irc.Client.Wpf.DataTemplateSelectors
 {
-    public class ChatDataTemplateSelector : DataTemplateSelector
+    public class ChatItemTemplateSelector : DataTemplateSelector
     {
-        public DataTemplate ChannelDataTemplate { get; set; }
+        public DataTemplate StatusDataTemplate { get; set; }
         public DataTemplate ChatDataTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container) => item switch
         {
-            ChannelViewModel => ChannelDataTemplate,
+            StatusViewModel => StatusDataTemplate,
             ChatViewModel => ChatDataTemplate,
             _ => base.SelectTemplate(item, container)
         };

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Irc.Messages
@@ -19,6 +20,7 @@ namespace Irc.Messages
                     parameters[0] = prefix;
                 }
 
+
                 var messageType = Assembly
                     .GetExecutingAssembly()
                     .GetTypes()
@@ -27,18 +29,17 @@ namespace Irc.Messages
 
                 if (messageType is not null)
                 {
-                    Message messageInstance;
                     try
                     {
                         var parseMethod = messageType.GetMethod(nameof(Parse), BindingFlags.Public | BindingFlags.Static);
 
-                        messageInstance = (parseMethod != null)
+                        var messageInstance = (parseMethod != null)
                             ? (Message)parseMethod.Invoke(null, new[] { message })
                             : (Message)Activator.CreateInstance(messageType, parameters);
 
                         return messageInstance;
-                    }
-                    catch { };
+                    } 
+                    catch { }
                 }
             }
 

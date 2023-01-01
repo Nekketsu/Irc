@@ -38,9 +38,13 @@ namespace Irc.Client.Wpf.Model
         public void Part(string channelName, string nickname)
         {
             var channel = Channels[channelName];
-            var user = Users[nickname];
-
             channel.Users.Remove(nickname);
+
+            if (!Users.TryGetValue(nickname, out var user))
+            {
+                return;
+            }
+
             user.Channels.Remove(channelName);
 
             if (!user.Channels.Any())

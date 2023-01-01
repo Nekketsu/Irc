@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace Irc.Client.Wpf.ViewModels.Tabs
 {
-    public partial class StatusViewModel : ObservableObject
+    public partial class StatusViewModel : ObservableObject, ITabViewModel
     {
         [ObservableProperty]
         private ObservableCollection<MessageViewModel> log;

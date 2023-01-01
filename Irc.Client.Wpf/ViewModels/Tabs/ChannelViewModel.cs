@@ -20,10 +20,17 @@ namespace Irc.Client.Wpf.ViewModels.Tabs
         }
 
         [RelayCommand]
-        private void QueryNickname(string nickname)
+        private void Query(string nickname)
         {
-            var queryNicknameMessages = new QueryNicknameMessage(nickname);
-            messenger.Send(queryNicknameMessages);
+            var queryRequestMessage = new QueryRequestMessage(nickname);
+            messenger.Send(queryRequestMessage);
+        }
+
+        [RelayCommand]
+        private void Whois(string nickname)
+        {
+            var whoisRequestMessage = new WhoisRequestMessage(nickname);
+            messenger.Send(whoisRequestMessage);
         }
     }
 }

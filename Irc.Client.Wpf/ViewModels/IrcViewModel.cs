@@ -36,7 +36,7 @@ namespace Irc.Client.Wpf.ViewModels
         private StatusViewModel status;
 
         [ObservableProperty]
-        private ObservableCollection<ChatViewModel> chats;
+        private ObservableCollection<ITabViewModel> chats;
 
         [ObservableProperty]
         private object selectedTab;
@@ -65,7 +65,7 @@ namespace Irc.Client.Wpf.ViewModels
             Nickname = "Nekketsu";
 
             Status = new();
-            Chats = new();
+            Chats = new() { Status };
 
             FocusInput();
 
@@ -73,20 +73,31 @@ namespace Irc.Client.Wpf.ViewModels
 
             PropertyChanged += IrcViewModel_PropertyChanged;
 
-            messenger.Register<QueryNicknameMessage>(this, (r, m) =>
+            messenger.Register<QueryRequestMessage>(this, (r, m) =>
             {
                 Query(m.Nickname);
+            });
+
+            messenger.Register<WhoisRequestMessage>(this, async (r, m) =>
+            {
+                await Whois(m.Nickname);
             });
         }
 
         private void IrcViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(SelectedTab))
+            switch (e.PropertyName)
             {
-                if (SelectedTab is ChatViewModel selectedChat)
-                {
-                    selectedChat.IsDirty = false;
-                }
+                case nameof(SelectedTab):
+                    if (SelectedTab is ChatViewModel selectedChat)
+                    {
+                        selectedChat.IsDirty = false;
+                    }
+                    break;
+
+                case nameof(SelectedTabIndex):
+                    FocusInput();
+                    break;
             }
         }
 
@@ -240,11 +251,20 @@ namespace Irc.Client.Wpf.ViewModels
             return false;
         }
 
-        private void Query(string target)
+        private void Query(string nickname)
         {
-            var chat = GetOrCreateChat(target);
+            var chat = GetOrCreateChat(nickname);
             FocusChat(chat);
-            FocusInput();
+        }
+
+        private async System.Threading.Tasks.Task Whois(string nickname)
+        {
+            if (nickname.StartsWith('@'))
+            {
+                nickname = nickname.Substring(1);
+            }
+            var message = new WhoisMessage(nickname);
+            await ircClient.SendMessageAsync(message);
         }
 
         private void FocusChat(ChatViewModel chat)
@@ -342,7 +362,7 @@ namespace Irc.Client.Wpf.ViewModels
 
                     Irc.Part(partMessage.ChannelName, from);
 
-                    var channel = (ChannelViewModel)Chats.Single(c => c.Target == partMessage.ChannelName);
+                    var channel = Chats.OfType<ChannelViewModel>().Single(c => c.Target == partMessage.ChannelName);
                     channel.Users = new ObservableCollection<string>(Irc.Channels[partMessage.ChannelName].Users.Keys);
                 }
             }
@@ -377,7 +397,7 @@ namespace Irc.Client.Wpf.ViewModels
                 if (quitMessage.Target is not null)
                 {
                     var target = GetNickName(quitMessage.Target);
-                    foreach (var chat in Chats)
+                    foreach (var chat in Chats.OfType<ChatViewModel>())
                     {
                         if (string.Equals(chat.Target, target, StringComparison.InvariantCultureIgnoreCase))
                         {
@@ -418,14 +438,14 @@ namespace Irc.Client.Wpf.ViewModels
 
         private ChatViewModel GetOrCreateChat(string target)
         {
-            var chat = chats.SingleOrDefault(chat => chat.Target is not null && chat.Target.Equals(target, StringComparison.InvariantCultureIgnoreCase));
+            var chat = Chats.OfType<ChatViewModel>().SingleOrDefault(chat => chat.Target is not null && chat.Target.Equals(target, StringComparison.InvariantCultureIgnoreCase));
             if (chat is null)
             {
                 chat = target.StartsWith('#')
                     ? new ChannelViewModel(target)
                     : new ChatViewModel(target);
 
-                chats.Add(chat);
+                Chats.Add(chat);
             }
 
             return chat;

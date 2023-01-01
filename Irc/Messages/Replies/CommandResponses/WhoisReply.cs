@@ -23,5 +23,28 @@ namespace Messages.Replies.CommandResponses
         {
             return $"{Nickname} {User} {Host} * :{RealName}";
         }
+
+        public new static WhoisReply Parse(string message)
+        {
+            var messageSplit = message.Split();
+
+            var sender = messageSplit[0];
+            var target = messageSplit[2];
+            var nickname = messageSplit[3];
+            var user = messageSplit[4];
+            var host = messageSplit[5];
+
+            var realName = message
+                .Substring(sender.Length).TrimStart()
+                .Substring(messageSplit[1].Length).TrimStart()
+                .Substring(target.Length).TrimStart()
+                .Substring(nickname.Length).TrimStart()
+                .Substring(user.Length).TrimStart()
+                .Substring(host.Length).TrimStart()
+                .Substring(messageSplit[6].Length).TrimStart()
+                .TrimStart(':'); // ':'
+
+            return new WhoisReply(sender, target, nickname, user, host, realName);
+        }
     }
 }
