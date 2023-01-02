@@ -1,17 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Irc.Client.Wpf.Model
+namespace Irc.Client.Wpf.Domain
 {
     public class Irc
     {
-        public Dictionary<string, Channel> Channels { get; set; }
-        public Dictionary<string, User> Users { get; set; }
+        public Dictionary<string, Channel> Channels { get; }
+        public Dictionary<string, User> Users { get; }
 
         public Irc()
         {
             Channels = new Dictionary<string, Channel>();
             Users = new Dictionary<string, User>();
+        }
+
+        public void Connect(string nickname)
+        {
+            Users.Add(nickname, new User(nickname));
         }
 
         public void Join(string channelName, params string[] nicknames)
@@ -67,5 +72,17 @@ namespace Irc.Client.Wpf.Model
 
             Users.Remove(nickname);
         }
+
+        public bool UserIsInChannel(string nickname, string channelName)
+        {
+            if (!Users.TryGetValue(nickname, out var user))
+            {
+                return false;
+            }
+
+            return user.Channels.ContainsKey(channelName);
+        }
+
+        public string GetNickName(string target) => target.Split('!')[0];
     }
 }

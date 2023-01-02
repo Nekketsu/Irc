@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Irc.Client.Wpf.Messages;
+using Irc.Client.Wpf.Messenger.Requests;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 
@@ -22,15 +22,15 @@ namespace Irc.Client.Wpf.ViewModels.Tabs
         [RelayCommand]
         private void Query(string nickname)
         {
-            var queryRequestMessage = new QueryRequestMessage(nickname);
-            messenger.Send(queryRequestMessage);
+            var queryRequest = new QueryRequest(nickname);
+            messenger.Send(queryRequest);
         }
 
         [RelayCommand]
         private void Whois(string nickname)
         {
-            var whoisRequestMessage = new WhoisRequestMessage(nickname);
-            messenger.Send(whoisRequestMessage);
+            var whoisRequest = new WhoisRequest(nickname);
+            messenger.Send(whoisRequest);
         }
     }
 }

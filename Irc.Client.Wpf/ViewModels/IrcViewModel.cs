@@ -1,19 +1,20 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Irc.Client.Wpf.Messages;
+using Irc.Client.Wpf.MessageHandlers;
+using Irc.Client.Wpf.Messenger.Requests;
 using Irc.Client.Wpf.Model;
 using Irc.Client.Wpf.ViewModels.Tabs;
 using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using Irc.Messages;
 using Irc.Messages.Messages;
-using Messages.Replies.CommandResponses;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Irc.Client.Wpf.ViewModels
 {
@@ -56,7 +57,9 @@ namespace Irc.Client.Wpf.ViewModels
         private IrcClient ircClient;
         private CancellationTokenSource cancellationTokenSource;
 
-        private Model.Irc Irc { get; }
+        public Domain.Irc Irc { get; }
+
+        private readonly IMessenger messenger;
 
         public IrcViewModel(IMessenger messenger)
         {
@@ -73,12 +76,14 @@ namespace Irc.Client.Wpf.ViewModels
 
             PropertyChanged += IrcViewModel_PropertyChanged;
 
-            messenger.Register<QueryRequestMessage>(this, (r, m) =>
+            this.messenger = messenger;
+
+            messenger.Register<QueryRequest>(this, (r, m) =>
             {
                 Query(m.Nickname);
             });
 
-            messenger.Register<WhoisRequestMessage>(this, async (r, m) =>
+            messenger.Register<WhoisRequest>(this, async (r, m) =>
             {
                 await Whois(m.Nickname);
             });
@@ -120,7 +125,7 @@ namespace Irc.Client.Wpf.ViewModels
 
             FocusInput();
 
-            Irc.Users.Add(Nickname, new Model.User(Nickname));
+            Irc.Connect(Nickname);
         }
 
         private bool CanConnect() =>
@@ -257,7 +262,7 @@ namespace Irc.Client.Wpf.ViewModels
             FocusChat(chat);
         }
 
-        private async System.Threading.Tasks.Task Whois(string nickname)
+        private async Task Whois(string nickname)
         {
             if (nickname.StartsWith('@'))
             {
@@ -267,7 +272,7 @@ namespace Irc.Client.Wpf.ViewModels
             await ircClient.SendMessageAsync(message);
         }
 
-        private void FocusChat(ChatViewModel chat)
+        public void FocusChat(ChatViewModel chat)
         {
             SelectedTab = chat;
         }
@@ -278,14 +283,14 @@ namespace Irc.Client.Wpf.ViewModels
             IsTextMessageFocused = true;
         }
 
-        private void IrcClient_MessageSent(object sender, Message message)
+        private async void IrcClient_MessageSent(object sender, Message message)
         {
-            DrawMessage(message);
+            await HandleMessageAsync(message);
         }
 
-        private void IrcClient_MessageReceived(object sender, Message message)
+        private async void IrcClient_MessageReceived(object sender, Message message)
         {
-            DrawMessage(message);
+            await HandleMessageAsync(message);
         }
 
         private void IrcClient_RawMessageSent(object sender, string message)
@@ -300,132 +305,34 @@ namespace Irc.Client.Wpf.ViewModels
             Debug.WriteLine($"<< [{now}] {message}");
         }
 
-        private void DrawMessage(Message message)
+        private async Task HandleMessageAsync(Message message)
         {
-            if (message is PrivMsgMessage privMsgMessage)
+            if (await IMessageHandler.HandleAsync(message))
             {
-                string from;
-                string target;
-                if (privMsgMessage.From is null)
-                {
-                    from = Nickname;
-                    target = privMsgMessage.Target;
-                }
-                else
-                {
-                    from = GetNickName(privMsgMessage.From);
-                    target = privMsgMessage.Target.Equals(Nickname, StringComparison.InvariantCultureIgnoreCase)
-                        ? from
-                        : privMsgMessage.Target;
-                }
-
-                var messageViewModel = new ChatMessageViewModel(from, privMsgMessage.Text);
-                DrawMessageToTarget(target, messageViewModel);
+                return;
             }
-            else if (message is JoinMessage joinMessage)
-            {
-                ChannelViewModel channel = null;
-                if (joinMessage.From is null)
-                {
-                    var messageViewModel = new MessageViewModel($"Now talking in {joinMessage.ChannelName}");
-                    channel = (ChannelViewModel)DrawMessageToTarget(joinMessage.ChannelName, messageViewModel);
-                    FocusChat(channel);
 
-                    Irc.Join(joinMessage.ChannelName, nickname);
-                }
-                else
-                {
-                    var from = GetNickName(joinMessage.From);
-                    var messageViewModel = new MessageViewModel($"{from} has joined {joinMessage.ChannelName}");
-                    channel = (ChannelViewModel)DrawMessageToTarget(joinMessage.ChannelName, messageViewModel);
-
-                    Irc.Join(joinMessage.ChannelName, from);
-                }
-
-                channel.Users = new ObservableCollection<string>(Irc.Channels[joinMessage.ChannelName].Users.Keys);
-            }
-            else if (message is PartMessage partMessage)
-            {
-                if (partMessage.From is null)
-                {
-                    Irc.Part(partMessage.ChannelName, nickname);
-                }
-                else
-                {
-                    var from = GetNickName(partMessage.From);
-                    if (from.Equals(nickname, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        return;
-                    }
-                    var messageViewModel = new MessageViewModel($"{from} has left {partMessage.ChannelName}");
-                    DrawMessageToTarget(partMessage.ChannelName, messageViewModel);
-
-                    Irc.Part(partMessage.ChannelName, from);
-
-                    var channel = Chats.OfType<ChannelViewModel>().Single(c => c.Target == partMessage.ChannelName);
-                    channel.Users = new ObservableCollection<string>(Irc.Channels[partMessage.ChannelName].Users.Keys);
-                }
-            }
-            //else if (message is TopicReply topicReply)
-            //{
-            //    DrawMessageToTarget(topicReply.Target, topicReply.ToString());
-            //}
-            //else if (message is TopicWhoTimeReply topicWhoTimeReply)
-            //{
-            //    DrawMessageToTarget(topicWhoTimeReply.Target, topicWhoTimeReply.ToString());
-            //}
-            else if (message is NameReply nameReply)
-            {
-                var messageViewModel = new MessageViewModel(nameReply.ToString());
-                var channel = (ChannelViewModel)DrawMessageToTarget(nameReply.ChannelName, messageViewModel);
-
-                Irc.Join(nameReply.ChannelName, nameReply.Nicknames);
-
-                channel.Users = new ObservableCollection<string>(Irc.Channels[nameReply.ChannelName].Users.Keys);
-            }
-            //else if (message is EndOfNamesReply endOfNamesReply)
-            //{
-            //    DrawMessageToTarget(endOfNamesReply.Target, endOfNamesReply.ToString());
-            //}
             else if (message is Reply reply)
             {
                 var messageViewModel = new MessageViewModel(reply.ToString());
-                DrawMessageToTarget(reply.Target, messageViewModel);
-            }
-            else if (message is QuitMessage quitMessage)
-            {
-                if (quitMessage.Target is not null)
-                {
-                    var target = GetNickName(quitMessage.Target);
-                    foreach (var chat in Chats.OfType<ChatViewModel>())
-                    {
-                        if (string.Equals(chat.Target, target, StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            var messageViewModel = new MessageViewModel(quitMessage.Reason);
-                            DrawMessageToTarget(target, messageViewModel);
-                        }
-                    }
-
-                    Irc.Quit(target);
-                }
-                else
-                {
-                    Irc.Quit(nickname);
-                }
+                DrawMessage(reply.Target, messageViewModel);
             }
             else
             {
                 var messageViewModel = new MessageViewModel(message.ToString());
-                status.Log.Add(messageViewModel);
+                Status.Log.Add(messageViewModel);
             }
         }
 
-        private string GetNickName(string target) => target.Split('!')[0];
-
-        private ChatViewModel DrawMessageToTarget(string target, MessageViewModel message)
+        public ChatViewModel DrawMessage(string target, MessageViewModel message)
         {
             var chat = GetOrCreateChat(target);
 
+            return DrawMessage(chat, message);
+        }
+
+        public ChatViewModel DrawMessage(ChatViewModel chat, MessageViewModel message)
+        {
             chat.Chat.Add(message);
 
             if (chat != SelectedTab)
@@ -434,6 +341,18 @@ namespace Irc.Client.Wpf.ViewModels
             }
 
             return chat;
+        }
+
+        public void DrawMessage(ITabViewModel tab, MessageViewModel message)
+        {
+            if (tab is ChatViewModel chat)
+            {
+                DrawMessage(chat, message);
+            }
+            else if (tab is StatusViewModel status)
+            {
+                status.Log.Add(message);
+            }
         }
 
         private ChatViewModel GetOrCreateChat(string target)

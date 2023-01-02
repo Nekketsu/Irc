@@ -1,4 +1,3 @@
-using Irc.Extensions;
 using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
@@ -18,7 +17,7 @@ namespace Messages.Replies.CommandResponses
 
         public override string InnerToString()
         {
-            return $"{ChannelName} :{CreationTime.ToUnixTime()}";
+            return $"{ChannelName} :{new DateTimeOffset(CreationTime).ToUnixTimeSeconds()}";
         }
     }
 }

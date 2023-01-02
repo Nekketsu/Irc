@@ -1,5 +1,4 @@
 using Irc.Domain.Extensions;
-using Irc.Extensions;
 using Irc.Messages;
 using Irc.Messages.Messages;
 using Irc.Server.MessageHandlers;
@@ -7,7 +6,6 @@ using Messages.Replies.CommandResponses;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Net.Sockets;
-using System.Reflection;
 
 namespace Irc.Server
 {
@@ -101,7 +99,7 @@ namespace Irc.Server
                 do
                 {
                     await Task.Delay(delay, cancellationToken);
-                    PingMessage = new PingMessage($"{DateTime.Now.ToUnixTime()}");
+                    PingMessage = new PingMessage($"{DateTimeOffset.Now.ToUnixTimeSeconds()}");
                     await WriteMessageAsync(PingMessage, cancellationToken);
                 } while (!cancellationToken.IsCancellationRequested);
             }
@@ -146,24 +144,9 @@ namespace Irc.Server
             return message;
         }
 
-        private Task<bool> HandleMessageAsync(Message message)
+        private async Task<bool> HandleMessageAsync(Message message)
         {
-            if (message == null)
-            {
-                return Task.FromResult(true);
-            }
-
-            var messageHandlerType = Assembly.GetExecutingAssembly().ExportedTypes.SingleOrDefault(type =>
-                type.BaseType.IsGenericType &&
-                type.BaseType.GetGenericTypeDefinition() == typeof(MessageHandler<>) &&
-                type.BaseType.GetGenericArguments().Any(a => a == message.GetType()));
-
-            var messageHandler = Activator.CreateInstance(messageHandlerType);
-            var handleAsyncMethod = messageHandlerType.GetMethod(nameof(MessageHandler<Message>.HandleAsync));
-
-            var taskResult = ((Task<bool>)handleAsyncMethod.Invoke(messageHandler, new object[] { message, this }));
-
-            return taskResult;
+            return await MessageHandler.HandleAsync(message, this);
         }
     }
 }

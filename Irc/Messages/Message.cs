@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Reflection;
 
 namespace Irc.Messages
@@ -38,7 +37,7 @@ namespace Irc.Messages
                             : (Message)Activator.CreateInstance(messageType, parameters);
 
                         return messageInstance;
-                    } 
+                    }
                     catch { }
                 }
             }

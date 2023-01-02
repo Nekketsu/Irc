@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Irc.Client.Wpf.Model
+namespace Irc.Client.Wpf.Domain
 {
     public class User
     {

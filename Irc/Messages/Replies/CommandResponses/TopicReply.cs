@@ -19,5 +19,22 @@ namespace Messages.Replies.CommandResponses
         {
             return $"{ChannelName} :{Topic}";
         }
+
+        public new static TopicReply Parse(string message)
+        {
+            var messageSplit = message.Split();
+
+            var sender = messageSplit[0].TrimStart(':');
+            var target = messageSplit[2];
+            var channelName = messageSplit[3];
+            var topic = message
+                .Substring(messageSplit[0].Length).TrimStart()
+                .Substring(messageSplit[1].Length).TrimStart()
+                .Substring(messageSplit[2].Length).TrimStart()
+                .Substring(messageSplit[3].Length).TrimStart()
+                .TrimStart(':');
+
+            return new TopicReply(sender, target, channelName, topic);
+        }
     }
 }

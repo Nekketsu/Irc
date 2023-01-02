@@ -25,7 +25,7 @@ namespace Irc.Client.Wpf
             var services = new ServiceCollection();
 
             services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
-            services.AddTransient<IrcViewModel>();
+            services.AddSingleton<IrcViewModel>();
 
             return services.BuildServiceProvider();
         }

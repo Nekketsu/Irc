@@ -1,4 +1,3 @@
-using Irc.Extensions;
 using Irc.Messages;
 
 namespace Messages.Replies.CommandResponses
@@ -21,7 +20,29 @@ namespace Messages.Replies.CommandResponses
 
         public override string InnerToString()
         {
-            return $"{ChannelName} {Nickname} {SetAt.ToUnixTime()}";
+            return $"{ChannelName} {Nickname} {new DateTimeOffset(SetAt).ToUnixTimeSeconds()}";
+        }
+
+        public new static TopicWhoTimeReply Parse(string message)
+        {
+            var messageSplit = message.Split();
+
+            var sender = messageSplit[0].TrimStart(':');
+            var target = messageSplit[2];
+            var channelName = messageSplit[3];
+            var nickname = messageSplit[4];
+            var setAsString = message
+                .Substring(messageSplit[0].Length).TrimStart()
+                .Substring(messageSplit[1].Length).TrimStart()
+                .Substring(messageSplit[2].Length).TrimStart()
+                .Substring(messageSplit[3].Length).TrimStart()
+                .Substring(messageSplit[4].Length).TrimStart()
+                .TrimStart(':');
+
+            var setAsLong = long.Parse(setAsString);
+            var setAs = DateTimeOffset.FromUnixTimeSeconds(setAsLong).DateTime;
+
+            return new TopicWhoTimeReply(sender, target, channelName, nickname, setAs);
         }
     }
 }
