@@ -1,28 +1,25 @@
-using Irc.Messages;
-
-namespace Messages.Replies.CommandResponses
+﻿namespace Irc.Messages.Replies.CommandResponses
 {
-    [Command(RPL_ENDOFWHOIS)]
-    public class EndOfWhoisReply : Reply
+    [Command(RPL_AWAY)]
+    public class AwayReply : Reply
     {
-        public const string DefaultMessage = "End of WHOIS list";
+        const string RPL_AWAY = "301";
 
-        const string RPL_ENDOFWHOIS = "318";
         public string Nickname { get; set; }
-        public string Message { get; set; }
+        public string Text { get; set; }
 
-        public EndOfWhoisReply(string sender, string target, string nickname, string message) : base(sender, target, RPL_ENDOFWHOIS)
+        public AwayReply(string sender, string target, string nickname, string text) : base(sender, target, RPL_AWAY)
         {
             Nickname = nickname;
-            Message = message;
+            Text = text;
         }
 
         public override string InnerToString()
         {
-            return $"{Nickname} :{Message}";
+            return $"{Nickname} :{Text}";
         }
 
-        public new static EndOfWhoisReply Parse(string message)
+        public new static AwayReply Parse(string message)
         {
             var messageSplit = message.Split();
 
@@ -36,7 +33,7 @@ namespace Messages.Replies.CommandResponses
                 .Substring(messageSplit[3].Length).TrimStart()
                 .TrimStart(':');
 
-            return new EndOfWhoisReply(sender, target, nickname, text);
+            return new AwayReply(sender, target, nickname, text);
         }
     }
 }

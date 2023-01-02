@@ -9,6 +9,9 @@ namespace Irc.Client.Wpf.ViewModels.Tabs
         [ObservableProperty]
         private ObservableCollection<MessageViewModel> log;
 
+        [ObservableProperty]
+        private bool isDirty;
+
         public StatusViewModel()
         {
             Log = new ObservableCollection<MessageViewModel>();

@@ -8,8 +8,10 @@ namespace Irc.Client.Wpf.ViewModels.Tabs
     {
         [ObservableProperty]
         private string target;
+
         [ObservableProperty]
         private ObservableCollection<MessageViewModel> chat;
+
         [ObservableProperty]
         private bool isDirty;
 

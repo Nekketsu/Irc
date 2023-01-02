@@ -45,10 +45,12 @@ namespace Irc.Client.Wpf.Domain
             var channel = Channels[channelName];
             channel.Users.Remove(nickname);
 
-            if (!Users.TryGetValue(nickname, out var user))
-            {
-                return;
-            }
+            //if (!Users.TryGetValue(nickname, out var user))
+            //{
+            //    return;
+            //}
+
+            var user = Users[nickname];
 
             user.Channels.Remove(channelName);
 
@@ -75,14 +77,34 @@ namespace Irc.Client.Wpf.Domain
 
         public bool UserIsInChannel(string nickname, string channelName)
         {
-            if (!Users.TryGetValue(nickname, out var user))
-            {
-                return false;
-            }
+            //if (!Users.TryGetValue(nickname, out var user))
+            //{
+            //    return false;
+            //}
+
+            var user = Users[nickname];
 
             return user.Channels.ContainsKey(channelName);
         }
 
         public string GetNickName(string target) => target.Split('!')[0];
+
+        public void RenameUser(string previousNickname, string nickname)
+        {
+            var user = Users[previousNickname];
+            Users.Remove(previousNickname);
+
+            user.Name = nickname;
+            Users.Add(nickname, user);
+
+            foreach (var channel in Channels.Values)
+            {
+                if (channel.Users.ContainsKey(previousNickname))
+                {
+                    channel.Users.Remove(previousNickname);
+                    channel.Users.Add(nickname, user);
+                }
+            }
+        }
     }
 }

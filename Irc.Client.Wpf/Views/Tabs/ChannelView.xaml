@@ -16,7 +16,7 @@
 
         <local:ConversationView Grid.Column="0" DataContext="{Binding Chat}" />
 
-        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+        <GridSplitter Grid.Column="1" Width="3" HorizontalAlignment="Stretch" />
 
         <ListBox Grid.Column="2" ItemsSource="{Binding Users}">
             <ListBox.ItemTemplate>
@@ -30,12 +30,38 @@
 
                         <TextBlock.ContextMenu>
                             <ContextMenu>
+                                <MenuItem Header="Info" IsEnabled="false" />
                                 <MenuItem Header="Query"
                                           Command="{Binding DataContext.QueryCommand, Source={x:Reference channelView}}"
                                           CommandParameter="{Binding}" />
                                 <MenuItem Header="Whois"
                                           Command="{Binding DataContext.WhoisCommand, Source={x:Reference channelView}}"
                                           CommandParameter="{Binding}" />
+                                <Separator />
+                                <MenuItem Header="Control">
+                                    <MenuItem Header="Ignore" IsEnabled="False" />
+                                    <MenuItem Header="Unignore" IsEnabled="False" />
+                                    <MenuItem Header="Op" IsEnabled="False" />
+                                    <MenuItem Header="Deop" IsEnabled="False" />
+                                    <MenuItem Header="Voice" IsEnabled="False" />
+                                    <MenuItem Header="Devoice" IsEnabled="False" />
+                                    <MenuItem Header="Kick" IsEnabled="False" />
+                                    <MenuItem Header="Kick (why)" IsEnabled="False" />
+                                    <MenuItem Header="Ban" IsEnabled="False" />
+                                    <MenuItem Header="Ban, Kick" IsEnabled="False" />
+                                    <MenuItem Header="Ban, Kick (why)" IsEnabled="False" />
+                                </MenuItem>
+                                <MenuItem Header="CTCP">
+                                    <MenuItem Header="Ping" IsEnabled="False" />
+                                    <MenuItem Header="Time" IsEnabled="False" />
+                                    <MenuItem Header="Version" IsEnabled="False" />
+                                </MenuItem>
+                                <MenuItem Header="DCC">
+                                    <MenuItem Header="Send" IsEnabled="False" />
+                                    <MenuItem Header="Chat" IsEnabled="False" />
+                                </MenuItem>
+                                <Separator />
+                                <MenuItem Header="Slap!" IsEnabled="False" />
                             </ContextMenu>
                         </TextBlock.ContextMenu>
                     </TextBlock>

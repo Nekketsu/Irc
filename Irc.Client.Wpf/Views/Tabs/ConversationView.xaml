@@ -34,7 +34,7 @@
     <ListBox ItemsSource="{Binding}" Grid.IsSharedSizeScope="True" ItemTemplateSelector="{StaticResource MessageDataTemplateSelector}">
         <i:Interaction.Behaviors>
             <Behaviors:ScrollIntoViewBehavior />
-            <Behaviors:ScrollToBottomOnFocusBehavior />
+            <Behaviors:ScrollToBottomOnLoadedBehavior />
         </i:Interaction.Behaviors>
     </ListBox>
 </UserControl>

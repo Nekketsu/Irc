@@ -21,7 +21,7 @@
         <CollectionViewSource x:Key="Chats" Source="{Binding Chats}" />
 
         <DataTemplate x:Key="StatusItemTemplate" DataType="TabViewModels:StatusViewModel">
-            <TextBlock Text="Status" />
+            <TextBlock Text="Status" Foreground="{Binding IsDirty, Converter={StaticResource IsDirtyToBrushConverter}}" />
         </DataTemplate>
 
         <DataTemplate x:Key="ChatItemTemplate" DataType="TabViewModels:ChatViewModel">

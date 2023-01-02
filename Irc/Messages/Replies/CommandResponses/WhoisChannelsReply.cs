@@ -19,5 +19,24 @@ namespace Messages.Replies.CommandResponses
         {
             return $"{Nickname} :{string.Join(" ", ChannelNames)}";
         }
+
+        public new static WhoisChannelsReply Parse(string message)
+        {
+            var messageSplit = message.Split();
+
+            var sender = messageSplit[0].TrimStart(':');
+            var target = messageSplit[2];
+            var nickname = messageSplit[3];
+            var channelsText = message
+                .Substring(messageSplit[0].Length).TrimStart()
+                .Substring(messageSplit[1].Length).TrimStart()
+                .Substring(messageSplit[2].Length).TrimStart()
+                .Substring(messageSplit[3].Length).TrimStart()
+                .TrimStart(':');
+
+            var channels = channelsText.Split();
+
+            return new WhoisChannelsReply(sender, target, nickname, channels);
+        }
     }
 }

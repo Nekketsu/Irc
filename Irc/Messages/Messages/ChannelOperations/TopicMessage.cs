@@ -37,8 +37,7 @@ namespace Irc.Messages.Messages
             var messageSplit = message.Split();
             var channelName = messageSplit[1];
 
-            var text = message.Substring(message.IndexOf(messageSplit[0]) + messageSplit[0].Length).TrimStart();
-            text = message.Substring(message.IndexOf(messageSplit[1]) + messageSplit[1].Length).TrimStart();
+            var text = message.Substring(message.IndexOf(messageSplit[1]) + messageSplit[1].Length).TrimStart();
             if (text.StartsWith(':'))
             {
                 var topic = text.Substring(1);

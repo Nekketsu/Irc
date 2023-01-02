@@ -4,10 +4,11 @@ using CommunityToolkit.Mvvm.Messaging;
 using Irc.Client.Wpf.Messenger.Requests;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace Irc.Client.Wpf.ViewModels.Tabs
 {
-    public partial class ChannelViewModel : ChatViewModel
+    public partial class ChannelViewModel : ChatViewModel, INotifyPropertyChanged
     {
         [ObservableProperty]
         private ObservableCollection<string> users;

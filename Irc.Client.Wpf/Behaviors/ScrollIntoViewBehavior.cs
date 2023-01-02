@@ -19,7 +19,7 @@ namespace Irc.Client.Wpf.Behaviors
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                AssociatedObject.ScrollIntoView(e.NewItems[0]);
+                AssociatedObject.ScrollIntoView(e.NewItems[e.NewItems.Count - 1]);
             }
         }
 

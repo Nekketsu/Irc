@@ -8,6 +8,7 @@ using Irc.Client.Wpf.ViewModels.Tabs;
 using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using Irc.Messages;
 using Irc.Messages.Messages;
+using Irc.Messages.Messages.OptionalFeatures;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -40,10 +41,12 @@ namespace Irc.Client.Wpf.ViewModels
         private ObservableCollection<ITabViewModel> chats;
 
         [ObservableProperty]
-        private object selectedTab;
+        private ITabViewModel selectedTab;
 
         [ObservableProperty]
         private int selectedTabIndex;
+
+        private int previousTabIndex;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(SendAsyncCommand))]
@@ -98,6 +101,7 @@ namespace Irc.Client.Wpf.ViewModels
                     {
                         selectedChat.IsDirty = false;
                     }
+                    FocusInput();
                     break;
 
                 case nameof(SelectedTabIndex):
@@ -147,7 +151,7 @@ namespace Irc.Client.Wpf.ViewModels
         [RelayCommand(CanExecute = nameof(CanSend))]
         private async void SendAsync()
         {
-            var isProcessed = ProcessClientCommand();
+            var isProcessed = await ProcessClientCommand();
 
             if (isProcessed || State != ConnectionState.Connected)
             {
@@ -175,10 +179,10 @@ namespace Irc.Client.Wpf.ViewModels
         private bool CanSend() => !string.IsNullOrEmpty(TextMessage);
 
         [RelayCommand]
-        private void NextTab() => SelectedTabIndex = (SelectedTabIndex + 1) % (Chats.Count + 1);
+        private void NextTab() => SelectedTabIndex = (SelectedTabIndex + 1) % Chats.Count;
 
         [RelayCommand]
-        private void PreviousTab() => SelectedTabIndex = (SelectedTabIndex + Chats.Count) % (Chats.Count + 1);
+        private void PreviousTab() => SelectedTabIndex = (SelectedTabIndex - 1 + Chats.Count) % Chats.Count;
 
         [RelayCommand(CanExecute = nameof(CanSelectTab))]
         private void SelectTab(string tabIndexString)
@@ -188,10 +192,17 @@ namespace Irc.Client.Wpf.ViewModels
                 return;
             }
 
-            SelectedTabIndex = tabIndex;
+            var targetTabIndex = (tabIndex - 1 + Chats.Count) % Chats.Count;
+            if (targetTabIndex == SelectedTabIndex)
+            {
+                targetTabIndex = previousTabIndex;
+            }
+
+            previousTabIndex = SelectedTabIndex;
+            SelectedTabIndex = targetTabIndex % Chats.Count;
         }
 
-        private bool CanSelectTab(string tabIndexString) => int.TryParse(tabIndexString, out var tabIndex) && tabIndex >= 0 && tabIndex <= Chats.Count;
+        private bool CanSelectTab(string tabIndexString) => int.TryParse(tabIndexString, out var tabIndex) && tabIndex > 0 && tabIndex <= Chats.Count;
 
         [RelayCommand(CanExecute = nameof(CanCloseChat))]
         private async void CloseChat(object chat)
@@ -211,7 +222,7 @@ namespace Irc.Client.Wpf.ViewModels
 
         private bool CanCloseChat(object chat) => chat is ChatViewModel or ChannelViewModel;
 
-        private bool ProcessClientCommand()
+        private async Task<bool> ProcessClientCommand()
         {
             if (TextMessage.Equals("/server", StringComparison.InvariantCulture) || TextMessage.StartsWith("/server ", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -252,8 +263,29 @@ namespace Irc.Client.Wpf.ViewModels
 
                 return true;
             }
+            else if (TextMessage.Equals("/away", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var awayMessage = new AwayMessage();
+                await ircClient.SendMessageAsync(awayMessage);
 
-            return false;
+                TextMessage = null;
+
+                return true;
+            }
+            else if (TextMessage.StartsWith("/away ", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var text = TextMessage.Substring("/away ".Length).TrimStart();
+                var awayMessage = new AwayMessage(text);
+                await ircClient.SendMessageAsync(awayMessage);
+
+                TextMessage = null;
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private void Query(string nickname)
@@ -311,12 +343,6 @@ namespace Irc.Client.Wpf.ViewModels
             {
                 return;
             }
-
-            else if (message is Reply reply)
-            {
-                var messageViewModel = new MessageViewModel(reply.ToString());
-                DrawMessage(reply.Target, messageViewModel);
-            }
             else
             {
                 var messageViewModel = new MessageViewModel(message.ToString());
@@ -353,6 +379,11 @@ namespace Irc.Client.Wpf.ViewModels
             {
                 status.Log.Add(message);
             }
+        }
+
+        public void DrawMessage(MessageViewModel message)
+        {
+            DrawMessage(SelectedTab, message);
         }
 
         private ChatViewModel GetOrCreateChat(string target)

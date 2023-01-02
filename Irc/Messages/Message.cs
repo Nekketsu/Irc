@@ -32,7 +32,7 @@ namespace Irc.Messages
                     {
                         var parseMethod = messageType.GetMethod(nameof(Parse), BindingFlags.Public | BindingFlags.Static);
 
-                        var messageInstance = (parseMethod != null)
+                        var messageInstance = (parseMethod is not null)
                             ? (Message)parseMethod.Invoke(null, new[] { message })
                             : (Message)Activator.CreateInstance(messageType, parameters);
 

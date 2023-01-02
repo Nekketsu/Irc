@@ -7,7 +7,7 @@ using System.Diagnostics;
 var apiKey = await File.ReadAllTextAsync("ApiKey.user");
 var openAiService = new OpenAiService(apiKey);
 
-var nickname = "Nekke-Bot";
+var nickname = "AmyTgn2023";
 var host = "irc.irc-hispano.org";
 
 var ircClient = new IrcClient(nickname, host);

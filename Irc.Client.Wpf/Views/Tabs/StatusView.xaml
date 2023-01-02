@@ -12,7 +12,7 @@
     <ListBox ItemsSource="{Binding Log}">
         <i:Interaction.Behaviors>
             <Behaviors:ScrollIntoViewBehavior />
-            <Behaviors:ScrollToBottomOnFocusBehavior />
+            <Behaviors:ScrollToBottomOnLoadedBehavior />
         </i:Interaction.Behaviors>
         
         <ListBox.ItemTemplate>

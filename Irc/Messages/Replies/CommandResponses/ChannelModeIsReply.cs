@@ -6,6 +6,7 @@ namespace Messages.Replies.CommandResponses
     public class ChannelModeIsReply : Reply
     {
         const string RPL_CHANNELMODEIS = "324";
+
         public string ChannelName { get; private set; }
         public string Mode { get; set; }
         public string ModeParams { get; set; }
