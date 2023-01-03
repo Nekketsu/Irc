@@ -87,10 +87,10 @@ namespace Irc.Server
             // await SendMessageAsync(new NoticeMessage("AUTH", "*** Looking up your hostname"));
             // await SendMessageAsync(new NoticeMessage("AUTH", "*** Checking Ident"));
 
-            await WriteMessageAsync(new WelcomeReply(IrcServer.ServerName, Profile.Nickname, $"Welcome to the IRC Network, {Profile.Nickname}"));
-            await WriteMessageAsync(new YourHostReply(IrcServer.ServerName, Profile.Nickname, $"Your host is {IrcServer.ServerName}, running version {IrcServer.Version}"));
-            await WriteMessageAsync(new CreatedReply(IrcServer.ServerName, Profile.Nickname, $"This server was created {IrcServer.CreatedDateTime}"));
-            await WriteMessageAsync(new MyInfoReply(IrcServer.ServerName, Profile.Nickname, $"{IrcServer.ServerName} {IrcServer.Version} diOoswkgx biklmnopstvrDdRcC bklov"));
+            await WriteMessageAsync(new WelcomeReply(IrcServer.ServerName, Profile.Nickname, "IRC Network", Profile.Nickname));
+            await WriteMessageAsync(new YourHostReply(IrcServer.ServerName, Profile.Nickname, IrcServer.ServerName, IrcServer.Version.ToString()));
+            await WriteMessageAsync(new CreatedReply(IrcServer.ServerName, Profile.Nickname, IrcServer.CreatedDateTime));
+            await WriteMessageAsync(new MyInfoReply(IrcServer.ServerName, Profile.Nickname, IrcServer.ServerName, IrcServer.Version.ToString(), "diOoswkgx", "biklmnopstvrDdRcC", "bklov"));
 
             return true;
         }
