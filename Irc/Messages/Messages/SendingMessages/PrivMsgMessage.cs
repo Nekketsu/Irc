@@ -27,27 +27,30 @@ namespace Irc.Messages.Messages
 
         public new static PrivMsgMessage Parse(string message)
         {
-            var text = message;
-            var messageSplit = text.Split();
+            var messageSplit = message.Split();
 
-            string from = null;
-            if (messageSplit[0].StartsWith(":"))
+            if (message.StartsWith(':'))
             {
-                from = messageSplit[0].Substring(1);
-                text = text.Substring(messageSplit[0].Length).TrimStart();
-                messageSplit = messageSplit.Skip(1).ToArray();
+                var from = messageSplit[0].Substring(":".Length);
+                var target = messageSplit[2];
+                var text = message
+                    .Substring(messageSplit[0].Length).TrimStart()
+                    .Substring(messageSplit[1].Length).TrimStart()
+                    .Substring(messageSplit[2].Length).TrimStart()
+                    .Substring(":".Length);
+
+                return new(from, target, text);
             }
+            else
+            {
+                var target = messageSplit[1];
+                var text = message
+                    .Substring(messageSplit[0].Length).TrimStart()
+                    .Substring(messageSplit[1].Length).TrimStart()
+                    .Substring(":".Length);
 
-            var target = messageSplit[1];
-
-            text = text.Substring(messageSplit[0].Length).TrimStart();
-            text = text.Substring(messageSplit[1].Length).TrimStart();
-
-            var privMsgMessage = from == null
-                ? new PrivMsgMessage(target, text)
-                : new PrivMsgMessage(from, target, text);
-
-            return privMsgMessage;
+                return new(target, text);
+            }
         }
     }
 }

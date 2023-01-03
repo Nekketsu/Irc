@@ -71,9 +71,7 @@ namespace Irc.Client
             var text = await streamReader.ReadLineAsync();
             RawMessageReceived?.Invoke(this, text);
 
-            var message = Message.Parse(text) ??
-                            new NoticeMessage(string.Empty, text);
-
+            var message = Message.Parse(text);
             MessageReceived?.Invoke(this, message);
 
             return message;

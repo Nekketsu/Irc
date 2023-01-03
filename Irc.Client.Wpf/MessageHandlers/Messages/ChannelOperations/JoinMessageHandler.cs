@@ -2,6 +2,7 @@
 using Irc.Client.Wpf.ViewModels.Tabs;
 using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using Irc.Messages.Messages;
+using System;
 using System.Threading.Tasks;
 
 namespace Irc.Client.Wpf.MessageHandlers.Messages
@@ -19,6 +20,12 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages
         {
             if (message.From is null)
             {
+                return Task.CompletedTask;
+            }
+
+            var from = viewModel.Irc.GetNickName(message.From);
+            if (from.Equals(viewModel.Nickname, StringComparison.InvariantCultureIgnoreCase))
+            {
                 if (viewModel.Irc.UserIsInChannel(viewModel.Nickname, message.ChannelName))
                 {
                     return Task.CompletedTask;
@@ -34,7 +41,6 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages
             }
             else
             {
-                var from = viewModel.Irc.GetNickName(message.From);
                 var messageViewModel = new MessageViewModel($"{from} has joined {message.ChannelName}");
                 var channel = (ChannelViewModel)viewModel.DrawMessage(message.ChannelName, messageViewModel);
 

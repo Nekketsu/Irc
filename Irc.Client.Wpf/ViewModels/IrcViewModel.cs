@@ -213,8 +213,8 @@ namespace Irc.Client.Wpf.ViewModels
             }
             if (chat is ChannelViewModel channelViewModel)
             {
-                var partMessage = new PartMessage(channelViewModel.Target, null);
-                await ircClient.SendMessageAsync(partMessage);
+                var message = new PartMessage(channelViewModel.Target, null);
+                await ircClient.SendMessageAsync(message);
 
                 Chats.Remove(channelViewModel);
             }
@@ -231,7 +231,7 @@ namespace Irc.Client.Wpf.ViewModels
                     Disconnect();
                 }
 
-                var messageSplit = TextMessage.Split(' ');
+                var messageSplit = TextMessage.Split();
                 if (messageSplit.Length > 1)
                 {
                     Host = messageSplit[1];
@@ -252,7 +252,7 @@ namespace Irc.Client.Wpf.ViewModels
 
             if (TextMessage.StartsWith("/query ", StringComparison.InvariantCultureIgnoreCase))
             {
-                var messageSplit = TextMessage.Split(' ');
+                var messageSplit = TextMessage.Split();
                 if (messageSplit.Length > 1)
                 {
                     var target = messageSplit[1];
@@ -265,8 +265,8 @@ namespace Irc.Client.Wpf.ViewModels
             }
             else if (TextMessage.Equals("/away", StringComparison.InvariantCultureIgnoreCase))
             {
-                var awayMessage = new AwayMessage();
-                await ircClient.SendMessageAsync(awayMessage);
+                var message = new AwayMessage();
+                await ircClient.SendMessageAsync(message);
 
                 TextMessage = null;
 
@@ -277,6 +277,40 @@ namespace Irc.Client.Wpf.ViewModels
                 var text = TextMessage.Substring("/away ".Length).TrimStart();
                 var awayMessage = new AwayMessage(text);
                 await ircClient.SendMessageAsync(awayMessage);
+
+                TextMessage = null;
+
+                return true;
+            }
+            else if (TextMessage.StartsWith("/notice ", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var messageSplit = TextMessage.Split();
+
+                var target = messageSplit[1];
+                var text = TextMessage
+                    .Substring(messageSplit[0].Length).TrimStart()
+                    .Substring(messageSplit[1].Length).TrimStart();
+
+                var message = new NoticeMessage(target, text);
+
+                await ircClient.SendMessageAsync(message);
+
+                TextMessage = null;
+
+                return true;
+            }
+            else if (TextMessage.StartsWith("/msg ", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var messageSplit = TextMessage.Split();
+
+                var target = messageSplit[1];
+                var text = TextMessage
+                    .Substring(messageSplit[0].Length).TrimStart()
+                    .Substring(messageSplit[1].Length).TrimStart();
+
+                var message = new PrivMsgMessage(target, text);
+
+                await ircClient.SendMessageAsync(message);
 
                 TextMessage = null;
 
@@ -322,6 +356,11 @@ namespace Irc.Client.Wpf.ViewModels
 
         private async void IrcClient_MessageReceived(object sender, Message message)
         {
+            if (message is null)
+            {
+                return;
+            }
+
             await HandleMessageAsync(message);
         }
 
