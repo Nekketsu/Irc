@@ -1,4 +1,5 @@
 using Irc.Messages;
+using Messages.Replies.ErrorReplies;
 
 namespace Messages.Replies.CommandResponses
 {
@@ -7,18 +8,29 @@ namespace Messages.Replies.CommandResponses
     {
         const string RPL_WELCOME = "001";
 
+        const string DefaultMessage = "Welcome to the {0} Network, {1}";
+
+        public string Message { get; }
         public string NetworkName { get; }
         public string Nickname { get; }
+
+        public WelcomeReply(string sender, string target, string message) : base(sender, target, RPL_WELCOME)
+        {
+            Message = message;
+            NetworkName = message.Substring("Welcome to the ".Length).Split()[0];
+            Nickname = message.Split().Last();
+        }
 
         public WelcomeReply(string sender, string target, string networkName, string nickname) : base(sender, target, RPL_WELCOME)
         {
             NetworkName = networkName;
             Nickname = nickname;
+            Message = string.Format(DefaultMessage, networkName, nickname);
         }
 
         public override string InnerToString()
         {
-            return $":Welcome to the {NetworkName} Network, {Nickname}";
+            return $":{Message}";
         }
 
         public new static WelcomeReply Parse(string message)
@@ -27,14 +39,13 @@ namespace Messages.Replies.CommandResponses
 
             var sender = messageSplit[0];
             var target = messageSplit[2];
-            var networkName = message
+            var text = message
                 .Substring(messageSplit[0].Length).TrimStart()
                 .Substring(messageSplit[1].Length).TrimStart()
                 .Substring(messageSplit[2].Length).TrimStart()
-                .Substring(":Welcome to the ".Length).Split()[0];
-            var nickname = messageSplit.Last();
+                .Substring(":".Length);
 
-            return new(sender, target, networkName, nickname);
+            return new(sender, target, text);
         }
     }
 }

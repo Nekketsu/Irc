@@ -34,9 +34,9 @@ namespace Messages.Replies.CommandResponses
             var numberRegex = new Regex(@"\d+");
             var matches = numberRegex.Matches(message);
 
-            var totalUserCount = int.Parse(matches[0].Value);
-            var invisibleUserCount = int.Parse(matches[1].Value);
-            var serverCount = int.Parse(matches[2].Value);
+            var totalUserCount = int.Parse(matches[1].Value);
+            var invisibleUserCount = int.Parse(matches[2].Value);
+            var serverCount = int.Parse(matches[3].Value);
 
             return new(sender, target, totalUserCount, invisibleUserCount, serverCount);
         }

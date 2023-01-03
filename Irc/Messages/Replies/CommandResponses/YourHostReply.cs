@@ -7,34 +7,44 @@ namespace Messages.Replies.CommandResponses
     {
         const string RPL_YOURHOST = "002";
 
+        const string DefaultMessage = "Your host is {0}, running version {1}";
+
+        public string Message { get; }
         public string ServerName { get;  }
         public string Version { get; }
+
+        public YourHostReply(string sender, string target, string message) : base(sender, target, RPL_YOURHOST)
+        {
+            Message = message;
+            ServerName = message.Substring("Your host is ".Length).Split(',')[0];
+            Version = message.Split().Last();
+        }
 
         public YourHostReply(string sender, string target, string serverName, string version) : base(sender, target, RPL_YOURHOST)
         {
             ServerName = serverName;
             Version = version;
+            Message = string.Format(DefaultMessage, serverName, version);
         }
 
         public override string InnerToString()
         {
-            return $":Your host is {ServerName}, running version {Version}";
+            return $":{Message}";
         }
 
-        public new static WelcomeReply Parse(string message)
+        public new static YourHostReply Parse(string message)
         {
             var messageSplit = message.Split();
 
             var sender = messageSplit[0];
             var target = messageSplit[2];
-            var serverName = message
+            var text = message
                 .Substring(messageSplit[0].Length).TrimStart()
                 .Substring(messageSplit[1].Length).TrimStart()
                 .Substring(messageSplit[2].Length).TrimStart()
-                .Substring(":Your host is ".Length).Split(',')[0];
-            var version = messageSplit.Last();
+                .Substring(":".Length);
 
-            return new(sender, target, serverName, version);
+            return new(sender, target, text);
         }
     }
 }

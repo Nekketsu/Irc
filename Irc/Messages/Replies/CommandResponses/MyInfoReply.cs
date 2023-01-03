@@ -35,9 +35,9 @@ namespace Messages.Replies.CommandResponses
             var target = messageSplit[2];
             var serverName = messageSplit[3];
             var version = messageSplit[4];
-            var availableUserModes = messageSplit[4];
-            var availableChannelModes = messageSplit[4];
-            var channelModesWithAParameter = messageSplit[4].Substring(":".Length);
+            var availableUserModes = messageSplit[5];
+            var availableChannelModes = messageSplit[6];
+            var channelModesWithAParameter = messageSplit[7].Substring(":".Length);
 
             return new(sender, target, serverName, version, availableUserModes, availableChannelModes, channelModesWithAParameter);
         }

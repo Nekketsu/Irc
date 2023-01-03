@@ -2,6 +2,8 @@ namespace Irc.Messages
 {
     public abstract class Reply : Message
     {
+        private string sender;
+
         public static string Sender { get; private set; }
         public string Target { get; private set; }
         public string ReplyCode { get; private set; }
@@ -11,6 +13,12 @@ namespace Irc.Messages
             Sender = sender;
             Target = target;
             ReplyCode = replyCode;
+        }
+
+        protected Reply(string sender, string target)
+        {
+            this.sender = sender;
+            Target = target;
         }
 
         public override string ToString()
