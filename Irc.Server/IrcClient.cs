@@ -22,6 +22,7 @@ namespace Irc.Server
 
         public PingMessage PingMessage { get; private set; }
         public DateTime LastMessageDateTime { get; private set; }
+        public DateTime SignOn { get; set; }
 
         public Dictionary<string, Channel> Channels { get; private set; }
 
@@ -36,7 +37,9 @@ namespace Irc.Server
 
             Address = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address;
 
-            LastMessageDateTime = DateTime.Now;
+            var now = DateTime.Now;
+            LastMessageDateTime = now;
+            SignOn = now;
 
             Profile = new Profile();
             Channels = new Dictionary<string, Channel>(StringComparer.OrdinalIgnoreCase);

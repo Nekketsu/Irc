@@ -5,36 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Irc.Client.Wpf.Views.Tabs"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:Behaviors="clr-namespace:Irc.Client.Wpf.Behaviors"
-             xmlns:Messages="clr-namespace:Irc.Client.Wpf.ViewModels.Tabs.Messages"
-             xmlns:DataTemplateSelectors="clr-namespace:Irc.Client.Wpf.DataTemplateSelectors"
+             xmlns:AttachedProperties="clr-namespace:Irc.Client.Wpf.AttachedProperties"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
-    <UserControl.Resources>
-        <DataTemplate x:Key="ChatMessageDataTemplate" DataType="Messages:ChatMessageViewModel">
-            <TextBlock>
-                <Run Text="{Binding DateTime, StringFormat='{}[{0:hh:mm}]'}" />
-                <Run Text="{Binding Nickname, StringFormat='{}&lt;{0}>'}" />
-                <Run Text="{Binding Message}" />
-            </TextBlock>
-        </DataTemplate>
-        <DataTemplate x:Key="MessageDataTemplate" DataType="Messages:MessageViewModel">
-            <TextBlock>
-                <Run Text="{Binding Message}" />
-            </TextBlock>
-        </DataTemplate>
-
-        <DataTemplateSelectors:MessageDataTemplateSelector
-            x:Key="MessageDataTemplateSelector"
-            ChatMessageDataTemplate="{StaticResource ChatMessageDataTemplate}"
-            MessageDataTemplate="{StaticResource MessageDataTemplate}" />
-    </UserControl.Resources>
-    
-    <ListBox ItemsSource="{Binding}" Grid.IsSharedSizeScope="True" ItemTemplateSelector="{StaticResource MessageDataTemplateSelector}">
-        <i:Interaction.Behaviors>
-            <Behaviors:ScrollIntoViewBehavior />
-            <Behaviors:ScrollToBottomOnLoadedBehavior />
-        </i:Interaction.Behaviors>
-    </ListBox>
+    <RichTextBox IsReadOnly="True" IsReadOnlyCaretVisible="False" VerticalScrollBarVisibility="Auto"
+                 AttachedProperties:RichTextBoxExtensions.Messages="{Binding}" />
 </UserControl>

@@ -77,12 +77,10 @@ namespace Irc.Client.Wpf.Domain
 
         public bool UserIsInChannel(string nickname, string channelName)
         {
-            //if (!Users.TryGetValue(nickname, out var user))
-            //{
-            //    return false;
-            //}
-
-            var user = Users[nickname];
+            if (!Users.TryGetValue(nickname, out var user))
+            {
+                return false;
+            }
 
             return user.Channels.ContainsKey(channelName);
         }
