@@ -6,7 +6,7 @@ namespace Messages.Replies.CommandResponses
     public class CreatedReply : Reply
     {
         const string RPL_CREATED = "003";
-        
+
         public DateTime DateTime { get; }
 
         public CreatedReply(string sender, string target, DateTime dateTime) : base(sender, target, RPL_CREATED)

@@ -7,7 +7,7 @@ namespace Messages.Replies.CommandResponses
     public class GlobalUsersReply : Reply
     {
         const string RPL_GLOBALUSERS = "266";
-        
+
         public int CurrentClientCount { get; }
         public int MaximumClientCount { get; }
 

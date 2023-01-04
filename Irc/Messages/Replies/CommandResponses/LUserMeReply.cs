@@ -7,7 +7,7 @@ namespace Messages.Replies.CommandResponses
     public class LUserMeReply : Reply
     {
         const string RPL_LUSERME = "255";
-        
+
         public int ClientCount { get; }
         public int ServerCount { get; }
 

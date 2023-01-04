@@ -6,7 +6,7 @@ namespace Messages.Replies.CommandResponses
     public class LUserOpReply : Reply
     {
         const string RPL_LUSEROP = "252";
-        
+
         public int IrcOperatorsCount { get; }
 
         public LUserOpReply(string sender, string target, int ircOperatorsCount) : base(sender, target, RPL_LUSEROP)

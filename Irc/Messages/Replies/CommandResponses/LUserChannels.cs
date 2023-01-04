@@ -6,7 +6,7 @@ namespace Messages.Replies.CommandResponses
     public class LUserChannels : Reply
     {
         const string RPL_LUSERCHANNELS = "254";
-        
+
         public int ChannelCount { get; }
 
         public LUserChannels(string sender, string target, int channelCount) : base(sender, target, RPL_LUSERCHANNELS)

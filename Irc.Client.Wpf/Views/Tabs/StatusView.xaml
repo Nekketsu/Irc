@@ -4,9 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Irc.Client.Wpf.Views.Tabs"
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:Controls="clr-namespace:Irc.Client.Wpf.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
-    <local:ConversationView DataContext="{Binding Log}" />
+    <Controls:Conversation IsReadOnly="True" IsReadOnlyCaretVisible="False" VerticalScrollBarVisibility="Auto"
+                           Messages="{Binding Log}" />
 </UserControl>

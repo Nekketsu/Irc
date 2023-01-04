@@ -1,5 +1,4 @@
 using Irc.Messages;
-using Messages.Replies.ErrorReplies;
 
 namespace Messages.Replies.CommandResponses
 {

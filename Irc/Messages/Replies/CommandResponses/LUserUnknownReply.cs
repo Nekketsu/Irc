@@ -6,7 +6,7 @@ namespace Messages.Replies.CommandResponses
     public class LUserUnknownReply : Reply
     {
         const string RPL_LUSERUNKNOWN = "253";
-        
+
         public int UnknownConnectionsCount { get; }
 
         public LUserUnknownReply(string sender, string target, int unknownConnectionsCount) : base(sender, target, RPL_LUSERUNKNOWN)

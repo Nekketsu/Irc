@@ -10,7 +10,7 @@ namespace Messages.Replies.CommandResponses
         const string DefaultMessage = "Your host is {0}, running version {1}";
 
         public string Message { get; }
-        public string ServerName { get;  }
+        public string ServerName { get; }
         public string Version { get; }
 
         public YourHostReply(string sender, string target, string message) : base(sender, target, RPL_YOURHOST)

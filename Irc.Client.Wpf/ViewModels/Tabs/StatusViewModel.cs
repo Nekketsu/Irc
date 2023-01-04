@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows.Documents;
 
 namespace Irc.Client.Wpf.ViewModels.Tabs
 {

@@ -31,13 +31,13 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages
                     return Task.CompletedTask;
                 }
 
-                var messageViewModel = new MessageViewModel($"* Now talking in {message.ChannelName}") { MessageKind = MessageKind.Join};
+                var messageViewModel = new MessageViewModel($"* Now talking in {message.ChannelName}") { MessageKind = MessageKind.Join };
                 var channel = (ChannelViewModel)viewModel.DrawMessage(message.ChannelName, messageViewModel);
 
                 viewModel.Irc.Join(message.ChannelName, viewModel.Nickname);
 
                 channel.Users = new(viewModel.Irc.Channels[message.ChannelName].Users.Keys);
-                
+
                 viewModel.FocusChat(channel);
             }
             else

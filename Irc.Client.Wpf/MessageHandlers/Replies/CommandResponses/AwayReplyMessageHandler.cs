@@ -1,5 +1,5 @@
-﻿using Irc.Client.Wpf.ViewModels.Tabs.Messages;
-using Irc.Client.Wpf.ViewModels;
+﻿using Irc.Client.Wpf.ViewModels;
+using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using Irc.Messages.Replies.CommandResponses;
 using System.Threading.Tasks;
 

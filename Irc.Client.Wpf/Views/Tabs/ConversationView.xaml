@@ -8,6 +8,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
-    <Controls:ConversationControl IsReadOnly="True" IsReadOnlyCaretVisible="False" VerticalScrollBarVisibility="Auto"
-                                  Messages="{Binding}" />
+    <Controls:Conversation IsReadOnly="True" IsReadOnlyCaretVisible="False" VerticalScrollBarVisibility="Auto"
+                           Messages="{Binding}" />
 </UserControl>

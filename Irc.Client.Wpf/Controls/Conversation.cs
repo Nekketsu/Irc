@@ -10,16 +10,16 @@ using System.Windows.Media;
 
 namespace Irc.Client.Wpf.Controls
 {
-    public class ConversationControl : RichTextBox
+    public class Conversation : RichTextBox
     {
         NotifyCollectionChangedEventHandler collectionChangedHandler;
 
-        public ConversationControl()
+        public Conversation()
         {
-            Unloaded += ConversationControl_Unloaded;
+            Unloaded += Conversation_Unloaded;
         }
 
-        private void ConversationControl_Unloaded(object sender, RoutedEventArgs e)
+        private void Conversation_Unloaded(object sender, RoutedEventArgs e)
         {
             if (Messages is not null && collectionChangedHandler is not null)
             {
@@ -35,11 +35,11 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for Messages.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MessagesProperty =
-            DependencyProperty.Register("Messages", typeof(ObservableCollection<MessageViewModel>), typeof(ConversationControl), new UIPropertyMetadata(null, OnMessagesChanged));
+            DependencyProperty.Register("Messages", typeof(ObservableCollection<MessageViewModel>), typeof(Conversation), new UIPropertyMetadata(null, OnMessagesChanged));
 
         private static void OnMessagesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is not ConversationControl conversationControl || conversationControl.Document.Blocks.FirstOrDefault() is not Paragraph paragraph)
+            if (d is not Conversation conversationControl || conversationControl.Document.Blocks.FirstOrDefault() is not Paragraph paragraph)
             {
                 return;
             }
@@ -66,7 +66,7 @@ namespace Irc.Client.Wpf.Controls
             }
         }
 
-        private void OnCollectionChanged(ConversationControl conversationControl, NotifyCollectionChangedEventArgs e)
+        private void OnCollectionChanged(Conversation conversationControl, NotifyCollectionChangedEventArgs e)
         {
             if (conversationControl.Document.Blocks.FirstOrDefault() is not Paragraph paragraph)
             {
@@ -134,7 +134,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for ActionTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ActionTextBrushProperty =
-            DependencyProperty.Register("ActionTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(156, 0, 156))));
+            DependencyProperty.Register("ActionTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(156, 0, 156))));
 
 
         public Brush CtcpTextBrush
@@ -145,7 +145,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for CtcpTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CtcpTextBrushProperty =
-            DependencyProperty.Register("CtcpTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(255, 0, 0))));
+            DependencyProperty.Register("CtcpTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(255, 0, 0))));
 
 
         public Brush HighlightTextBrush
@@ -156,7 +156,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for HighlightTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HighlightTextBrushProperty =
-            DependencyProperty.Register("HighlightTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(127, 0, 0))));
+            DependencyProperty.Register("HighlightTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(127, 0, 0))));
 
 
         public Brush InfoTextBrush
@@ -167,7 +167,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for InfoTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty InfoTextBrushProperty =
-            DependencyProperty.Register("InfoTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 0, 127))));
+            DependencyProperty.Register("InfoTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 0, 127))));
 
 
         public Brush Info2TextBrush
@@ -178,7 +178,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for Info2TextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty Info2TextBrushProperty =
-            DependencyProperty.Register("Info2TextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 147, 0))));
+            DependencyProperty.Register("Info2TextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 147, 0))));
 
 
         public Brush InviteTextBrush
@@ -189,7 +189,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for InviteTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty InviteTextBrushProperty =
-            DependencyProperty.Register("InviteTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 147, 0))));
+            DependencyProperty.Register("InviteTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 147, 0))));
 
 
         public Brush JoinTextBrush
@@ -200,7 +200,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for JoinTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty JoinTextBrushProperty =
-            DependencyProperty.Register("JoinTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 147, 0))));
+            DependencyProperty.Register("JoinTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 147, 0))));
 
 
         public Brush KickTextBrush
@@ -211,7 +211,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for KickTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty KickTextBrushProperty =
-            DependencyProperty.Register("KickTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 147, 0))));
+            DependencyProperty.Register("KickTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 147, 0))));
 
 
         public Brush ModeTextBrush
@@ -222,7 +222,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for ModeTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ModeTextBrushProperty =
-            DependencyProperty.Register("ModeTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 147, 0))));
+            DependencyProperty.Register("ModeTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 147, 0))));
 
 
         public Brush NickTextBrush
@@ -233,7 +233,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for NickTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty NickTextBrushProperty =
-            DependencyProperty.Register("NickTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 147, 0))));
+            DependencyProperty.Register("NickTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 147, 0))));
 
 
         public Brush NormalTextBrush
@@ -244,7 +244,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for NormalTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty NormalTextBrushProperty =
-            DependencyProperty.Register("NormalTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(Brushes.Black));
+            DependencyProperty.Register("NormalTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(Brushes.Black));
 
 
         public Brush NoticeTextBrush
@@ -255,7 +255,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for NoticeTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty NoticeTextBrushProperty =
-            DependencyProperty.Register("NoticeTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(127, 0, 0))));
+            DependencyProperty.Register("NoticeTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(127, 0, 0))));
 
 
         public Brush NotifyTextBrush
@@ -266,7 +266,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for NotifyTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty NotifyTextBrushProperty =
-            DependencyProperty.Register("NotifyTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(252, 127, 0))));
+            DependencyProperty.Register("NotifyTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(252, 127, 0))));
 
 
         public Brush OtherTextBrush
@@ -277,7 +277,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for OtherTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty OtherTextBrushProperty =
-            DependencyProperty.Register("OtherTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(156, 0, 156))));
+            DependencyProperty.Register("OtherTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(156, 0, 156))));
 
 
         public Brush OwnTextBrush
@@ -288,7 +288,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for OwnTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty OwnTextBrushProperty =
-            DependencyProperty.Register("OwnTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(Brushes.Black));
+            DependencyProperty.Register("OwnTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(Brushes.Black));
 
 
         public Brush PartTextBrush
@@ -299,7 +299,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for PartTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PartTextBrushProperty =
-            DependencyProperty.Register("PartTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 147, 0))));
+            DependencyProperty.Register("PartTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 147, 0))));
 
 
         public Brush QuitTextBrush
@@ -310,7 +310,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for QuitTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty QuitTextBrushProperty =
-            DependencyProperty.Register("QuitTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 0, 127))));
+            DependencyProperty.Register("QuitTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 0, 127))));
 
 
         public Brush TopicTextBrush
@@ -321,7 +321,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for TopicTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TopicTextBrushProperty =
-            DependencyProperty.Register("TopicTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 147, 0))));
+            DependencyProperty.Register("TopicTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(0, 147, 0))));
 
 
         public Brush WallopsTextBrush
@@ -332,7 +332,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for WallopsTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty WallopsTextBrushProperty =
-            DependencyProperty.Register("WallopsTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(127, 0, 0))));
+            DependencyProperty.Register("WallopsTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(127, 0, 0))));
 
 
         public Brush WhoisTextBrush
@@ -343,6 +343,6 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for WhoisBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty WhoisTextBrushProperty =
-            DependencyProperty.Register("WhoisTextBrush", typeof(Brush), typeof(ConversationControl), new PropertyMetadata(Brushes.Black));
+            DependencyProperty.Register("WhoisTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(Brushes.Black));
     }
 }

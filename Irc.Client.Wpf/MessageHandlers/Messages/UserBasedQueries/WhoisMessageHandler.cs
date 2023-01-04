@@ -1,5 +1,4 @@
-﻿using Irc.Client.Wpf.ViewModels;
-using Irc.Messages.Messages;
+﻿using Irc.Messages.Messages;
 using System.Threading.Tasks;
 
 namespace Irc.Client.Wpf.MessageHandlers.Messages.UserBasedQueries

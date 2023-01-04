@@ -1,5 +1,4 @@
 using Irc.Messages;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace Messages.Replies.CommandResponses
@@ -8,7 +7,7 @@ namespace Messages.Replies.CommandResponses
     public class LocalUsersReply : Reply
     {
         const string RPL_LOCALUSERS = "265";
-        
+
         public int CurrentClientCount { get; }
         public int MaximumClientCount { get; }
 
