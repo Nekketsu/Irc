@@ -22,7 +22,7 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages.SendingMessages
             if (message.From is null)
             {
                 var text = $"-> -{message.Target}- {message.Text}";
-                var messageViewModel = new MessageViewModel(text);
+                var messageViewModel = new MessageViewModel(text) { MessageKind = MessageKind.Notice };
                 viewModel.DrawMessage(messageViewModel);
             }
             else
@@ -33,7 +33,7 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages.SendingMessages
                 if (viewModel.Irc.IsChannel(message.Target))
                 {
                     var text = $"-{from}:{message.Target}- {message.Text}";
-                    var messageViewModel = new MessageViewModel(text);
+                    var messageViewModel = new MessageViewModel(text) { MessageKind = MessageKind.Notice };
 
                     var channel = channels.Single(channel => channel.Target.Equals(message.Target, StringComparison.InvariantCultureIgnoreCase));
                     viewModel.DrawMessage(channel, messageViewModel);
@@ -41,7 +41,7 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages.SendingMessages
                 else if (viewModel.Irc.Users.TryGetValue(from, out var user))
                 {
                     var text = $"-{from}- {message.Text}";
-                    var messageViewModel = new MessageViewModel(text);
+                    var messageViewModel = new MessageViewModel(text) { MessageKind = MessageKind.Notice };
 
                     foreach (var channel in channels)
                     {
@@ -54,7 +54,7 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages.SendingMessages
                 else
                 {
                     var text = $"-{from}- {message.Text}";
-                    var messageViewModel = new MessageViewModel(text);
+                    var messageViewModel = new MessageViewModel(text) { MessageKind = MessageKind.Notice };
                     viewModel.DrawMessage(viewModel.Status, messageViewModel);
                 }
             }

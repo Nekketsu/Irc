@@ -2,6 +2,6 @@
 {
     public interface ITabViewModel
     {
-        public bool IsDirty { get; }
+        public bool IsDirty { get; set;  }
     }
 }

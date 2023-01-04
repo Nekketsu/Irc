@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Irc.Client.Wpf.Messenger.Requests;
+using Microsoft.Extensions.DependencyInjection;
+using System.Windows;
 
 namespace Irc.Client.Wpf
 {
@@ -10,6 +13,13 @@ namespace Irc.Client.Wpf
         public MainWindow()
         {
             InitializeComponent();
+
+            var messenger = App.Current.Services.GetService<IMessenger>();
+
+            messenger.Register<TitleRequest>(this, (r, m) =>
+            {
+                Title = m.Title;
+            });
         }
     }
 }

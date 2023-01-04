@@ -110,5 +110,10 @@ namespace Irc.Client.Wpf.Domain
         {
             return target.StartsWith("#");
         }
+
+        public void Topic(string channelName, string topic)
+        {
+            Channels[channelName].Topic = topic;
+        }
     }
 }

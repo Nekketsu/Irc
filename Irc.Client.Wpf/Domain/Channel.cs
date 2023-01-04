@@ -6,6 +6,7 @@ namespace Irc.Client.Wpf.Domain
     {
         public string Name { get; set; }
         public SortedDictionary<string, User> Users { get; set; }
+        public string Topic { get; set; }
 
         public Channel(string name)
         {

@@ -33,11 +33,12 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages
 
                 var messageViewModel = new MessageViewModel($"* Now talking in {message.ChannelName}") { MessageKind = MessageKind.Join};
                 var channel = (ChannelViewModel)viewModel.DrawMessage(message.ChannelName, messageViewModel);
-                viewModel.FocusChat(channel);
 
                 viewModel.Irc.Join(message.ChannelName, viewModel.Nickname);
 
                 channel.Users = new(viewModel.Irc.Channels[message.ChannelName].Users.Keys);
+                
+                viewModel.FocusChat(channel);
             }
             else
             {

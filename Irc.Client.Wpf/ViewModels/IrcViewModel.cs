@@ -14,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -97,11 +98,13 @@ namespace Irc.Client.Wpf.ViewModels
             switch (e.PropertyName)
             {
                 case nameof(SelectedTab):
-                    if (SelectedTab is ChatViewModel selectedChat)
+                    if (SelectedTab is null)
                     {
-                        selectedChat.IsDirty = false;
+                        return;
                     }
+                    SelectedTab.IsDirty = false;
                     FocusInput();
+                    UpdateTitle();
                     break;
 
                 case nameof(SelectedTabIndex):
@@ -417,6 +420,10 @@ namespace Irc.Client.Wpf.ViewModels
             else if (tab is StatusViewModel status)
             {
                 status.Log.Add(message);
+                if (tab != SelectedTab)
+                {
+                    tab.IsDirty = true;
+                }
             }
         }
 
@@ -438,6 +445,31 @@ namespace Irc.Client.Wpf.ViewModels
             }
 
             return chat;
+        }
+
+        public void UpdateTitle()
+        {
+            string title = null;
+
+            switch (SelectedTab)
+            {
+                case StatusViewModel:
+                    title = "Status";
+                    break;
+                case ChannelViewModel channel:
+                    title = channel.Target;
+                    var topic = Irc.Channels[channel.Target].Topic;
+                    if (topic is not null)
+                    {
+                        title = $"{title}: {topic}";
+                    }
+                    break;
+                case ChatViewModel chat:
+                    title = chat.Target;
+                    break;
+            }
+
+            messenger.Send(new TitleRequest(title));
         }
     }
 }

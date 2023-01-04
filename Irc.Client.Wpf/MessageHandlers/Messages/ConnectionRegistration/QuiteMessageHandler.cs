@@ -21,7 +21,7 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages
             if (message.Target is not null)
             {
                 var target = viewModel.Irc.GetNickName(message.Target);
-                var text = $"{target} has quit IRC ({message.Reason})";
+                var text = $"* {target} has quit IRC ({message.Reason})";
                 var messageViewModel = new MessageViewModel(text) { MessageKind = MessageKind.Quit };
 
                 foreach (var channel in viewModel.Chats.OfType<ChannelViewModel>().ToArray())
