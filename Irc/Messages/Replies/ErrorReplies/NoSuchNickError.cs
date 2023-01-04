@@ -21,5 +21,22 @@ namespace Messages.Replies.ErrorReplies
         {
             return $"{Nickname} :{Message}";
         }
+
+        public new static NoSuchNickError Parse(string message)
+        {
+            var messageSplit = message.Split();
+
+            var sender = messageSplit[0];
+            var target = messageSplit[2];
+            var nickname = messageSplit[3];
+            var text = message
+                .Substring(messageSplit[0].Length).TrimStart()
+                .Substring(messageSplit[1].Length).TrimStart()
+                .Substring(messageSplit[2].Length).TrimStart()
+                .Substring(messageSplit[3].Length).TrimStart()
+                .Substring(":".Length);
+
+            return new(sender, target, nickname, text);
+        }
     }
 }

@@ -19,7 +19,8 @@ namespace Irc.Client.Wpf.MessageHandlers.Replies.CommandResponses
 
         public Task HandleAsync(TopicReply message)
         {
-            var messageViewModel = new MessageViewModel(message.ToString());
+            var text = $"* Topic is '{message.Topic}'";
+            var messageViewModel = new MessageViewModel(text) { MessageKind = MessageKind.Topic };
             viewModel.DrawMessage(message.ChannelName, messageViewModel);
 
             viewModel.Irc.Topic(message.ChannelName, message.Topic);

@@ -34,20 +34,12 @@ namespace Messages.Replies.CommandResponses
             var nickname = messageSplit[3];
             var idleString = messageSplit[4];
             var signOnString = messageSplit[5];
-            var serverInfo = message
-                .Substring(messageSplit[0].Length).TrimStart()
-                .Substring(messageSplit[1].Length).TrimStart()
-                .Substring(messageSplit[2].Length).TrimStart()
-                .Substring(messageSplit[3].Length).TrimStart()
-                .Substring(messageSplit[4].Length).TrimStart()
-                .Substring(messageSplit[5].Length).TrimStart()
-                .TrimStart(':');
 
             var idleSeconds = long.Parse(idleString);
             var idle = TimeSpan.FromSeconds(idleSeconds);
 
             var signOnSeconds = long.Parse(signOnString);
-            var signOn = DateTimeOffset.FromUnixTimeSeconds(signOnSeconds).DateTime;
+            var signOn = DateTimeOffset.FromUnixTimeSeconds(signOnSeconds).LocalDateTime;
 
             return new WhoisIdleReply(sender, target, nickname, idle, signOn, message);
         }

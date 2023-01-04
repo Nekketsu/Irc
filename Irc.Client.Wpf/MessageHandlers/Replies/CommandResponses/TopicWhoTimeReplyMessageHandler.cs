@@ -16,7 +16,8 @@ namespace Irc.Client.Wpf.MessageHandlers.Replies.CommandResponses
 
         public Task HandleAsync(TopicWhoTimeReply message)
         {
-            var messageViewModel = new MessageViewModel(message.ToString());
+            var text = $"* Set by {message.Nickname} on {message.SetAt}";
+            var messageViewModel = new MessageViewModel(text) { MessageKind = MessageKind.Topic };
             viewModel.DrawMessage(message.ChannelName, messageViewModel);
 
             return Task.CompletedTask;

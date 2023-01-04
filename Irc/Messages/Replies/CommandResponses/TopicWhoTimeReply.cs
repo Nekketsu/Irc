@@ -40,7 +40,7 @@ namespace Messages.Replies.CommandResponses
                 .TrimStart(':');
 
             var setAsLong = long.Parse(setAsString);
-            var setAs = DateTimeOffset.FromUnixTimeSeconds(setAsLong).DateTime;
+            var setAs = DateTimeOffset.FromUnixTimeSeconds(setAsLong).LocalDateTime;
 
             return new TopicWhoTimeReply(sender, target, channelName, nickname, setAs);
         }
