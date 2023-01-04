@@ -32,7 +32,7 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages
                     return Task.CompletedTask;
                 }
 
-                var messageViewModel = new MessageViewModel($"{from} has left {message.ChannelName}");
+                var messageViewModel = new MessageViewModel($"* {from} has left {message.ChannelName}") { MessageKind = MessageKind.Part };
                 viewModel.DrawMessage(message.ChannelName, messageViewModel);
 
                 viewModel.Irc.Part(message.ChannelName, from);

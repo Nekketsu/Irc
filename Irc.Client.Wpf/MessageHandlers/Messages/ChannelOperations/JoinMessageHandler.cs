@@ -31,7 +31,7 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages
                     return Task.CompletedTask;
                 }
 
-                var messageViewModel = new MessageViewModel($"Now talking in {message.ChannelName}");
+                var messageViewModel = new MessageViewModel($"* Now talking in {message.ChannelName}") { MessageKind = MessageKind.Join};
                 var channel = (ChannelViewModel)viewModel.DrawMessage(message.ChannelName, messageViewModel);
                 viewModel.FocusChat(channel);
 
@@ -41,7 +41,7 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages
             }
             else
             {
-                var messageViewModel = new MessageViewModel($"{from} has joined {message.ChannelName}");
+                var messageViewModel = new MessageViewModel($"* {from} has joined {message.ChannelName}") { MessageKind = MessageKind.Join };
                 var channel = (ChannelViewModel)viewModel.DrawMessage(message.ChannelName, messageViewModel);
 
                 viewModel.Irc.Join(message.ChannelName, from);

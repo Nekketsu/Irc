@@ -2,7 +2,6 @@
 using Irc.Client.Wpf.ViewModels.Tabs;
 using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using Irc.Messages.Messages;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,12 +21,14 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages
             if (message.Target is not null)
             {
                 var target = viewModel.Irc.GetNickName(message.Target);
-                foreach (var chat in viewModel.Chats.OfType<ChatViewModel>())
+                var text = $"{target} has quit IRC ({message.Reason})";
+                var messageViewModel = new MessageViewModel(text) { MessageKind = MessageKind.Quit };
+
+                foreach (var channel in viewModel.Chats.OfType<ChannelViewModel>().ToArray())
                 {
-                    if (string.Equals(chat.Target, target, StringComparison.InvariantCultureIgnoreCase))
+                    if (viewModel.Irc.Channels[channel.Target].Users.ContainsKey(target))
                     {
-                        var messageViewModel = new MessageViewModel(message.Reason);
-                        viewModel.DrawMessage(target, messageViewModel);
+                        viewModel.DrawMessage(channel, messageViewModel);
                     }
                 }
 

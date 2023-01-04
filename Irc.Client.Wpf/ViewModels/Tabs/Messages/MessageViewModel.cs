@@ -7,8 +7,12 @@ namespace Irc.Client.Wpf.ViewModels.Tabs.Messages
     {
         [ObservableProperty]
         private DateTime dateTime;
+
         [ObservableProperty]
         private string message;
+
+        [ObservableProperty]
+        private MessageKind messageKind;
 
         public MessageViewModel(string message) : this(DateTime.Now, message)
         {
@@ -19,6 +23,7 @@ namespace Irc.Client.Wpf.ViewModels.Tabs.Messages
         {
             DateTime = dateTime;
             Message = message;
+            MessageKind = MessageKind.Normal;
         }
     }
 }
