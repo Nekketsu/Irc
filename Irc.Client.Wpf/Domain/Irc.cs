@@ -10,8 +10,8 @@ namespace Irc.Client.Wpf.Domain
 
         public Irc()
         {
-            Channels = new Dictionary<string, Channel>();
-            Users = new Dictionary<string, User>();
+            Channels = new Dictionary<string, Channel>(ChannelNameEqualityComparer.Default);
+            Users = new Dictionary<string, User>(NicknameEqualityComparer.Default);
         }
 
         public void Connect(string nickname)
@@ -114,5 +114,7 @@ namespace Irc.Client.Wpf.Domain
         {
             Channels[channelName].Topic = topic;
         }
+
+        public string[] GetUserByChannelName(string channelName) => Channels[channelName].Users.Keys.Order(NicknameComparer.Default).ToArray();
     }
 }

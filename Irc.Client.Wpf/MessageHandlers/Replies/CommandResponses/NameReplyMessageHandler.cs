@@ -25,7 +25,7 @@ namespace Irc.Client.Wpf.MessageHandlers.Replies.CommandResponses
                 .OfType<ChannelViewModel>()
                 .Single(c => c.Target.Equals(message.ChannelName, StringComparison.InvariantCultureIgnoreCase));
 
-            channel.Users = new ObservableCollection<string>(viewModel.Irc.Channels[message.ChannelName].Users.Keys);
+            channel.Users = new ObservableCollection<string>(viewModel.Irc.GetUserByChannelName(message.ChannelName));
 
             return Task.CompletedTask;
         }

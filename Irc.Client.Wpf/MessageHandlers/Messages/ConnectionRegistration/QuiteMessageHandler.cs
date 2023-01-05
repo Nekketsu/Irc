@@ -24,15 +24,16 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages
                 var text = $"* {target} has quit IRC ({message.Reason})";
                 var messageViewModel = new MessageViewModel(text) { MessageKind = MessageKind.Quit };
 
+                viewModel.Irc.Quit(target);
+
                 foreach (var channel in viewModel.Chats.OfType<ChannelViewModel>().ToArray())
                 {
                     if (viewModel.Irc.Channels[channel.Target].Users.ContainsKey(target))
                     {
                         viewModel.DrawMessage(channel, messageViewModel);
+                        channel.Users = new(viewModel.Irc.GetUserByChannelName(channel.Target));
                     }
                 }
-
-                viewModel.Irc.Quit(target);
             }
             else
             {

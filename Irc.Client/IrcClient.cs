@@ -11,6 +11,8 @@ namespace Irc.Client
         public string Host { get; }
         public int Port { get; }
 
+        public event EventHandler Connected;
+        public event EventHandler Disconnected;
         public event EventHandler<Message> MessageReceived;
         public event EventHandler<Message> MessageSent;
         public event EventHandler<string> RawMessageReceived;
@@ -36,9 +38,10 @@ namespace Irc.Client
             streamReader = new StreamReader(stream);
             streamWriter = new StreamWriter(stream) { AutoFlush = true };
 
-            await HandShake();
+            Connected?.Invoke(this, EventArgs.Empty);
 
-            HandleMessagesAsync(stoppingToken);
+            await HandShake();
+            await HandleMessagesAsync(stoppingToken);
         }
 
         private async Task HandShake()
@@ -60,15 +63,28 @@ namespace Irc.Client
         public async Task SendMessageAsync<T>(T message) where T : Message
         {
             var text = message.ToString();
-            RawMessageSent?.Invoke(this, text);
-
             await streamWriter.WriteLineAsync(text);
+
+            if (!tcpClient.Connected)
+            {
+                Disconnected?.Invoke(this, new EventArgs());
+                return;
+            }
+
+            RawMessageSent?.Invoke(this, text);
             MessageSent?.Invoke(this, message);
         }
 
         private async Task<Message> ReadMessageAsync()
         {
             var text = await streamReader.ReadLineAsync();
+
+            if (!tcpClient.Connected)
+            {
+                Disconnected?.Invoke(this, new EventArgs());
+                return null;
+            }
+
             RawMessageReceived?.Invoke(this, text);
 
             var message = Message.Parse(text);
@@ -77,7 +93,7 @@ namespace Irc.Client
             return message;
         }
 
-        private async void HandleMessagesAsync(CancellationToken stoppingToken)
+        private async Task HandleMessagesAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {

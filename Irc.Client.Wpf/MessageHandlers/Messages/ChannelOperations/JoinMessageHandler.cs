@@ -36,7 +36,7 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages
 
                 viewModel.Irc.Join(message.ChannelName, viewModel.Nickname);
 
-                channel.Users = new(viewModel.Irc.Channels[message.ChannelName].Users.Keys);
+                channel.Users = new(viewModel.Irc.GetUserByChannelName(message.ChannelName));
 
                 viewModel.FocusChat(channel);
             }
@@ -47,7 +47,7 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages
 
                 viewModel.Irc.Join(message.ChannelName, from);
 
-                channel.Users = new(viewModel.Irc.Channels[message.ChannelName].Users.Keys);
+                channel.Users = new(viewModel.Irc.GetUserByChannelName(message.ChannelName));
             }
 
             return Task.CompletedTask;

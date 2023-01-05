@@ -91,7 +91,7 @@
             <TextBox Grid.Column="1" Text="{Binding Host}" />
             <TextBlock Grid.Column="2" Text="Nickname:" />
             <TextBox Grid.Column="3" Text="{Binding Nickname}" />
-            <Button Grid.Column="4" Content="Connect" Command="{Binding ConnectAsyncCommand}" />
+            <Button Grid.Column="4" Content="Connect" Command="{Binding ConnectCommand}" />
         </Grid>
 
         <TabControl Grid.Row="1" SelectedItem="{Binding SelectedTab}" SelectedIndex="{Binding SelectedTabIndex}" ItemTemplateSelector="{StaticResource ChatItemTemplateSelector}" ContentTemplateSelector="{StaticResource ChatContentTemplateSelector}">

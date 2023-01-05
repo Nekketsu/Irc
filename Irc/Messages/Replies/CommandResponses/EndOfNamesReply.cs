@@ -21,5 +21,22 @@ namespace Messages.Replies.CommandResponses
         {
             return $"{ChannelName} :{Message}";
         }
+
+        public new static EndOfNamesReply Parse(string message)
+        {
+            var messageSplit = message.Split();
+
+            var sender = messageSplit[0].Substring(":".Length);
+            var target = messageSplit[2];
+            var channelName = messageSplit[3];
+            var text = message
+                .Substring(messageSplit[0].Length).Substring(":".Length)
+                .Substring(messageSplit[1].Length).Substring(":".Length)
+                .Substring(messageSplit[2].Length).Substring(":".Length)
+                .Substring(messageSplit[3].Length).Substring(":".Length)
+                .Substring(":".Length);
+
+            return new(sender, target, channelName, text);
+        }
     }
 }

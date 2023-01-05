@@ -38,7 +38,7 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages
                 viewModel.Irc.Part(message.ChannelName, from);
 
                 var channel = viewModel.Chats.OfType<ChannelViewModel>().Single(c => c.Target == message.ChannelName);
-                channel.Users = new ObservableCollection<string>(viewModel.Irc.Channels[message.ChannelName].Users.Keys);
+                channel.Users = new ObservableCollection<string>(viewModel.Irc.GetUserByChannelName(message.ChannelName));
             }
 
             return Task.CompletedTask;

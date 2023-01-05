@@ -6,6 +6,7 @@ namespace Messages.Replies.ErrorReplies
     public class CannotSendToChannelError : Reply
     {
         public const string ERR_CANNOTSENDTOCHAN = "404";
+
         public string ChannelName { get; set; }
         public string Message { get; set; }
 

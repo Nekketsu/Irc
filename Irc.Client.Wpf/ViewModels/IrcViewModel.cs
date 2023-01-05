@@ -22,15 +22,15 @@ namespace Irc.Client.Wpf.ViewModels
     public partial class IrcViewModel : ObservableObject
     {
         [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(ConnectAsyncCommand))]
+        [NotifyCanExecuteChangedFor(nameof(ConnectCommand))]
         private ConnectionState state;
 
         [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(ConnectAsyncCommand))]
+        [NotifyCanExecuteChangedFor(nameof(ConnectCommand))]
         private string host;
 
         [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(ConnectAsyncCommand))]
+        [NotifyCanExecuteChangedFor(nameof(ConnectCommand))]
         private string nickname;
 
 
@@ -58,6 +58,7 @@ namespace Irc.Client.Wpf.ViewModels
 
 
         private IrcClient ircClient;
+        private Task ircClientTask;
         private CancellationTokenSource cancellationTokenSource;
 
         public Domain.Irc Irc { get; }
@@ -114,24 +115,19 @@ namespace Irc.Client.Wpf.ViewModels
 
 
         [RelayCommand(CanExecute = nameof(CanConnect))]
-        private async void ConnectAsync()
+        private void Connect()
         {
             State = ConnectionState.Connecting;
             cancellationTokenSource = new CancellationTokenSource();
 
             ircClient = new IrcClient(Nickname, Host);
+            ircClient.Connected += IrcClient_Connected;
             ircClient.MessageSent += IrcClient_MessageSent;
             ircClient.MessageReceived += IrcClient_MessageReceived;
             ircClient.RawMessageSent += IrcClient_RawMessageSent;
             ircClient.RawMessageReceived += IrcClient_RawMessageReceived;
 
-            await ircClient.RunAsync(cancellationTokenSource.Token);
-
-            State = ConnectionState.Connected;
-
-            FocusInput();
-
-            Irc.Connect(Nickname);
+            ircClientTask = ircClient.RunAsync(cancellationTokenSource.Token);
         }
 
         private bool CanConnect() =>
@@ -239,7 +235,7 @@ namespace Irc.Client.Wpf.ViewModels
                     Host = messageSplit[1];
                 }
 
-                ConnectAsync();
+                Connect();
 
                 TextMessage = null;
 
@@ -349,6 +345,14 @@ namespace Irc.Client.Wpf.ViewModels
         {
             IsTextMessageFocused = false;
             IsTextMessageFocused = true;
+        }
+
+        private void IrcClient_Connected(object sender, EventArgs e)
+        {
+            State = ConnectionState.Connected;
+            FocusInput();
+
+            Irc.Connect(Nickname);
         }
 
         private async void IrcClient_MessageSent(object sender, Message message)
