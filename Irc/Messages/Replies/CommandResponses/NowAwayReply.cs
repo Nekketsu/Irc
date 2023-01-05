@@ -22,7 +22,7 @@
         {
             var messageSplit = message.Split();
 
-            var sender = messageSplit[0].TrimStart(':');
+            var sender = messageSplit[0].Substring(":".Length);
             var target = messageSplit[2];
             var text = message
                 .Substring(messageSplit[0].Length).TrimStart()

@@ -23,7 +23,7 @@
         {
             var messageSplit = message.Split();
 
-            var sender = messageSplit[0];
+            var sender = messageSplit[0].Substring(":".Length);
             var target = messageSplit[2];
             var nickname = messageSplit[3];
             var text = message

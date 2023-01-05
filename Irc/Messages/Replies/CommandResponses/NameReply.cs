@@ -27,7 +27,7 @@ namespace Messages.Replies.CommandResponses
         {
             var messageSplit = message.Split();
 
-            var sender = messageSplit[0].TrimStart(':');
+            var sender = messageSplit[0].Substring(":".Length);
             message = message.Substring(messageSplit[0].Length).Trim();
 
             message = message.Substring(messageSplit[1].Length).Trim(); // Command
