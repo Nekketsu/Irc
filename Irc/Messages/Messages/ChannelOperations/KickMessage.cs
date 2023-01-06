@@ -29,19 +29,18 @@ namespace Irc.Messages.Messages
         public new static KickMessage Parse(string message)
         {
             var messageSplit = message.Split();
-            var channelName = messageSplit[1];
-            var nickname = messageSplit[2];
 
-            var text = message.Substring(message.IndexOf(messageSplit[0]) + messageSplit[0].Length).TrimStart();
-            text = message.Substring(message.IndexOf(messageSplit[1]) + messageSplit[1].Length).TrimStart();
-            text = message.Substring(message.IndexOf(messageSplit[2]) + messageSplit[2].Length).TrimStart();
+            var from = messageSplit[0];
+            var channelName = messageSplit[2];
+            var nickname = messageSplit[3];
+            var text = message
+                .Substring(messageSplit[0].Length).TrimStart()
+                .Substring(messageSplit[1].Length).TrimStart()
+                .Substring(messageSplit[2].Length).TrimStart()
+                .Substring(messageSplit[3].Length).TrimStart()
+                .Substring(":".Length);
 
-            if (text.Length == 0)
-            {
-                text = null;
-            }
-
-            return new KickMessage(channelName, nickname, text);
+            return new KickMessage(from, channelName, nickname, text);
         }
     }
 }

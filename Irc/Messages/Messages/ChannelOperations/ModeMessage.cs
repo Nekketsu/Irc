@@ -20,9 +20,9 @@ namespace Irc.Messages.Messages
 
         public override string ToString()
         {
-            return Modes is null
+            return From is null
                 ? $"{Command} {Target}"
-                : $"{Command} {Target} {Modes}";
+                : $":{From} {Command} {Target} {Modes}";
         }
 
         public new static ModeMessage Parse(string message)
@@ -33,7 +33,10 @@ namespace Irc.Messages.Messages
             {
                 var from = messageSplit[0].Substring(":".Length);
                 var target = messageSplit[2];
-                var modes = messageSplit[3];
+                var modes = message
+                    .Substring(messageSplit[0].Length).TrimStart()
+                    .Substring(messageSplit[1].Length).TrimStart()
+                    .Substring(messageSplit[2].Length).TrimStart();
 
                 return new(from, target, modes);
             }

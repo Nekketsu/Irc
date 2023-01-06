@@ -14,7 +14,14 @@ namespace Irc.Client.Wpf.Domain
 
             if (xIndexOf >= 0 && yIndexOf >= 0)
             {
-                return string.Compare(x.Substring(1), y.Substring(1), StringComparison.InvariantCultureIgnoreCase);
+                if (xIndexOf == yIndexOf)
+                {
+                    return string.Compare(x.Substring(1), y.Substring(1), StringComparison.InvariantCultureIgnoreCase);
+                }
+                else
+                {
+                    return xIndexOf.CompareTo(yIndexOf);
+                }
             }
             if (xIndexOf >= 0)
             {
