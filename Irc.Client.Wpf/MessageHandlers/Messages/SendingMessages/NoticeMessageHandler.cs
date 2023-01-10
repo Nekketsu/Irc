@@ -2,9 +2,6 @@
 using Irc.Client.Wpf.ViewModels.Tabs;
 using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using Irc.Messages.Messages;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Irc.Client.Wpf.MessageHandlers.Messages.SendingMessages
 {
@@ -27,35 +24,39 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages.SendingMessages
             }
             else
             {
-                var from = viewModel.Irc.GetNickName(message.From);
+                User from = message.From;
 
                 var channels = viewModel.Chats.OfType<ChannelViewModel>();
-                if (viewModel.Irc.IsChannel(message.Target))
+                if (Channel.IsChannel(message.Target))
                 {
-                    var text = $"-{from}:{message.Target}- {message.Text}";
+                    var text = $"-{from.Nickname}:{message.Target}- {message.Text}";
                     var messageViewModel = new MessageViewModel(text) { MessageKind = MessageKind.Notice };
 
                     var channel = channels.Single(channel => channel.Target.Equals(message.Target, StringComparison.InvariantCultureIgnoreCase));
                     viewModel.DrawMessage(channel, messageViewModel);
                 }
-                else if (viewModel.Irc.Users.TryGetValue(from, out var user))
-                {
-                    var text = $"-{from}- {message.Text}";
-                    var messageViewModel = new MessageViewModel(text) { MessageKind = MessageKind.Notice };
-
-                    foreach (var channel in channels)
-                    {
-                        if (user.Channels.ContainsKey(channel.Target))
-                        {
-                            viewModel.DrawMessage(channel, messageViewModel);
-                        }
-                    }
-                }
                 else
                 {
-                    var text = $"-{from}- {message.Text}";
-                    var messageViewModel = new MessageViewModel(text) { MessageKind = MessageKind.Notice };
-                    viewModel.DrawMessage(viewModel.Status, messageViewModel);
+                    var user = viewModel.IrcClient.Users[from.Nickname];
+                    if (user is not null)
+                    {
+                        var text = $"-{from.Nickname}- {message.Text}";
+                        var messageViewModel = new MessageViewModel(text) { MessageKind = MessageKind.Notice };
+
+                        foreach (var channel in channels)
+                        {
+                            if (user.Channels.Contains(channel.Target))
+                            {
+                                viewModel.DrawMessage(channel, messageViewModel);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var text = $"-{from.Nickname}- {message.Text}";
+                        var messageViewModel = new MessageViewModel(text) { MessageKind = MessageKind.Notice };
+                        viewModel.DrawMessage(viewModel.Status, messageViewModel);
+                    }
                 }
             }
 

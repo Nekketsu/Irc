@@ -2,8 +2,6 @@
 using Irc.Client.Wpf.ViewModels.Tabs;
 using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using Messages.Replies.CommandResponses;
-using System;
-using System.Threading.Tasks;
 
 namespace Irc.Client.Wpf.MessageHandlers.Replies.CommandResponses
 {
@@ -21,8 +19,6 @@ namespace Irc.Client.Wpf.MessageHandlers.Replies.CommandResponses
             var text = $"* Topic is '{message.Topic}'";
             var messageViewModel = new MessageViewModel(text) { MessageKind = MessageKind.Topic };
             viewModel.DrawMessage(message.ChannelName, messageViewModel);
-
-            viewModel.Irc.Topic(message.ChannelName, message.Topic);
 
             if (viewModel.SelectedTab is ChannelViewModel channel && channel.Target.Equals(message.ChannelName, StringComparison.InvariantCultureIgnoreCase))
             {

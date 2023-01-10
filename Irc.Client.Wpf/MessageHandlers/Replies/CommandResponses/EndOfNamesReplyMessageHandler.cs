@@ -1,5 +1,4 @@
 ﻿using Messages.Replies.CommandResponses;
-using System.Threading.Tasks;
 
 namespace Irc.Client.Wpf.MessageHandlers.Replies.CommandResponses
 {

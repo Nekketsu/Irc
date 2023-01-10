@@ -2,7 +2,6 @@
 using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using Messages.Replies.CommandResponses;
 using System.Globalization;
-using System.Threading.Tasks;
 
 namespace Irc.Client.Wpf.MessageHandlers.Replies.CommandResponses
 {

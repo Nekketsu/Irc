@@ -1,5 +1,4 @@
 ﻿using Irc.Messages.Messages.OptionalFeatures;
-using System.Threading.Tasks;
 
 namespace Irc.Client.Wpf.MessageHandlers.Messages
 {

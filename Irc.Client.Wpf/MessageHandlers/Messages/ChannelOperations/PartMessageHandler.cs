@@ -2,10 +2,7 @@
 using Irc.Client.Wpf.ViewModels.Tabs;
 using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using Irc.Messages.Messages;
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Irc.Client.Wpf.MessageHandlers.Messages
 {
@@ -20,26 +17,17 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages
 
         public Task HandleAsync(PartMessage message)
         {
-            if (message.From is null)
+            var from = (User)message.From;
+            if (from is null || from.Nickname == viewModel.Nickname)
             {
-                viewModel.Irc.Part(message.ChannelName, viewModel.Nickname);
+                return Task.CompletedTask;
             }
-            else
-            {
-                var from = viewModel.Irc.GetNickName(message.From);
-                if (from.Equals(viewModel.Nickname, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return Task.CompletedTask;
-                }
 
-                var messageViewModel = new MessageViewModel($"* {from} has left {message.ChannelName}") { MessageKind = MessageKind.Part };
-                viewModel.DrawMessage(message.ChannelName, messageViewModel);
+            var messageViewModel = new MessageViewModel($"* {from.Nickname} has left {message.ChannelName}") { MessageKind = MessageKind.Part };
+            viewModel.DrawMessage(message.ChannelName, messageViewModel);
 
-                viewModel.Irc.Part(message.ChannelName, from);
-
-                var channel = viewModel.Chats.OfType<ChannelViewModel>().Single(c => c.Target == message.ChannelName);
-                channel.Users = new ObservableCollection<string>(viewModel.Irc.GetUserByChannelName(message.ChannelName));
-            }
+            var channel = viewModel.Chats.OfType<ChannelViewModel>().Single(c => c.Target == message.ChannelName);
+            channel.Users = new ObservableCollection<string>(viewModel.IrcClient.Channels[message.ChannelName].Users.Select(u => (string)u.Nickname));
 
             return Task.CompletedTask;
         }

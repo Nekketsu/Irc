@@ -2,16 +2,14 @@
 using Irc.Client.Wpf.ViewModels.Tabs;
 using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using Irc.Messages.Messages;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Irc.Client.Wpf.MessageHandlers.Messages
 {
-    public class QuiteMessageHandler : IMessageHandler<QuitMessage>
+    public class QuitMessageHandler : IMessageHandler<QuitMessage>
     {
         private readonly IrcViewModel viewModel;
 
-        public QuiteMessageHandler(IrcViewModel viewModel)
+        public QuitMessageHandler(IrcViewModel viewModel)
         {
             this.viewModel = viewModel;
         }
@@ -20,24 +18,18 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages
         {
             if (message.Target is not null)
             {
-                var target = viewModel.Irc.GetNickName(message.Target);
-                var text = $"* {target} has quit IRC ({message.Reason})";
+                var target = (User)message.Target;
+                var text = $"* {target.Nickname} has quit IRC ({message.Reason})";
                 var messageViewModel = new MessageViewModel(text) { MessageKind = MessageKind.Quit };
-
-                viewModel.Irc.Quit(target);
 
                 foreach (var channel in viewModel.Chats.OfType<ChannelViewModel>().ToArray())
                 {
-                    if (viewModel.Irc.Channels[channel.Target].Users.ContainsKey(target))
+                    if (viewModel.IrcClient.Channels[channel.Target].Users.Contains(target.Nickname))
                     {
                         viewModel.DrawMessage(channel, messageViewModel);
-                        channel.Users = new(viewModel.Irc.GetUserByChannelName(channel.Target));
+                        channel.Users = new(viewModel.IrcClient.Channels[channel.Target].Users.Select(u => (string)u.Nickname));
                     }
                 }
-            }
-            else
-            {
-                viewModel.Irc.Quit(viewModel.Nickname);
             }
 
             return Task.CompletedTask;

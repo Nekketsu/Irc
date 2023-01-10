@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Irc.Client.Wpf.Domain
+﻿namespace Irc.Client
 {
     public class NicknameComparer : IComparer<string>
     {

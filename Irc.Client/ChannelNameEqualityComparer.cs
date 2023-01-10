@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Irc.Client.Wpf.Domain
+namespace Irc.Client
 {
-    public class NicknameEqualityComparer : EqualityComparer<string>
+    public class ChannelNameEqualityComparer : EqualityComparer<string>
     {
-        private char[] prefixes = { '~', '&', '@', '%', '+' };
+        private char[] prefixes = { '#', '&' };
 
         public override bool Equals(string x, string y)
         {
@@ -33,6 +30,6 @@ namespace Irc.Client.Wpf.Domain
             return string.GetHashCode(obj, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        public new static NicknameEqualityComparer Default => new();
+        public new static ChannelNameEqualityComparer Default => new();
     }
 }

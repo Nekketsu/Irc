@@ -2,9 +2,6 @@
 using Irc.Client.Wpf.ViewModels.Tabs;
 using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using Irc.Messages.Messages;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Irc.Client.Wpf.MessageHandlers.Messages.ConnectionRegistration
 {
@@ -19,24 +16,23 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages.ConnectionRegistration
 
         public Task HandleAsync(NickMessage message)
         {
-            if (message.From is null)
+            User from = message.From;
+
+            if (from is null)
             {
-                var messageViewModel = new MessageViewModel($"Ýour nick is now {message.Nickname}");
+                var messageViewModel = new MessageViewModel($"* Your nick is now {message.Nickname}") { MessageKind = MessageKind.Nick };
                 viewModel.DrawMessage(viewModel.Status, messageViewModel);
             }
 
-            if (message.From is not null)
+            if (from is not null)
             {
-                var previousNickname = viewModel.Irc.GetNickName(message.From);
-                viewModel.Irc.RenameUser(previousNickname, message.Nickname);
-
-                var channels = viewModel.Irc.Channels.Values
-                    .Where(channel => channel.Users.ContainsKey(message.Nickname))
+                var channels = viewModel.IrcClient.Channels
+                    .Where(channel => channel.Users.Contains(message.Nickname))
                     .ToDictionary(channel => channel.Name);
 
                 var chatViewModel = viewModel.Chats
                     .OfType<ChatViewModel>()
-                    .SingleOrDefault(chat => chat.Target.Equals(previousNickname, StringComparison.InvariantCultureIgnoreCase));
+                    .SingleOrDefault(chat => chat.Target.Equals((string)from.Nickname, StringComparison.InvariantCultureIgnoreCase));
 
                 if (chatViewModel is not null)
                 {
@@ -47,9 +43,9 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages.ConnectionRegistration
                 {
                     if (channels.TryGetValue(channelViewModel.Target, out var channel))
                     {
-                        channelViewModel.Users = new(channel.Users.Keys);
+                        channelViewModel.Users = new(channel.Users.Select(u => (string)u.Nickname));
 
-                        var messageViewModel = new MessageViewModel($"* {previousNickname} is now known as {message.Nickname}");
+                        var messageViewModel = new MessageViewModel($"* {from.Nickname} is now known as {message.Nickname}") { MessageKind = MessageKind.Nick };
                         viewModel.DrawMessage(channelViewModel, messageViewModel);
                     }
                 }

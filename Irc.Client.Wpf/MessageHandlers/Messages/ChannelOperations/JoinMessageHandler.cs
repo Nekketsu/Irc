@@ -2,8 +2,6 @@
 using Irc.Client.Wpf.ViewModels.Tabs;
 using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using Irc.Messages.Messages;
-using System;
-using System.Threading.Tasks;
 
 namespace Irc.Client.Wpf.MessageHandlers.Messages
 {
@@ -23,31 +21,23 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages
                 return Task.CompletedTask;
             }
 
-            var from = viewModel.Irc.GetNickName(message.From);
-            if (from.Equals(viewModel.Nickname, StringComparison.InvariantCultureIgnoreCase))
+            User from = message.From;
+            if (from.Nickname == viewModel.Nickname)
             {
-                if (viewModel.Irc.UserIsInChannel(viewModel.Nickname, message.ChannelName))
-                {
-                    return Task.CompletedTask;
-                }
-
                 var messageViewModel = new MessageViewModel($"* Now talking in {message.ChannelName}") { MessageKind = MessageKind.Join };
                 var channel = (ChannelViewModel)viewModel.DrawMessage(message.ChannelName, messageViewModel);
 
-                viewModel.Irc.Join(message.ChannelName, viewModel.Nickname);
-
-                channel.Users = new(viewModel.Irc.GetUserByChannelName(message.ChannelName));
+                channel.Users = new(viewModel.IrcClient.Channels[message.ChannelName].Users.Select(u => (string)u.Nickname));
 
                 viewModel.FocusChat(channel);
             }
             else
             {
-                var messageViewModel = new MessageViewModel($"* {from} has joined {message.ChannelName}") { MessageKind = MessageKind.Join };
+                var messageViewModel = new MessageViewModel($"* {from.Nickname} has joined {message.ChannelName}") { MessageKind = MessageKind.Join };
                 var channel = (ChannelViewModel)viewModel.DrawMessage(message.ChannelName, messageViewModel);
 
-                viewModel.Irc.Join(message.ChannelName, from);
 
-                channel.Users = new(viewModel.Irc.GetUserByChannelName(message.ChannelName));
+                channel.Users = new(viewModel.IrcClient.Channels[message.ChannelName].Users.Select(u => (string)u.Nickname));
             }
 
             return Task.CompletedTask;

@@ -9,13 +9,9 @@ using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using Irc.Messages;
 using Irc.Messages.Messages;
 using Irc.Messages.Messages.OptionalFeatures;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Irc.Client.Wpf.ViewModels
 {
@@ -57,11 +53,11 @@ namespace Irc.Client.Wpf.ViewModels
         private bool isTextMessageFocused;
 
 
-        private IrcClient ircClient;
+        public IrcClient IrcClient { get; }
         private Task ircClientTask;
         private CancellationTokenSource cancellationTokenSource;
 
-        public Domain.Irc Irc { get; }
+        //public Domain.Irc Irc { get; }
 
         private readonly IMessenger messenger;
 
@@ -76,7 +72,7 @@ namespace Irc.Client.Wpf.ViewModels
 
             FocusInput();
 
-            Irc = new();
+            IrcClient = new(Nickname, Host);
 
             PropertyChanged += IrcViewModel_PropertyChanged;
 
@@ -120,14 +116,13 @@ namespace Irc.Client.Wpf.ViewModels
             State = ConnectionState.Connecting;
             cancellationTokenSource = new CancellationTokenSource();
 
-            ircClient = new IrcClient(Nickname, Host);
-            ircClient.Connected += IrcClient_Connected;
-            ircClient.MessageSent += IrcClient_MessageSent;
-            ircClient.MessageReceived += IrcClient_MessageReceived;
-            ircClient.RawMessageSent += IrcClient_RawMessageSent;
-            ircClient.RawMessageReceived += IrcClient_RawMessageReceived;
+            IrcClient.Connected += IrcClient_Connected;
+            IrcClient.MessageSent += IrcClient_MessageSent;
+            IrcClient.MessageReceived += IrcClient_MessageReceived;
+            IrcClient.RawMessageSent += IrcClient_RawMessageSent;
+            IrcClient.RawMessageReceived += IrcClient_RawMessageReceived;
 
-            ircClientTask = ircClient.RunAsync(cancellationTokenSource.Token);
+            ircClientTask = IrcClient.RunAsync(cancellationTokenSource.Token);
         }
 
         private bool CanConnect() =>
@@ -137,10 +132,10 @@ namespace Irc.Client.Wpf.ViewModels
 
         private void Disconnect()
         {
-            ircClient.MessageReceived -= IrcClient_MessageReceived;
-            ircClient.MessageSent -= IrcClient_MessageSent;
-            ircClient.RawMessageSent += IrcClient_RawMessageSent;
-            ircClient.RawMessageReceived += IrcClient_RawMessageReceived;
+            IrcClient.MessageReceived -= IrcClient_MessageReceived;
+            IrcClient.MessageSent -= IrcClient_MessageSent;
+            IrcClient.RawMessageSent += IrcClient_RawMessageSent;
+            IrcClient.RawMessageReceived += IrcClient_RawMessageReceived;
             cancellationTokenSource.Cancel();
 
             State = ConnectionState.Disconnected;
@@ -169,7 +164,7 @@ namespace Irc.Client.Wpf.ViewModels
                 return;
             }
 
-            await ircClient.SendMessageAsync(message);
+            await IrcClient.SendMessageAsync(message);
 
             TextMessage = null;
         }
@@ -212,7 +207,7 @@ namespace Irc.Client.Wpf.ViewModels
             if (chat is ChannelViewModel channelViewModel)
             {
                 var message = new PartMessage(channelViewModel.Target, null);
-                await ircClient.SendMessageAsync(message);
+                await IrcClient.SendMessageAsync(message);
 
                 Chats.Remove(channelViewModel);
             }
@@ -264,7 +259,7 @@ namespace Irc.Client.Wpf.ViewModels
             else if (TextMessage.Equals("/away", StringComparison.InvariantCultureIgnoreCase))
             {
                 var message = new AwayMessage();
-                await ircClient.SendMessageAsync(message);
+                await IrcClient.SendMessageAsync(message);
 
                 TextMessage = null;
 
@@ -274,7 +269,7 @@ namespace Irc.Client.Wpf.ViewModels
             {
                 var text = TextMessage.Substring("/away ".Length).TrimStart();
                 var awayMessage = new AwayMessage(text);
-                await ircClient.SendMessageAsync(awayMessage);
+                await IrcClient.SendMessageAsync(awayMessage);
 
                 TextMessage = null;
 
@@ -291,7 +286,7 @@ namespace Irc.Client.Wpf.ViewModels
 
                 var message = new NoticeMessage(target, text);
 
-                await ircClient.SendMessageAsync(message);
+                await IrcClient.SendMessageAsync(message);
 
                 TextMessage = null;
 
@@ -308,7 +303,7 @@ namespace Irc.Client.Wpf.ViewModels
 
                 var message = new PrivMsgMessage(target, text);
 
-                await ircClient.SendMessageAsync(message);
+                await IrcClient.SendMessageAsync(message);
 
                 TextMessage = null;
 
@@ -333,7 +328,7 @@ namespace Irc.Client.Wpf.ViewModels
                 nickname = nickname.Substring(1);
             }
             var message = new WhoisMessage(nickname);
-            await ircClient.SendMessageAsync(message);
+            await IrcClient.SendMessageAsync(message);
         }
 
         public void FocusChat(ChatViewModel chat)
@@ -351,8 +346,6 @@ namespace Irc.Client.Wpf.ViewModels
         {
             State = ConnectionState.Connected;
             FocusInput();
-
-            Irc.Connect(Nickname);
         }
 
         private async void IrcClient_MessageSent(object sender, Message message)
@@ -461,7 +454,7 @@ namespace Irc.Client.Wpf.ViewModels
                     break;
                 case ChannelViewModel channel:
                     title = channel.Target;
-                    var topic = Irc.Channels[channel.Target].Topic;
+                    var topic = IrcClient.Channels[channel.Target].Topic;
                     if (topic is not null)
                     {
                         title = $"{title}: {topic}";

@@ -7,7 +7,7 @@ namespace Irc.Server.MessageHandlers.ChannelOperations
     {
         public async override Task<bool> HandleAsync(ModeMessage message, IrcClient ircClient)
         {
-            await ircClient.WriteMessageAsync(new ChannelModeIsReply(ircClient.IrcServer.ServerName, ircClient.Profile.Nickname, message.ChannelName, "+nt"));
+            await ircClient.WriteMessageAsync(new ChannelModeIsReply(ircClient.IrcServer.ServerName, ircClient.Profile.Nickname, message.Target, "+nt"));
 
             return true;
         }

@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Irc.Client.Wpf.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Windows;
 
 namespace Irc.Client.Wpf

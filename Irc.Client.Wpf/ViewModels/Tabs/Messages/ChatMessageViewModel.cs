@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
 
 namespace Irc.Client.Wpf.ViewModels.Tabs.Messages
 {
