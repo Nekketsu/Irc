@@ -18,8 +18,8 @@ ircClient.MessageReceived += IrcClient_MessageReceived;
 var cancellationTokenSource = new CancellationTokenSource();
 var ircClientTask = ircClient.RunAsync(cancellationTokenSource.Token);
 
-var joinMessage = new JoinMessage("#Tgn");
-await ircClient.SendMessageAsync(joinMessage);
+//var joinMessage = new JoinMessage("#Tgn");
+//await ircClient.SendMessageAsync(joinMessage);
 
 while (true)
 {
