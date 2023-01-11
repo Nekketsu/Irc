@@ -25,10 +25,19 @@
         {
             if (obj is Nickname nickname)
             {
+                var nicknameValue = nickname.value;
+                if (prefixes.Any(nicknameValue.StartsWith))
+                {
+                    nicknameValue = nicknameValue.Substring(1);
+                }
                 return value.Equals(nickname.value, StringComparison.InvariantCultureIgnoreCase);
             }
             else if (obj is string value)
             {
+                if (prefixes.Any(value.StartsWith))
+                {
+                    value = value.Substring(1);
+                }
                 return this.value.Equals(value, StringComparison.InvariantCultureIgnoreCase);
             }
 
