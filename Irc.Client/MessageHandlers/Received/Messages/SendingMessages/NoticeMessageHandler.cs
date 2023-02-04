@@ -15,7 +15,7 @@ namespace Irc.Client.MessageHandlers.Received.Messages.SendingMessages
             else
             {
                 var channel = ircClient.Channels[message.Target];
-                channel.OnNoticeReceived(from.Nickname, message.Text);
+                channel?.OnNoticeReceived(from.Nickname, message.Text);
             }
         }
     }

@@ -31,7 +31,10 @@ namespace Messages.Replies.CommandResponses
                 .Substring(messageSplit[2].Length).TrimStart()
                 .Substring(":This server was created ".Length);
 
-            var dateTime = DateTime.Parse(dateTimeText);
+            if (!DateTime.TryParse(dateTimeText, out var dateTime))
+            {
+                dateTime = DateTime.MinValue;
+            }
 
             return new(sender, target, dateTime);
         }

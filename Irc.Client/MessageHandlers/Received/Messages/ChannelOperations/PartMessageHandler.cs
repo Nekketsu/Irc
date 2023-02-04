@@ -11,6 +11,11 @@ namespace Irc.Client.MessageHandlers.Received.Messages
             ircClient.Part(message.ChannelName, from.Nickname);
 
             var channel = ircClient.Channels[message.ChannelName];
+
+            if (from.Username == ircClient.LocalUser.Nickname)
+            {
+                ircClient.LocalUser.OnChannelParted(channel);
+            }
             channel.OnUserJoined(from.Nickname);
         }
     }

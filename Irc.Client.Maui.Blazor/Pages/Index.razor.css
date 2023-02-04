@@ -1,0 +1,9 @@
+﻿.irc {
+    display: grid;
+    height: 100%;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.tab-pane {
+    height: 100%;
+}

@@ -11,6 +11,12 @@ namespace Irc.Client.MessageHandlers.Received.Messages
             ircClient.Join(message.ChannelName, user.Nickname);
 
             var channel = ircClient.Channels[message.ChannelName];
+
+            if (user.Nickname == ircClient.LocalUser.Nickname)
+            {
+                ircClient.LocalUser.OnChannelJoined(channel);
+            }
+
             channel.OnUserJoined(user.Nickname);
         }
     }

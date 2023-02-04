@@ -53,11 +53,9 @@ namespace Irc.Client.Wpf.ViewModels
         private bool isTextMessageFocused;
 
 
-        public IrcClient IrcClient { get; }
+        public IrcClient IrcClient { get; set; }
         private Task ircClientTask;
         private CancellationTokenSource cancellationTokenSource;
-
-        //public Domain.Irc Irc { get; }
 
         private readonly IMessenger messenger;
 
@@ -71,8 +69,6 @@ namespace Irc.Client.Wpf.ViewModels
             Chats = new() { Status };
 
             FocusInput();
-
-            IrcClient = new(Nickname, Host);
 
             PropertyChanged += IrcViewModel_PropertyChanged;
 
@@ -115,6 +111,8 @@ namespace Irc.Client.Wpf.ViewModels
         {
             State = ConnectionState.Connecting;
             cancellationTokenSource = new CancellationTokenSource();
+
+            IrcClient = new(Nickname, Host);
 
             IrcClient.Connected += IrcClient_Connected;
             IrcClient.MessageSent += IrcClient_MessageSent;

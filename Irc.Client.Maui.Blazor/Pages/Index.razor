@@ -1,0 +1,57 @@
+﻿@page "/"
+@using Irc.Client.Maui.Blazor.Components
+
+@if (!IsConnected)
+{
+    <div class="row">
+        <label for="hostName" class="col-4 col-form-label">Host name:</label>
+        <div class="col-8">
+            <input type="text" class="form-control-plaintext" id="hostName" @bind="Host" />
+        </div>
+    </div>
+
+    <div class="row">
+        <label for="nikcname" class="col-4 col-form-label">Nickname:</label>
+        <div class="col-8">
+            <input type="text" class="form-control-plaintext" id="nickname" @bind="Nickname" />
+        </div>
+    </div>
+
+    <div class="row">
+        <button type="submit" class="btn btn-primary" @onclick="Connect">Connect</button>
+    </div>
+}
+else
+{
+    <div class="irc">
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                @foreach (var chat in Chats)
+                {
+                    <button @onclick="() => CurrentChat = chat" class="nav-link @(CurrentChat == chat ? "active" : null)" data-bs-toggle="tab" data-bs-target="#@chat.Id" type="button" role="tab">@chat.Name</button>
+                }
+            </div>
+        </nav>
+        <div class="tab-content">
+            @foreach (var chat in Chats)
+            {
+                <div class="tab-pane fade @(CurrentChat == chat ? "show active": null)" id="@chat.Id" role="tabpanel">
+                    @if (chat is Irc.Client.Maui.Blazor.Models.ChannelChat channelChat)
+                    {
+                        <ChannelChat Messages="chat.Log" Users="channelChat.Users" />
+                    }
+                    else
+                    {
+                        <Chat Messages="chat.Log" />
+                    }
+                </div>
+            }
+        </div>
+        <div class="input-group">
+            <input type="text" class="form-control" @bind-value="Message" @bind-value:event="oninput" @onkeydown="Message_KeyDown">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" @onclick="SendMessage">&gt;</button>
+            </div>
+        </div>
+    </div>
+}
