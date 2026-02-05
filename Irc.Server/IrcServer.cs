@@ -43,7 +43,7 @@ namespace Irc.Server
                 while (!stoppingToken.IsCancellationRequested)
                 {
                     var client = await tcpListener.AcceptTcpClientAsync().WithCancellation(stoppingToken);
-                    Logger.LogDebug($"Se ha conectado cliente {client.Client.LocalEndPoint}, {client.Client.RemoteEndPoint}");
+                    Logger.LogDebug($"Client connected: {client.Client.LocalEndPoint}, {client.Client.RemoteEndPoint}");
 
                     var ircClient = new IrcClient(this, client);
                     IrcClients.Add(ircClient);

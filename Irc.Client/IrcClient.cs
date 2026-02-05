@@ -87,6 +87,11 @@ namespace Irc.Client
         {
             var text = await streamReader.ReadLineAsync();
 
+            if (text is null)
+            {
+                return null;
+            }
+
             if (!tcpClient.Connected)
             {
                 Disconnected?.Invoke(this, new EventArgs());

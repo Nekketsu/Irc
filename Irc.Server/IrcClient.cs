@@ -91,6 +91,8 @@ namespace Irc.Server
             await WriteMessageAsync(new YourHostReply(IrcServer.ServerName, Profile.Nickname, IrcServer.ServerName, IrcServer.Version.ToString()));
             await WriteMessageAsync(new CreatedReply(IrcServer.ServerName, Profile.Nickname, IrcServer.CreatedDateTime));
             await WriteMessageAsync(new MyInfoReply(IrcServer.ServerName, Profile.Nickname, IrcServer.ServerName, IrcServer.Version.ToString(), "diOoswkgx", "biklmnopstvrDdRcC", "bklov"));
+            PingMessage = new PingMessage($"{DateTimeOffset.Now.ToUnixTimeSeconds()}");
+            await WriteMessageAsync(PingMessage);
 
             return true;
         }
@@ -106,7 +108,8 @@ namespace Irc.Server
                     await WriteMessageAsync(PingMessage, cancellationToken);
                 } while (!cancellationToken.IsCancellationRequested);
             }
-            catch { };
+            catch { }
+            ;
         }
 
         public async Task WriteMessageAsync(IMessage message)

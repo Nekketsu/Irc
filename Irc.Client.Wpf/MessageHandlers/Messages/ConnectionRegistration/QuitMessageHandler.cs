@@ -1,7 +1,10 @@
-﻿using Irc.Client.Wpf.ViewModels;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Irc.Client.Wpf.Messenger.Requests;
+using Irc.Client.Wpf.ViewModels;
 using Irc.Client.Wpf.ViewModels.Tabs;
 using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using Irc.Messages.Messages;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Irc.Client.Wpf.MessageHandlers.Messages
 {
@@ -30,6 +33,16 @@ namespace Irc.Client.Wpf.MessageHandlers.Messages
                         channel.Users = new(viewModel.IrcClient.Channels[channel.Target].Users.Select(u => (string)u.Nickname));
                     }
                 }
+            }
+            else
+            {
+                var text = $"QUIT: {message.Reason}";
+                var messageViewModel = new MessageViewModel(text) { MessageKind = MessageKind.Quit };
+
+                viewModel.DrawMessage(viewModel.Status, messageViewModel);
+
+                var messenger = App.Current.Services.GetService<IMessenger>();
+                messenger.Send(new QuitRequest());
             }
 
             return Task.CompletedTask;

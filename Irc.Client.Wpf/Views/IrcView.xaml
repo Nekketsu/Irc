@@ -104,7 +104,7 @@
 
         <TextBox Grid.Row="2" Text="{Binding TextMessage, UpdateSourceTrigger=PropertyChanged}" AttachedProperties:FocusExtension.IsFocused="{Binding IsTextMessageFocused}">
             <TextBox.InputBindings>
-                <KeyBinding Key="Return" Command="{Binding SendAsyncCommand}" />
+                <KeyBinding Key="Return" Command="{Binding SendCommand}" />
             </TextBox.InputBindings>
             <i:Interaction.Behaviors>
                 <Behaviors:TextBoxHistoryBehavior />

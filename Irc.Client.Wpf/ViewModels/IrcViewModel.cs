@@ -45,7 +45,7 @@ namespace Irc.Client.Wpf.ViewModels
         private int previousTabIndex;
 
         [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(SendAsyncCommand))]
+        [NotifyCanExecuteChangedFor(nameof(SendCommand))]
         private string textMessage;
 
 
@@ -82,6 +82,11 @@ namespace Irc.Client.Wpf.ViewModels
             messenger.Register<WhoisRequest>(this, async (r, m) =>
             {
                 await Whois(m.Nickname);
+            });
+
+            messenger.Register<QuitRequest>(this, (r, m) =>
+            {
+                Disconnect();
             });
         }
 
@@ -140,7 +145,7 @@ namespace Irc.Client.Wpf.ViewModels
         }
 
         [RelayCommand(CanExecute = nameof(CanSend))]
-        private async void SendAsync()
+        private async Task Send()
         {
             var isProcessed = await ProcessClientCommand();
 
@@ -196,7 +201,7 @@ namespace Irc.Client.Wpf.ViewModels
         private bool CanSelectTab(string tabIndexString) => int.TryParse(tabIndexString, out var tabIndex) && tabIndex > 0 && tabIndex <= Chats.Count;
 
         [RelayCommand(CanExecute = nameof(CanCloseChat))]
-        private async void CloseChat(object chat)
+        private async Task CloseChat(object chat)
         {
             if (chat is ChatViewModel chatViewModel)
             {

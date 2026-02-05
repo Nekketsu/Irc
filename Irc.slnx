@@ -1,0 +1,15 @@
+<Solution>
+  <Project Path="Irc.Bot.Console/Irc.Bot.Console.csproj" />
+  <Project Path="Irc.Client.Maui.Blazor/Irc.Client.Maui.Blazor.csproj">
+    <Deploy />
+  </Project>
+  <Project Path="Irc.Client.Maui/Irc.Client.Maui.csproj">
+    <Deploy />
+  </Project>
+  <Project Path="Irc.Client.Wpf/Irc.Client.Wpf.csproj" />
+  <Project Path="Irc.Client/Irc.Client.csproj" />
+  <Project Path="Irc.Server.Console/Irc.Server.Console.csproj" />
+  <Project Path="Irc.Server.Service/Irc.Server.Service.csproj" />
+  <Project Path="Irc.Server/Irc.Server.csproj" />
+  <Project Path="Irc/Irc.csproj" />
+</Solution>
