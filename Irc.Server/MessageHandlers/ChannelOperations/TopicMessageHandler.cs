@@ -11,9 +11,9 @@ namespace Irc.Server.MessageHandlers.ChannelOperations
             if (ircClient.Channels.TryGetValue(message.ChannelName, out var channel))
             {
                 // Query topic
-                if (message.Topic == null)
+                if (message.Topic is null)
                 {
-                    if (channel.Topic == null)
+                    if (channel.Topic is null)
                     {
                         await ircClient.WriteMessageAsync(new NoTopicReply(ircClient.IrcServer.ServerName, ircClient.Profile.Nickname, message.ChannelName, NoTopicReply.DefaultMessage));
                     }

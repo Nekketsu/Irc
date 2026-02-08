@@ -26,11 +26,11 @@ namespace Irc.Messages.Messages
 
         public override string ToString()
         {
-            var text = (From == null)
+            var text = (From is null)
                 ? $"{Command} {ChannelName}"
                 : $":{From} {Command} {ChannelName}";
 
-            if (Message != null)
+            if (Message is not null)
             {
                 text = $"{text} :{Message}";
             }

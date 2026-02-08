@@ -9,7 +9,7 @@ namespace Irc.Client.Wpf.Behaviors
         protected override void OnAttached()
         {
             var items = AssociatedObject.Items as INotifyCollectionChanged;
-            if (items != null)
+            if (items is not null)
             {
                 items.CollectionChanged += Items_CollectionChanged;
             }
@@ -26,7 +26,7 @@ namespace Irc.Client.Wpf.Behaviors
         protected override void OnDetaching()
         {
             var items = AssociatedObject.Items as INotifyCollectionChanged;
-            if (items != null)
+            if (items is not null)
             {
                 items.CollectionChanged -= Items_CollectionChanged;
             }

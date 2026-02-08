@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Irc.Client.Scripting;
 using Irc.Client.Wpf.MessageHandlers;
 using Irc.Client.Wpf.Messenger.Requests;
 using Irc.Client.Wpf.Model;
@@ -58,6 +59,11 @@ namespace Irc.Client.Wpf.ViewModels
         private CancellationTokenSource cancellationTokenSource;
 
         private readonly IMessenger messenger;
+        private readonly ScriptManager scriptManager;
+        private readonly ScriptCommandHandler scriptCommandHandler;
+
+        // Public property to allow MainWindow to access the same ScriptManager instance
+        public ScriptManager ScriptManager => scriptManager;
 
         public IrcViewModel(IMessenger messenger)
         {
@@ -73,6 +79,12 @@ namespace Irc.Client.Wpf.ViewModels
             PropertyChanged += IrcViewModel_PropertyChanged;
 
             this.messenger = messenger;
+
+            // Initialize ScriptManager without client (will be set when connected)
+            // Pass log action to display script logs in Status tab
+            this.scriptManager = new ScriptManager(null, null, LogScriptMessage);
+            this.scriptCommandHandler = new ScriptCommandHandler(scriptManager);
+            _ = scriptManager.LoadScriptsFromFolderAsync();
 
             messenger.Register<QueryRequest>(this, (r, m) =>
             {
@@ -124,6 +136,9 @@ namespace Irc.Client.Wpf.ViewModels
             IrcClient.MessageReceived += IrcClient_MessageReceived;
             IrcClient.RawMessageSent += IrcClient_RawMessageSent;
             IrcClient.RawMessageReceived += IrcClient_RawMessageReceived;
+
+            // Set the IrcClient in ScriptManager
+            scriptManager.SetClient(IrcClient);
 
             ircClientTask = IrcClient.RunAsync(cancellationTokenSource.Token);
         }
@@ -220,6 +235,32 @@ namespace Irc.Client.Wpf.ViewModels
 
         private async Task<bool> ProcessClientCommand()
         {
+            // Handle script commands
+            if (TextMessage.StartsWith("/script ", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var command = TextMessage.Substring(8).Trim(); // Remove "/script " prefix
+
+                try
+                {
+                    var result = await scriptCommandHandler.ExecuteAsync(command);
+
+                    var messageText = result.Success
+                        ? $"✓ {result.Message}"
+                        : $"✗ {result.Message}";
+
+                    var messageViewModel = new MessageViewModel(messageText);
+                    Status.Log.Add(messageViewModel);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    var messageViewModel = new MessageViewModel($"✗ {ex.Message}");
+                    Status.Log.Add(messageViewModel);
+                }
+
+                TextMessage = null;
+                return true;
+            }
+
             if (TextMessage.Equals("/server", StringComparison.InvariantCulture) || TextMessage.StartsWith("/server ", StringComparison.InvariantCultureIgnoreCase))
             {
                 if (State == ConnectionState.Connected)
@@ -389,6 +430,13 @@ namespace Irc.Client.Wpf.ViewModels
                 var messageViewModel = new MessageViewModel(message.ToString());
                 Status.Log.Add(messageViewModel);
             }
+        }
+
+        private void LogScriptMessage(string message)
+        {
+            // Log script messages to Status tab
+            var messageViewModel = new MessageViewModel($"[SCRIPT] {message}");
+            Status.Log.Add(messageViewModel);
         }
 
         public ChatViewModel DrawMessage(string target, MessageViewModel message)

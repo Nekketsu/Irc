@@ -26,7 +26,7 @@ namespace Irc.Messages
             var text = $":{Sender} {ReplyCode} {Target}";
             var innerToString = InnerToString();
 
-            if (innerToString != null)
+            if (innerToString is not null)
             {
                 text = $"{text} {innerToString}";
             }

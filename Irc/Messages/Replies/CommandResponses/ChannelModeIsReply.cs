@@ -21,7 +21,7 @@ namespace Messages.Replies.CommandResponses
         public override string InnerToString()
         {
             var text = $"{ChannelName} :{Mode}";
-            if (ModeParams != null)
+            if (ModeParams is not null)
             {
                 text = $"{text} {ModeParams}";
             }

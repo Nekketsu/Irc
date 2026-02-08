@@ -11,10 +11,36 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+    <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
+    <PackageReference Include="System.Reactive" Version="6.1.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="5.0.0" />
+    <PackageReference Include="System.Composition.AttributedModel" Version="10.0.1" />
+    <PackageReference Include="System.Composition.Convention" Version="10.0.1" />
+    <PackageReference Include="System.Composition.Hosting" Version="10.0.1" />
+    <PackageReference Include="System.Composition.Runtime" Version="10.0.1" />
+    <PackageReference Include="System.Composition.TypedParts" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="RoslynPad.Editor.Windows">
+      <HintPath>RoslynPad\RoslynPad.Editor.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="RoslynPad.Roslyn">
+      <HintPath>RoslynPad\RoslynPad.Roslyn.dll</HintPath>
+    </Reference>
+    <Reference Include="RoslynPad.Roslyn.Windows">
+      <HintPath>RoslynPad\RoslynPad.Roslyn.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="RoslynPad.Themes">
+      <HintPath>RoslynPad\RoslynPad.Themes.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Irc.Client\Irc.Client.csproj" />
+    <ProjectReference Include="..\Irc.Client.Scripting\Irc.Client.Scripting.csproj" />
   </ItemGroup>
 
 </Project>

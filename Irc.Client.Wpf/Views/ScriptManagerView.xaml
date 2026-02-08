@@ -1,0 +1,209 @@
+<UserControl x:Class="Irc.Client.Wpf.Views.ScriptManagerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Irc.Client.Wpf.Views"
+             xmlns:vm="clr-namespace:Irc.Client.Wpf.ViewModels"
+             xmlns:roslynpad="clr-namespace:RoslynPad.Editor;assembly=RoslynPad.Editor.Windows"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=vm:ScriptManagerViewModel}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="250"/>
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+            <Button Content="Load Script..." 
+                    Command="{Binding LoadScriptFromFileCommand}"
+                    Padding="10,5" Margin="0,0,5,0"/>
+            <Button Content="Refresh" 
+                    Command="{Binding RefreshScriptsCommand}"
+                    Padding="10,5" Margin="0,0,5,0"/>
+            <TextBlock Text="Scripts Loaded:" 
+                       VerticalAlignment="Center" 
+                       Margin="20,0,5,0" 
+                       FontWeight="Bold"/>
+            <TextBlock Text="{Binding Scripts.Count}" 
+                       VerticalAlignment="Center"/>
+        </StackPanel>
+
+                <!-- Scripts List -->
+        <GroupBox Grid.Row="1" Header="Active Scripts" Margin="0,0,0,10">
+            <DataGrid ItemsSource="{Binding Scripts}" 
+                      SelectedItem="{Binding SelectedScript}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      SelectionMode="Single"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Enabled" Width="70">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsEnabled, Mode=OneWay}"
+                                         Command="{Binding DataContext.ToggleScriptCommand, 
+                                                  RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                         CommandParameter="{Binding}"
+                                         HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    
+                    <DataGridTextColumn Header="Script Name" 
+                                       Binding="{Binding Name}" 
+                                       Width="*"/>
+                    
+                    <DataGridTextColumn Header="Event Types" 
+                                       Binding="{Binding EventTypesText}"
+                                       Width="2*"/>
+                    
+                    <DataGridTemplateColumn Header="Actions" Width="200">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="Edit" 
+                                           Command="{Binding DataContext.EditScriptCommand, 
+                                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           CommandParameter="{Binding}"
+                                           Padding="5,2"
+                                           Margin="0,0,5,0"
+                                           Background="#FF2196F3"
+                                           Foreground="White"
+                                           ToolTip="Edit this script"/>
+                                    <Button Content="Copy" 
+                                           Command="{Binding DataContext.DuplicateScriptCommand, 
+                                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           CommandParameter="{Binding}"
+                                           Padding="5,2"
+                                           Margin="0,0,5,0"
+                                           Background="#FF9C27B0"
+                                           Foreground="White"
+                                           ToolTip="Create a new script based on this one"/>
+                                    <Button Content="Remove" 
+                                           Command="{Binding DataContext.RemoveScriptCommand, 
+                                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           CommandParameter="{Binding}"
+                                           Padding="5,2"
+                                           Background="#FFD32F2F"
+                                           Foreground="White"
+                                           ToolTip="Delete this script"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+
+        <!-- Separator -->
+        <GridSplitter Grid.Row="2" 
+                      Height="3" 
+                      HorizontalAlignment="Stretch" 
+                      VerticalAlignment="Center"
+                      Background="LightGray"
+                      Margin="0,5"/>
+
+        <!-- Create New Script -->
+        <GroupBox Grid.Row="3" Header="Create New Script" Margin="0,0,0,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,5">
+                    <TextBlock Text="Script Name:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <TextBox Text="{Binding NewScriptName, UpdateSourceTrigger=PropertyChanged}" 
+                             Width="200" 
+                             Padding="3"/>
+                    
+                    <TextBlock Text="C# Code Editor - Use Host.On* methods to subscribe to events" 
+                               VerticalAlignment="Center" 
+                               Margin="20,0,0,0"
+                               FontStyle="Italic"
+                               Foreground="Gray"/>
+                </StackPanel>
+
+                <!-- Code Editor with RoslynPad -->
+                <roslynpad:RoslynCodeEditor Grid.Row="1" 
+                                            x:Name="CodeEditor"
+                                            FontFamily="Consolas"
+                                            FontSize="12"
+                                            ShowLineNumbers="True"
+                                            Padding="5"
+                                            Margin="0,0,0,5"
+                                            VerticalScrollBarVisibility="Auto"
+                                            HorizontalScrollBarVisibility="Auto"
+                                            Background="White"/>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Insert Template" 
+                            Command="{Binding InsertTemplateCommand}"
+                            Padding="10,5" 
+                            Margin="0,0,5,0"
+                            ToolTip="Insert a basic script template"/>
+                    <Button Command="{Binding CancelEditCommand}"
+                            Padding="10,5" 
+                            Margin="0,0,5,0">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Content" Value="Clear"/>
+                                <Setter Property="ToolTip" Value="Clear the editor"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                        <Setter Property="Content" Value="Discard Changes"/>
+                                        <Setter Property="ToolTip" Value="Discard changes and stop editing"/>
+                                        <Setter Property="Background" Value="#FFD32F2F"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="Save Changes"
+                            Command="{Binding SaveScriptCommand}"
+                            Padding="10,5"
+                            Margin="0,0,5,0"
+                            Background="#FFFF9800"
+                            Foreground="White"
+                            ToolTip="Save changes to selected script">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="Create Script" 
+                            Command="{Binding CreateScriptCommand}"
+                            Padding="10,5"
+                            Background="#FF4CAF50"
+                            Foreground="White"
+                            ToolTip="Create new script">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

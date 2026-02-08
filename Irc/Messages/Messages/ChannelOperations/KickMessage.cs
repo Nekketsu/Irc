@@ -21,7 +21,7 @@ namespace Irc.Messages.Messages
 
         public override string ToString()
         {
-            return From == null
+            return From is null
                 ? $"{Command} {ChannelName} :{Nickname}"
                 : $":{From} {Command} {ChannelName} :{Nickname}";
         }

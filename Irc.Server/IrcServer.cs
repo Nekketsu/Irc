@@ -9,7 +9,7 @@ namespace Irc.Server
     public class IrcServer
     {
         public ILogger Logger { get; }
-        int port;
+        private int port;
 
         public string ServerName { get; private set; }
         public Version Version { get; private set; }
@@ -43,7 +43,6 @@ namespace Irc.Server
                 while (!stoppingToken.IsCancellationRequested)
                 {
                     var client = await tcpListener.AcceptTcpClientAsync().WithCancellation(stoppingToken);
-                    Logger.LogDebug($"Client connected: {client.Client.LocalEndPoint}, {client.Client.RemoteEndPoint}");
 
                     var ircClient = new IrcClient(this, client);
                     IrcClients.Add(ircClient);

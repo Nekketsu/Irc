@@ -18,7 +18,7 @@ namespace Irc.Messages.Messages
 
         public override string ToString()
         {
-            return (Target == null)
+            return (Target is null)
                 ? $"{Command} :{Reason}"
                 : $":{Target} {Command} :{Reason}";
         }

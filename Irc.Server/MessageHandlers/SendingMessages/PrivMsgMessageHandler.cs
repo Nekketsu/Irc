@@ -39,7 +39,7 @@ namespace Irc.Server.MessageHandlers.SendingMessages
         private async Task SendMessageToUser(PrivMsgMessage message, IrcClient ircClient)
         {
             var targetClient = ircClient.IrcServer.IrcClients.SingleOrDefault(client => client.Profile.Nickname.Equals(message.Target, StringComparison.OrdinalIgnoreCase));
-            if (targetClient != null)
+            if (targetClient is not null)
             {
                 // var from = $"{ircClient.Profile.Nickname}!{ircClient.Profile.User.UserName}@{ircClient.Address}";
                 var from = ircClient.Profile.Nickname;

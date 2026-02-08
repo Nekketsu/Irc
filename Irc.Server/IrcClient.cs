@@ -15,6 +15,8 @@ namespace Irc.Server
 
         public IrcServer IrcServer { get; set; }
         TcpClient tcpClient;
+        private EndPoint localEndPoint;
+        private EndPoint remoteEndPoint;
         StreamReader streamReader;
         StreamWriter streamWriter;
         public Profile Profile { get; private set; }
@@ -31,6 +33,8 @@ namespace Irc.Server
             IrcServer = ircServer;
 
             this.tcpClient = tcpClient;
+            localEndPoint = tcpClient.Client.LocalEndPoint;
+            remoteEndPoint = tcpClient.Client.RemoteEndPoint;
             var stream = tcpClient.GetStream();
             streamReader = new StreamReader(stream);
             streamWriter = new StreamWriter(stream) { AutoFlush = true };
@@ -47,6 +51,7 @@ namespace Irc.Server
 
         public async void RunAsync(CancellationToken stoppingToken)
         {
+            Logger.LogDebug($"Client connected: {localEndPoint}, {remoteEndPoint}");
             try
             {
                 if (!await HandShake()) return;
@@ -62,10 +67,18 @@ namespace Irc.Server
                 }
                 pingCancellationTokenSource.Cancel();
             }
+            catch { }
             finally
             {
                 tcpClient.Dispose();
             }
+
+            var disconnectLog = $"Client disconnectd: {localEndPoint}, {remoteEndPoint}";
+            if (!string.IsNullOrEmpty(Profile.Nickname))
+            {
+                disconnectLog += $" ({Profile.Nickname})";
+            }
+            Logger.LogDebug(disconnectLog);
         }
 
         private async Task<bool> HandShake()
@@ -74,11 +87,11 @@ namespace Irc.Server
             do
             {
                 message = await ReadMessageAsync();
-            } while (!(message is NickMessage));
+            } while (message is not NickMessage);
             await HandleMessageAsync(message);
 
             message = await ReadMessageAsync();
-            if (!(message is UserMessage userMessage))
+            if (message is not UserMessage)
             {
                 return false;
             }
@@ -109,7 +122,6 @@ namespace Irc.Server
                 } while (!cancellationToken.IsCancellationRequested);
             }
             catch { }
-            ;
         }
 
         public async Task WriteMessageAsync(IMessage message)
@@ -138,7 +150,7 @@ namespace Irc.Server
 
             var source = Profile.Nickname ?? Address.ToString();
 
-            if (message != null)
+            if (message is not null)
             {
                 Logger.LogInformation($"<- {source}: {text}");
             }

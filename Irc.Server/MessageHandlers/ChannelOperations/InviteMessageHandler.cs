@@ -9,7 +9,7 @@ namespace Irc.Server.MessageHandlers.ChannelOperations
         public async override Task<bool> HandleAsync(InviteMessage message, IrcClient ircClient)
         {
             var invitedClient = ircClient.IrcServer.IrcClients.SingleOrDefault(client => client.Profile.Nickname.Equals(message.Nickname, StringComparison.OrdinalIgnoreCase));
-            if (invitedClient == null)
+            if (invitedClient is null)
             {
                 await ircClient.WriteMessageAsync(new NoSuchNickError(ircClient.IrcServer.ServerName, ircClient.Profile.Nickname, message.Nickname, NoSuchNickError.DefaultMessage));
                 return true;

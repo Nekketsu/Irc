@@ -8,7 +8,7 @@ namespace Irc.Server.MessageHandlers.OptionalFeatures
         public async override Task<bool> HandleAsync(UserhostMessage _, IrcClient ircClient)
         {
             var message = ircClient.Profile.Nickname;
-            if (ircClient.Profile.User != null)
+            if (ircClient.Profile.User is not null)
             {
                 message += $"=+~{ircClient.Profile.User.UserName}";
             }

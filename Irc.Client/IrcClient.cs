@@ -153,6 +153,8 @@ namespace Irc.Client
 
             user.Channels.Remove(channelName);
 
+            channel.OnUserLeft(nickname);
+
             if (!user.Channels.Any())
             {
                 Users.Remove(nickname);

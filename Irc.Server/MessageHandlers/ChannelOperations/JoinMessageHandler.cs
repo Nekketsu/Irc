@@ -30,7 +30,7 @@ namespace Irc.Server.MessageHandlers.ChannelOperations
                 await client.WriteMessageAsync(joinMessage);
             }
 
-            if (channel.Topic != null)
+            if (channel.Topic is not null)
             {
                 await ircClient.WriteMessageAsync(new TopicReply(ircClient.IrcServer.ServerName, ircClient.Profile.Nickname, channel.Name, channel.Topic.TopicMessage));
                 await ircClient.WriteMessageAsync(new TopicWhoTimeReply(ircClient.IrcServer.ServerName, ircClient.Profile.Nickname, channel.Name, channel.Topic.Nickname, channel.Topic.SetAt));
