@@ -28,21 +28,13 @@ namespace Messages.Replies.CommandResponses
         {
             var messageSplit = message.Split();
 
-            var sender = messageSplit[0].Substring(":".Length);
+            var sender = message.Split(':').First();
             var target = messageSplit[2];
             var nickname = messageSplit[3];
             var user = messageSplit[4];
             var host = messageSplit[5];
 
-            var realName = message
-                .Substring(sender.Length).TrimStart()
-                .Substring(messageSplit[1].Length).TrimStart()
-                .Substring(target.Length).TrimStart()
-                .Substring(nickname.Length).TrimStart()
-                .Substring(user.Length).TrimStart()
-                .Substring(host.Length).TrimStart()
-                .Substring(messageSplit[6].Length).TrimStart()
-                .TrimStart(':'); // ':'
+            var realName = message.Split(':').Last();
 
             return new WhoisReply(sender, target, nickname, user, host, realName);
         }

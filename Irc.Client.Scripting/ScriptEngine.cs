@@ -80,15 +80,27 @@ namespace Irc.Client.Scripting
             }
             catch (OperationCanceledException)
             {
-                return ScriptResult.Failure("Script execution timeout (30 seconds)");
+                var errorMessage = "Script execution timeout (30 seconds)";
+                System.Diagnostics.Debug.WriteLine($"[SCRIPT ERROR] {errorMessage}");
+                return ScriptResult.Failure(errorMessage);
             }
             catch (CompilationErrorException ex)
             {
-                return ScriptResult.Failure($"Compilation error: {ex.Message}");
+                var errorMessage = $"Compilation error: {ex.Message}";
+                System.Diagnostics.Debug.WriteLine($"[SCRIPT ERROR] {errorMessage}");
+                System.Diagnostics.Debug.WriteLine($"  Stack Trace: {ex.StackTrace}");
+                return ScriptResult.Failure(errorMessage);
             }
             catch (Exception ex)
             {
-                return ScriptResult.Failure($"Runtime error: {ex.GetType().Name}: {ex.Message}");
+                var errorMessage = $"Runtime error: {ex.GetType().Name}: {ex.Message}";
+                System.Diagnostics.Debug.WriteLine($"[SCRIPT ERROR] {errorMessage}");
+                System.Diagnostics.Debug.WriteLine($"  Stack Trace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"  Inner Exception: {ex.InnerException.Message}");
+                }
+                return ScriptResult.Failure(errorMessage);
             }
             finally
             {

@@ -1,0 +1,86 @@
+﻿<Window x:Class="Irc.Client.Wpf.Views.ConnectionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewmodels="clr-namespace:Irc.Client.Wpf.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=viewmodels:ConnectionDialogViewModel}"
+        Title="Connect to IRC Server" 
+        Height="250" 
+        Width="450"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Host name -->
+        <Grid Grid.Row="0" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" 
+                       Text="Host name:" 
+                       VerticalAlignment="Center"/>
+            <TextBox Grid.Column="1" 
+                     Text="{Binding Host, UpdateSourceTrigger=PropertyChanged}"
+                     x:Name="HostTextBox"
+                     VerticalAlignment="Center"
+                     Padding="5"/>
+        </Grid>
+
+        <!-- Nickname -->
+        <Grid Grid.Row="1" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" 
+                       Text="Nickname:" 
+                       VerticalAlignment="Center"/>
+            <TextBox Grid.Column="1" 
+                     Text="{Binding Nickname, UpdateSourceTrigger=PropertyChanged}"
+                     VerticalAlignment="Center"
+                     Padding="5"/>
+        </Grid>
+
+        <!-- Port -->
+        <Grid Grid.Row="2" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" 
+                       Text="Port:" 
+                       VerticalAlignment="Center"/>
+            <TextBox Grid.Column="1" 
+                     Text="{Binding Port, UpdateSourceTrigger=PropertyChanged}"
+                     VerticalAlignment="Center"
+                     Padding="5"/>
+        </Grid>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="4" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right">
+            <Button Content="Connect" 
+                    IsDefault="True"
+                    Command="{Binding ConnectCommand}"
+                    Click="Connect_Click" 
+                    MinWidth="75" 
+                    Margin="0,0,10,0"
+                    Padding="5"/>
+            <Button Content="Cancel" 
+                    IsCancel="True"
+                    MinWidth="75"
+                    Padding="5"/>
+        </StackPanel>
+    </Grid>
+</Window>

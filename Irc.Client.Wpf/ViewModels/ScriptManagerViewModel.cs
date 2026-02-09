@@ -169,7 +169,7 @@ namespace Irc.Client.Wpf.ViewModels
 
             // Load script code into editor for creating a new script
             var baseName = Path.GetFileNameWithoutExtension(scriptVm.Name);
-            
+
             // Generate a unique name
             var copyName = $"{baseName}_Copy";
             var counter = 1;
@@ -181,7 +181,7 @@ namespace Irc.Client.Wpf.ViewModels
 
             NewScriptName = copyName;
             NewScriptCode = scriptVm.Script.Code;
-            
+
             // Clear SelectedScript so it creates a new script instead of editing
             SelectedScript = null;
 

@@ -29,14 +29,7 @@ namespace Irc.Messages.Messages
             var mode = messageSplit[2];
             var unused = messageSplit[3];
 
-            var realName = message.Substring(message.IndexOf(messageSplit[0]) + messageSplit[0].Length).TrimStart();
-            realName = message.Substring(realName.IndexOf(messageSplit[1]) + messageSplit[1].Length).TrimStart();
-            realName = message.Substring(realName.IndexOf(messageSplit[2]) + messageSplit[1].Length).TrimStart();
-            realName = message.Substring(realName.IndexOf(messageSplit[3]) + messageSplit[1].Length).TrimStart();
-            if (realName.StartsWith(':'))
-            {
-                realName = realName.Substring(1);
-            }
+            var realName = message.Split(':').Last();
 
             return new UserMessage(user, mode, unused, realName);
         }

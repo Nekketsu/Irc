@@ -14,11 +14,13 @@ namespace Irc.Server
         public ILogger Logger => IrcServer.Logger;
 
         public IrcServer IrcServer { get; set; }
-        TcpClient tcpClient;
+
+        private TcpClient tcpClient;
         private EndPoint localEndPoint;
         private EndPoint remoteEndPoint;
-        StreamReader streamReader;
-        StreamWriter streamWriter;
+        private StreamReader streamReader;
+        private StreamWriter streamWriter;
+
         public Profile Profile { get; private set; }
         public IPAddress Address { get; private set; }
 

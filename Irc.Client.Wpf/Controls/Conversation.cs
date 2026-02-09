@@ -14,6 +14,9 @@ namespace Irc.Client.Wpf.Controls
 
         public Conversation()
         {
+            Background = new SolidColorBrush(Color.FromRgb(0x1E, 0x1E, 0x1E));
+            Foreground = new SolidColorBrush(Color.FromRgb(0xCC, 0xCC, 0xCC));
+            BorderBrush = new SolidColorBrush(Color.FromRgb(0x3F, 0x3F, 0x46));
             Unloaded += Conversation_Unloaded;
         }
 
@@ -242,7 +245,7 @@ namespace Irc.Client.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for NormalTextBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty NormalTextBrushProperty =
-            DependencyProperty.Register("NormalTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(Brushes.Black));
+            DependencyProperty.Register("NormalTextBrush", typeof(Brush), typeof(Conversation), new PropertyMetadata(SystemColors.HighlightTextBrush));
 
 
         public Brush NoticeTextBrush

@@ -1,26 +1,27 @@
 using Irc.Client.Wpf.ViewModels;
+using RoslynPad.Editor;
 using RoslynPad.Roslyn;
+using RoslynPad.Themes;
 using System.IO;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace Irc.Client.Wpf.Views
 {
-    public partial class ScriptManagerView : UserControl
+    public partial class ScriptManagerDialog : Window
     {
         private RoslynHost roslynHost;
         private Microsoft.CodeAnalysis.DocumentId documentId;
 
-        public ScriptManagerView()
+        public ScriptManagerDialog()
         {
             InitializeComponent();
 
             // Initialize RoslynHost for IntelliSense
             InitializeRoslynHost();
 
-            Loaded += ScriptManagerView_Loaded;
-            Unloaded += ScriptManagerView_Unloaded;
+            Loaded += ScriptManagerDialog_Loaded;
+            Unloaded += ScriptManagerDialog_Unloaded;
         }
 
         private void InitializeRoslynHost()
@@ -161,7 +162,7 @@ namespace Irc.Client.Wpf.Views
             };
         }
 
-        private void ScriptManagerView_Loaded(object sender, RoutedEventArgs e)
+        private void ScriptManagerDialog_Loaded(object sender, RoutedEventArgs e)
         {
             if (DataContext is ScriptManagerViewModel viewModel)
             {
@@ -206,12 +207,16 @@ namespace Irc.Client.Wpf.Views
         {
             try
             {
+                var themesDirectory = "Themes";
+                await ExtractAllThemesAsync(themesDirectory);
+                var theme = await GetThemeAsync(Path.Combine(themesDirectory, "dark_modern.json"));
+
                 var workingDirectory = Directory.GetCurrentDirectory();
 
                 // Initialize editor without preamble
                 documentId = await CodeEditor.InitializeAsync(
                     roslynHost,
-                    new RoslynPad.Editor.ClassificationHighlightColors(),
+                    new ThemeClassificationColors(theme),
                     workingDirectory,
                     string.Empty,
                     Microsoft.CodeAnalysis.SourceCodeKind.Script
@@ -236,7 +241,54 @@ namespace Irc.Client.Wpf.Views
             }
         }
 
-        private void ScriptManagerView_Unloaded(object sender, RoutedEventArgs e)
+        private static async Task<Theme> GetThemeAsync(string themePath)
+        {
+            var themeReader = new VsCodeThemeReader();
+            var theme = await themeReader.ReadThemeAsync(themePath, ThemeType.Dark);
+            return theme;
+        }
+
+        private static async Task ExtractAllThemesAsync(string themesDirectory)
+        {
+            // Ensure directory exists
+            if (!Directory.Exists(themesDirectory))
+            {
+                Directory.CreateDirectory(themesDirectory);
+            }
+
+            var assembly = typeof(VsCodeThemeReader).Assembly;
+            var resources = assembly.GetManifestResourceNames();
+            const string themePrefix = "RoslynPad.Themes.Themes.";
+
+            // Find all .json theme resources
+            var themeResources = resources.Where(r => r.StartsWith(themePrefix) && r.EndsWith(".json"));
+
+            foreach (var resourceName in themeResources)
+            {
+                // Extract filename from resource name: "RoslynPad.Themes.Themes.dark_modern.json" -> "dark_modern.json"
+                var fileName = resourceName.Substring(themePrefix.Length);
+                var filePath = Path.Combine(themesDirectory, fileName);
+
+                // Skip if file already exists
+                if (File.Exists(filePath))
+                {
+                    continue;
+                }
+
+                using var stream = assembly.GetManifestResourceStream(resourceName);
+                if (stream is null)
+                {
+                    continue;
+                }
+
+                using var fileStream = File.Create(filePath);
+                await stream.CopyToAsync(fileStream);
+
+                System.Diagnostics.Debug.WriteLine($"Extracted theme: {fileName}");
+            }
+        }
+
+        private void ScriptManagerDialog_Unloaded(object sender, RoutedEventArgs e)
         {
             if (DataContext is ScriptManagerViewModel viewModel)
             {
@@ -265,6 +317,17 @@ namespace Irc.Client.Wpf.Views
             if (DataContext is ScriptManagerViewModel viewModel)
             {
                 viewModel.NewScriptCode = CodeEditor.Text;
+            }
+        }
+
+        private void DataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (DataContext is ScriptManagerViewModel viewModel && viewModel.SelectedScript is not null)
+            {
+                if (viewModel.EditScriptCommand.CanExecute(viewModel.SelectedScript))
+                {
+                    viewModel.EditScriptCommand.Execute(viewModel.SelectedScript);
+                }
             }
         }
     }

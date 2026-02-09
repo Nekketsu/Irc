@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Irc.Messages
@@ -38,7 +39,10 @@ namespace Irc.Messages
 
                         return messageInstance;
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Parsing exception: {ex.Message}");
+                    }
                 }
             }
 

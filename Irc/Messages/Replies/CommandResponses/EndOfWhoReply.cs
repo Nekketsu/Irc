@@ -21,5 +21,17 @@ namespace Messages.Replies.CommandResponses
         {
             return $"{Mask} :{Message}";
         }
+
+        public static new EndOfWhoReply Parse(string message)
+        {
+            var messageSplit = message.Split();
+
+            var sender = message.Split(':').First();
+            var target = messageSplit[2];
+            var mask = messageSplit[3];
+            var messageText = message.Split(':').Last();
+
+            return new(sender, target, mask, messageText);
+        }
     }
 }

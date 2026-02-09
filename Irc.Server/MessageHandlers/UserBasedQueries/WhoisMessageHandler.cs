@@ -43,7 +43,7 @@ namespace Irc.Server.MessageHandlers.UserBasedQueries
                 //     await ircClient.WriteMessageAsync(new WhoisOperatorReply());
                 // }
                 var idle = DateTime.Now - ircClient.LastMessageDateTime;
-                await ircClient.WriteMessageAsync(new WhoisIdleReply(ircClient.IrcServer.ServerName, ircClient.Profile.Nickname, client.Profile.Nickname, idle, client.SignOn, WhoisIdleReply.DefaultMessage));
+                await ircClient.WriteMessageAsync(new WhoisIdleReply(ircClient.IrcServer.ServerName, ircClient.Profile.Nickname, client.Profile.Nickname, idle, WhoisIdleReply.DefaultMessage));
                 await ircClient.WriteMessageAsync(new EndOfWhoisReply(ircClient.IrcServer.ServerName, ircClient.Profile.Nickname, client.Profile.Nickname, EndOfWhoisReply.DefaultMessage));
             }
 

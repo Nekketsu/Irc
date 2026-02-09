@@ -16,7 +16,9 @@
              KeyboardNavigation.ControlTabNavigation="None"
              KeyboardNavigation.TabNavigation="None">
     <UserControl.Resources>
-        <Converters:IsDirtyToBrushConverter x:Key="IsDirtyToBrushConverter" CleanBrush="Black" DirtyBrush="Blue" />
+        <Converters:IsDirtyToBrushConverter x:Key="IsDirtyToBrushConverter" 
+                                            CleanBrush="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
+                                            DirtyBrush="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" />
 
         <CollectionViewSource x:Key="Chats" Source="{Binding Chats}" />
 
@@ -71,30 +73,19 @@
         <KeyBinding Key="W" Modifiers="Ctrl" Command="{Binding CloseChatCommand}" CommandParameter="{Binding SelectedTab}" />
     </UserControl.InputBindings>
     
-    <Grid>
+    <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <TextBlock Grid.Column="0" Text="Host name:" />
-            <TextBox Grid.Column="1" Text="{Binding Host}" />
-            <TextBlock Grid.Column="2" Text="Nickname:" />
-            <TextBox Grid.Column="3" Text="{Binding Nickname}" />
-            <Button Grid.Column="4" Content="Connect" Command="{Binding ConnectCommand}" />
-        </Grid>
-
-        <TabControl Grid.Row="1" SelectedItem="{Binding SelectedTab}" SelectedIndex="{Binding SelectedTabIndex}" ItemTemplateSelector="{StaticResource ChatItemTemplateSelector}" ContentTemplateSelector="{StaticResource ChatContentTemplateSelector}">
+        <!-- Tab Control -->
+        <TabControl Grid.Row="0"
+                    Margin="0,0,0,10"
+                    SelectedItem="{Binding SelectedTab}" 
+                    SelectedIndex="{Binding SelectedTabIndex}" 
+                    ItemTemplateSelector="{StaticResource ChatItemTemplateSelector}" 
+                    ContentTemplateSelector="{StaticResource ChatContentTemplateSelector}">
             <TabControl.ItemsSource>
                 <CompositeCollection>
                     <CollectionContainer Collection="{Binding Source={StaticResource Chats}}" />
@@ -102,7 +93,12 @@
             </TabControl.ItemsSource>
         </TabControl>
 
-        <TextBox Grid.Row="2" Text="{Binding TextMessage, UpdateSourceTrigger=PropertyChanged}" AttachedProperties:FocusExtension.IsFocused="{Binding IsTextMessageFocused}">
+        <!-- Message Input -->
+        <TextBox Grid.Row="1"
+                 Text="{Binding TextMessage, UpdateSourceTrigger=PropertyChanged}" 
+                 AttachedProperties:FocusExtension.IsFocused="{Binding IsTextMessageFocused}"
+                 Padding="5"
+                 MinHeight="30">
             <TextBox.InputBindings>
                 <KeyBinding Key="Return" Command="{Binding SendCommand}" />
             </TextBox.InputBindings>

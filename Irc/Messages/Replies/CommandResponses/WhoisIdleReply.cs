@@ -13,7 +13,7 @@ namespace Messages.Replies.CommandResponses
         public DateTime SignOn { get; set; }
         public string Message { get; set; }
 
-        public WhoisIdleReply(string sender, string target, string nickname, TimeSpan idle, DateTime signOn, string message) : base(sender, target, RPL_WHOISIDLE)
+        public WhoisIdleReply(string sender, string target, string nickname, TimeSpan idle, string message) : base(sender, target, RPL_WHOISIDLE)
         {
             Nickname = nickname;
             Idle = idle;
@@ -22,7 +22,7 @@ namespace Messages.Replies.CommandResponses
 
         public override string InnerToString()
         {
-            return $"{Nickname} {Idle} :{Message}";
+            return $"{Nickname} {(long)Idle.TotalSeconds} :{Message}";
         }
 
         public new static WhoisIdleReply Parse(string message)
@@ -33,15 +33,12 @@ namespace Messages.Replies.CommandResponses
             var target = messageSplit[2];
             var nickname = messageSplit[3];
             var idleString = messageSplit[4];
-            var signOnString = messageSplit[5];
+            var messageText = message.Split(':').Last();
 
             var idleSeconds = long.Parse(idleString);
             var idle = TimeSpan.FromSeconds(idleSeconds);
 
-            var signOnSeconds = long.Parse(signOnString);
-            var signOn = DateTimeOffset.FromUnixTimeSeconds(signOnSeconds).LocalDateTime;
-
-            return new WhoisIdleReply(sender, target, nickname, idle, signOn, message);
+            return new WhoisIdleReply(sender, target, nickname, idle, messageText);
         }
     }
 }

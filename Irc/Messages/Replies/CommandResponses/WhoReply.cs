@@ -27,5 +27,21 @@ namespace Messages.Replies.CommandResponses
         {
             return $"{ChannelName} {User} {Host} {Server} {Nickname} H :0 {RealName}";
         }
+
+        public static new WhoReply Parse(string message)
+        {
+            var messageSplit = message.Split();
+
+            var sender = message.Split(':').First();
+            var target = messageSplit[2];
+            var channelName = messageSplit[3];
+            var user = messageSplit[4];
+            var host = messageSplit[5];
+            var server = messageSplit[6];
+            var nickname = messageSplit[7];
+            var realName = messageSplit.Last();
+
+            return new(sender, target, channelName, user, host, server, nickname, realName);
+        }
     }
 }
