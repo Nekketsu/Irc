@@ -1,26 +1,25 @@
 using Irc.Client.Wpf.ViewModels;
 using System.Windows;
 
-namespace Irc.Client.Wpf.Views
+namespace Irc.Client.Wpf.Views;
+
+public partial class ConnectionDialog : Window
 {
-    public partial class ConnectionDialog : Window
+    public ConnectionDialogViewModel ViewModel => DataContext as ConnectionDialogViewModel;
+
+    public ConnectionDialog()
     {
-        public ConnectionDialogViewModel ViewModel => DataContext as ConnectionDialogViewModel;
+        InitializeComponent();
+        Loaded += ConnectionDialog_Loaded;
+    }
 
-        public ConnectionDialog()
-        {
-            InitializeComponent();
-            Loaded += ConnectionDialog_Loaded;
-        }
+    private void ConnectionDialog_Loaded(object sender, RoutedEventArgs e)
+    {
+        HostTextBox.Focus();
+    }
 
-        private void ConnectionDialog_Loaded(object sender, RoutedEventArgs e)
-        {
-            HostTextBox.Focus();
-        }
-
-        private void Connect_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = true;
-        }
+    private void Connect_Click(object sender, RoutedEventArgs e)
+    {
+        DialogResult = true;
     }
 }

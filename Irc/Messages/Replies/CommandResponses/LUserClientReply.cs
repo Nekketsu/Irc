@@ -1,44 +1,43 @@
 using Irc.Messages;
 using System.Text.RegularExpressions;
 
-namespace Messages.Replies.CommandResponses
+namespace Messages.Replies.CommandResponses;
+
+[Command(RPL_LUSERCLIENT)]
+public class LUserClientReply : Reply
 {
-    [Command(RPL_LUSERCLIENT)]
-    public class LUserClientReply : Reply
+    const string RPL_LUSERCLIENT = "251";
+
+    public int TotalUserCount { get; }
+    public int InvisibleUserCount { get; }
+    public int SeverCount { get; }
+
+    public LUserClientReply(string sender, string target, int totalUserCount, int invisibleUserCount, int severCount) : base(sender, target, RPL_LUSERCLIENT)
     {
-        const string RPL_LUSERCLIENT = "251";
+        TotalUserCount = totalUserCount;
+        InvisibleUserCount = invisibleUserCount;
+        SeverCount = severCount;
+    }
 
-        public int TotalUserCount { get; }
-        public int InvisibleUserCount { get; }
-        public int SeverCount { get; }
+    public override string InnerToString()
+    {
+        return $":There are {TotalUserCount} users and {InvisibleUserCount} invisible on {SeverCount} servers";
+    }
 
-        public LUserClientReply(string sender, string target, int totalUserCount, int invisibleUserCount, int severCount) : base(sender, target, RPL_LUSERCLIENT)
-        {
-            TotalUserCount = totalUserCount;
-            InvisibleUserCount = invisibleUserCount;
-            SeverCount = severCount;
-        }
+    public new static LUserClientReply Parse(string message)
+    {
+        var messageSplit = message.Split();
 
-        public override string InnerToString()
-        {
-            return $":There are {TotalUserCount} users and {InvisibleUserCount} invisible on {SeverCount} servers";
-        }
+        var sender = messageSplit[0][":".Length..];
+        var target = messageSplit[2];
 
-        public new static LUserClientReply Parse(string message)
-        {
-            var messageSplit = message.Split();
+        var numberRegex = new Regex(@"\d+");
+        var matches = numberRegex.Matches(message);
 
-            var sender = messageSplit[0].Substring(":".Length);
-            var target = messageSplit[2];
+        var totalUserCount = int.Parse(matches[1].Value);
+        var invisibleUserCount = int.Parse(matches[2].Value);
+        var serverCount = int.Parse(matches[3].Value);
 
-            var numberRegex = new Regex(@"\d+");
-            var matches = numberRegex.Matches(message);
-
-            var totalUserCount = int.Parse(matches[1].Value);
-            var invisibleUserCount = int.Parse(matches[2].Value);
-            var serverCount = int.Parse(matches[3].Value);
-
-            return new(sender, target, totalUserCount, invisibleUserCount, serverCount);
-        }
+        return new(sender, target, totalUserCount, invisibleUserCount, serverCount);
     }
 }

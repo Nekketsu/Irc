@@ -2,19 +2,18 @@
 using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using System.Collections.ObjectModel;
 
-namespace Irc.Client.Wpf.ViewModels.Tabs
+namespace Irc.Client.Wpf.ViewModels.Tabs;
+
+public partial class StatusViewModel : ObservableObject, ITabViewModel
 {
-    public partial class StatusViewModel : ObservableObject, ITabViewModel
+    [ObservableProperty]
+    private ObservableCollection<MessageViewModel> log;
+
+    [ObservableProperty]
+    private bool isDirty;
+
+    public StatusViewModel()
     {
-        [ObservableProperty]
-        private ObservableCollection<MessageViewModel> log;
-
-        [ObservableProperty]
-        private bool isDirty;
-
-        public StatusViewModel()
-        {
-            Log = new();
-        }
+        Log = [];
     }
 }

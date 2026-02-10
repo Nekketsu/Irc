@@ -1,18 +1,17 @@
-namespace Irc.Messages.Messages
+namespace Irc.Messages.Messages;
+
+[Command("USERHOST")]
+public class UserhostMessage : Message
 {
-    [Command("USERHOST")]
-    public class UserhostMessage : Message
+    public string Nickname { get; set; }
+
+    public UserhostMessage(string nickname)
     {
-        public string Nickname { get; set; }
+        Nickname = nickname;
+    }
 
-        public UserhostMessage(string nickname)
-        {
-            Nickname = nickname;
-        }
-
-        public override string ToString()
-        {
-            return $"{Command} {Nickname}";
-        }
+    public override string ToString()
+    {
+        return $"{Command} {Nickname}";
     }
 }

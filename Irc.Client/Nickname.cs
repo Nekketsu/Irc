@@ -1,87 +1,81 @@
-﻿namespace Irc.Client
+﻿namespace Irc.Client;
+
+public class Nickname
 {
-    public class Nickname
+    private static readonly char[] prefixes = { '~', '&', '@', '%', '+' };
+
+    public char? Prefix { get; }
+    public string Value { get; }
+    public string FullValue { get; }
+
+    private Nickname(string value)
     {
-        private static readonly char[] prefixes = { '~', '&', '@', '%', '+' };
+        (FullValue, Value, Prefix) = prefixes.Any(value.StartsWith)
+            ? (value, value[1..], value[0])
+            : (value, value, (char?)null);
+    }
 
-        private readonly string value;
+    public static implicit operator Nickname(string nickname)
+    {
+        return new Nickname(nickname);
+    }
 
-        private Nickname(string value)
+    public static explicit operator string(Nickname nickname)
+    {
+        return nickname.FullValue;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj is Nickname nickname)
         {
-            this.value = value;
+            return Value.Equals(nickname.Value, StringComparison.InvariantCultureIgnoreCase);
+        }
+        else if (obj is string value)
+        {
+            return Value.Equals(value, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        public static implicit operator Nickname(string nickname)
-        {
-            return new Nickname(nickname);
-        }
+        return false;
+    }
 
-        public static explicit operator string(Nickname nickname)
-        {
-            return nickname.value;
-        }
+    public override int GetHashCode()
+    {
+        return Value.GetHashCode();
+    }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is Nickname nickname)
-            {
-                var nicknameValue = nickname.value;
-                if (prefixes.Any(nicknameValue.StartsWith))
-                {
-                    nicknameValue = nicknameValue.Substring(1);
-                }
-                return value.Equals(nickname.value, StringComparison.InvariantCultureIgnoreCase);
-            }
-            else if (obj is string value)
-            {
-                if (prefixes.Any(value.StartsWith))
-                {
-                    value = value.Substring(1);
-                }
-                return this.value.Equals(value, StringComparison.InvariantCultureIgnoreCase);
-            }
+    public override string ToString()
+    {
+        return Value;
+    }
 
-            return false;
-        }
+    public static bool operator ==(Nickname nickname1, Nickname nickname2)
+    {
+        return nickname1.Equals(nickname2);
+    }
 
-        public override int GetHashCode()
-        {
-            return value.GetHashCode();
-        }
+    public static bool operator !=(Nickname nickname1, Nickname nickname2)
+    {
+        return nickname1.Equals(nickname2);
+    }
 
-        public override string ToString()
-        {
-            return value;
-        }
+    public static bool operator ==(string nickname1, Nickname nickname2)
+    {
+        return nickname2.Equals(nickname1);
+    }
 
-        public static bool operator ==(Nickname nickname1, Nickname nickname2)
-        {
-            return nickname1.Equals(nickname2);
-        }
+    public static bool operator !=(string nickname1, Nickname nickname2)
+    {
+        return !nickname2.Equals(nickname1);
+    }
 
-        public static bool operator !=(Nickname nickname1, Nickname nickname2)
-        {
-            return nickname1.Equals(nickname2);
-        }
+    public static bool operator ==(Nickname nickname1, string nickname2)
+    {
+        return nickname1.Equals(nickname2);
+    }
 
-        public static bool operator ==(string nickname1, Nickname nickname2)
-        {
-            return nickname2.Equals(nickname1);
-        }
-
-        public static bool operator !=(string nickname1, Nickname nickname2)
-        {
-            return !nickname2.Equals(nickname1);
-        }
-
-        public static bool operator ==(Nickname nickname1, string nickname2)
-        {
-            return nickname1.Equals(nickname2);
-        }
-
-        public static bool operator !=(Nickname nickname1, string nickname2)
-        {
-            return !nickname1.Equals(nickname2);
-        }
+    public static bool operator !=(Nickname nickname1, string nickname2)
+    {
+        return !nickname1.Equals(nickname2);
     }
 }

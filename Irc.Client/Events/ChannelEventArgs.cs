@@ -1,12 +1,11 @@
-﻿namespace Irc.Client.Events
-{
-    public class ChannelEventArgs : EventArgs
-    {
-        public Channel Channel { get; }
+﻿namespace Irc.Client.Events;
 
-        public ChannelEventArgs(Channel channel)
-        {
-            Channel = channel;
-        }
+public class ChannelEventArgs : EventArgs
+{
+    public Channel Channel { get; }
+
+    public ChannelEventArgs(Channel channel)
+    {
+        Channel = channel;
     }
 }

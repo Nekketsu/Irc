@@ -1,22 +1,21 @@
-namespace Irc.Messages.Messages
+namespace Irc.Messages.Messages;
+
+[Command("PONG")]
+public class PongMessage : Message
 {
-    [Command("PONG")]
-    public class PongMessage : Message
+    public string Server { get; set; }
+
+    public PongMessage(string server)
     {
-        public string Server { get; set; }
+        var delimiter = ":";
 
-        public PongMessage(string server)
-        {
-            var delimiter = ":";
+        Server = (server.StartsWith(delimiter))
+            ? server[delimiter.Length..]
+            : server;
+    }
 
-            Server = (server.StartsWith(delimiter))
-                ? server.Substring(delimiter.Length)
-                : server;
-        }
-
-        public override string ToString()
-        {
-            return $"PONG :{Server}";
-        }
+    public override string ToString()
+    {
+        return $"PONG :{Server}";
     }
 }

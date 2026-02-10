@@ -4,110 +4,109 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using System.Diagnostics;
 
-namespace Irc.Client.Maui.Blazor.Pages
+namespace Irc.Client.Maui.Blazor.Pages;
+
+public partial class Index
 {
-    public partial class Index
+    [Inject]
+    public IJSRuntime JSRuntime { get; set; }
+
+    public IrcClient IrcClient { get; set; }
+    private Task ircClientTask;
+    CancellationTokenSource cancellationTokenSource;
+
+    public string Host { get; set; } = "Nekketsu";
+    public string Nickname { get; set; } = "irc.irc-hispano.org";
+
+    public bool IsConnected { get; set; } = false;
+
+    public Chat Status { get; set; }
+    public List<Chat> Chats { get; set; }
+    public Chat CurrentChat { get; set; }
+
+    public string Message { get; set; }
+
+    public void Connect()
     {
-        [Inject]
-        public IJSRuntime JSRuntime { get; set; }
+        cancellationTokenSource = new CancellationTokenSource();
 
-        public IrcClient IrcClient { get; set; }
-        private Task ircClientTask;
-        CancellationTokenSource cancellationTokenSource;
+        IrcClient = new(Host, Nickname);
 
-        public string Host { get; set; } = "Nekketsu";
-        public string Nickname { get; set; } = "irc.irc-hispano.org";
+        IrcClient.Connected += IrcClient_Connected;
+        //IrcClient.MessageSent += IrcClient_MessageSent;
+        //IrcClient.MessageReceived += IrcClient_MessageReceived;
+        IrcClient.RawMessageSent += IrcClient_RawMessageSent;
+        IrcClient.RawMessageReceived += IrcClient_RawMessageReceived;
+        IrcClient.LocalUser.ChannelJoined += LocalUser_ChannelJoined;
 
-        public bool IsConnected { get; set; } = false;
+        Status = new Chat(this, "Status");
+        Chats = [Status];
+        CurrentChat = Status;
 
-        public Chat Status { get; set; }
-        public List<Chat> Chats { get; set; }
-        public Chat CurrentChat { get; set; }
+        ircClientTask = IrcClient.RunAsync(cancellationTokenSource.Token);
+    }
 
-        public string Message { get; set; }
+    public void OnStateHasChanged()
+    {
+        StateHasChanged();
+    }
 
-        public void Connect()
-        {
-            cancellationTokenSource = new CancellationTokenSource();
+    private void LocalUser_ChannelJoined(object sender, Events.ChannelEventArgs e)
+    {
+        var chat = new ChannelChat(this, e.Channel);
+        Chats.Add(chat);
+        CurrentChat = chat;
 
-            IrcClient = new(Host, Nickname);
+        StateHasChanged();
+    }
 
-            IrcClient.Connected += IrcClient_Connected;
-            //IrcClient.MessageSent += IrcClient_MessageSent;
-            //IrcClient.MessageReceived += IrcClient_MessageReceived;
-            IrcClient.RawMessageSent += IrcClient_RawMessageSent;
-            IrcClient.RawMessageReceived += IrcClient_RawMessageReceived;
-            IrcClient.LocalUser.ChannelJoined += LocalUser_ChannelJoined;
+    private void IrcClient_Connected(object sender, EventArgs e)
+    {
+        IsConnected = true;
 
-            Status = new Chat(this, "Status");
-            Chats = new List<Chat> { Status };
-            CurrentChat = Status;
+        StateHasChanged();
+    }
 
-            ircClientTask = IrcClient.RunAsync(cancellationTokenSource.Token);
-        }
+    private void IrcClient_RawMessageReceived(object sender, string message)
+    {
+        Debug.WriteLine(message);
+        Status.Log.Add(new ChatMessage(message));
 
-        public void OnStateHasChanged()
+        if (CurrentChat == Status)
         {
             StateHasChanged();
         }
 
-        private void LocalUser_ChannelJoined(object sender, Events.ChannelEventArgs e)
-        {
-            var chat = new ChannelChat(this, e.Channel);
-            Chats.Add(chat);
-            CurrentChat = chat;
+        JSRuntime.InvokeVoidAsync("scrollToBottom", Status.Id);
+    }
 
+    private void IrcClient_RawMessageSent(object sender, string message)
+    {
+        Status.Log.Add(new ChatMessage(message));
+
+        if (CurrentChat == Status)
+        {
             StateHasChanged();
         }
 
-        private void IrcClient_Connected(object sender, EventArgs e)
-        {
-            IsConnected = true;
+        JSRuntime.InvokeVoidAsync("scrollToBottom", Status.Id);
+    }
 
-            StateHasChanged();
+    private async Task Message_KeyDown(KeyboardEventArgs e)
+    {
+        if ((e.Code == "Enter") || (e.Code == "NumEnter"))
+        {
+            await SendMessage();
         }
+    }
 
-        private void IrcClient_RawMessageReceived(object sender, string message)
+    private async Task SendMessage()
+    {
+        var message = Messages.Message.Parse(Message);
+        if (message is not null)
         {
-            Debug.WriteLine(message);
-            Status.Log.Add(new ChatMessage(message));
-
-            if (CurrentChat == Status)
-            {
-                StateHasChanged();
-            }
-
-            JSRuntime.InvokeVoidAsync("scrollToBottom", Status.Id);
-        }
-
-        private void IrcClient_RawMessageSent(object sender, string message)
-        {
-            Status.Log.Add(new ChatMessage(message));
-
-            if (CurrentChat == Status)
-            {
-                StateHasChanged();
-            }
-
-            JSRuntime.InvokeVoidAsync("scrollToBottom", Status.Id);
-        }
-
-        private async Task Message_KeyDown(KeyboardEventArgs e)
-        {
-            if ((e.Code == "Enter") || (e.Code == "NumEnter"))
-            {
-                await SendMessage();
-            }
-        }
-
-        private async Task SendMessage()
-        {
-            var message = Messages.Message.Parse(Message);
-            if (message is not null)
-            {
-                await IrcClient.SendMessageAsync(message);
-                Message = null;
-            }
+            await IrcClient.SendMessageAsync(message);
+            Message = null;
         }
     }
 }

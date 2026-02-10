@@ -1,12 +1,11 @@
-﻿namespace Irc.Client.Events
-{
-    public class UserEventArgs : EventArgs
-    {
-        public Nickname Nickname { get; }
+﻿namespace Irc.Client.Events;
 
-        public UserEventArgs(Nickname nickname)
-        {
-            Nickname = nickname;
-        }
+public class UserEventArgs : EventArgs
+{
+    public Nickname Nickname { get; }
+
+    public UserEventArgs(Nickname nickname)
+    {
+        Nickname = nickname;
     }
 }

@@ -1,8 +1,7 @@
 ﻿using Irc.Messages.Messages;
 
-namespace Irc.Server.MessageHandlers.MiscellaneousMessages
+namespace Irc.Server.MessageHandlers.MiscellaneousMessages;
+
+public class PingMessageHandler : MessageHandler<PingMessage>
 {
-    public class PingMessageHandler : MessageHandler<PingMessage>
-    {
-    }
 }

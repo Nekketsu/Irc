@@ -1,10 +1,9 @@
-﻿namespace Irc.Client.Maui.Blazor
+﻿namespace Irc.Client.Maui.Blazor;
+
+public partial class MainPage : ContentPage
 {
-    public partial class MainPage : ContentPage
+    public MainPage()
     {
-        public MainPage()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

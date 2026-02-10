@@ -1,37 +1,36 @@
-﻿namespace Irc.Client
+﻿namespace Irc.Client;
+
+public class NicknameComparer : IComparer<string>
 {
-    public class NicknameComparer : IComparer<string>
+    private char[] prefixes = { '~', '&', '@', '%', '+' };
+
+    public int Compare(string x, string y)
     {
-        private char[] prefixes = { '~', '&', '@', '%', '+' };
+        var xIndexOf = Array.IndexOf(prefixes, x[0]);
+        var yIndexOf = Array.IndexOf(prefixes, y[0]);
 
-        public int Compare(string x, string y)
+        if (xIndexOf >= 0 && yIndexOf >= 0)
         {
-            var xIndexOf = Array.IndexOf(prefixes, x[0]);
-            var yIndexOf = Array.IndexOf(prefixes, y[0]);
-
-            if (xIndexOf >= 0 && yIndexOf >= 0)
+            if (xIndexOf == yIndexOf)
             {
-                if (xIndexOf == yIndexOf)
-                {
-                    return string.Compare(x.Substring(1), y.Substring(1), StringComparison.InvariantCultureIgnoreCase);
-                }
-                else
-                {
-                    return xIndexOf.CompareTo(yIndexOf);
-                }
+                return string.Compare(x[1..], y[1..], StringComparison.InvariantCultureIgnoreCase);
             }
-            if (xIndexOf >= 0)
+            else
             {
-                return -1;
+                return xIndexOf.CompareTo(yIndexOf);
             }
-            if (yIndexOf >= 0)
-            {
-                return 1;
-            }
-
-            return string.Compare(x, y, StringComparison.InvariantCultureIgnoreCase);
+        }
+        if (xIndexOf >= 0)
+        {
+            return -1;
+        }
+        if (yIndexOf >= 0)
+        {
+            return 1;
         }
 
-        public static NicknameComparer Default => new NicknameComparer();
+        return string.Compare(x, y, StringComparison.InvariantCultureIgnoreCase);
     }
+
+    public static NicknameComparer Default => new();
 }

@@ -1,37 +1,36 @@
 using Irc.Messages;
 
-namespace Messages.Replies.CommandResponses
+namespace Messages.Replies.CommandResponses;
+
+[Command(RPL_MOTD)]
+public class MotdReply : Reply
 {
-    [Command(RPL_MOTD)]
-    public class MotdReply : Reply
+    const string RPL_MOTD = "372";
+
+    public string Message { get; }
+
+    public MotdReply(string sender, string target, string message) : base(sender, target, RPL_MOTD)
     {
-        const string RPL_MOTD = "372";
+        Message = message;
+    }
 
-        public string Message { get; }
+    public override string InnerToString()
+    {
+        return $":{Message}";
+    }
 
-        public MotdReply(string sender, string target, string message) : base(sender, target, RPL_MOTD)
-        {
-            Message = message;
-        }
+    public new static MotdReply Parse(string message)
+    {
+        var messageSplit = message.Split();
 
-        public override string InnerToString()
-        {
-            return $":{Message}";
-        }
+        var sender = messageSplit[0][":".Length..];
+        var target = messageSplit[2];
+        var text = message
+[messageSplit[0].Length..].TrimStart()
+[messageSplit[1].Length..].TrimStart()
+[messageSplit[2].Length..].TrimStart()
+[":".Length..];
 
-        public new static MotdReply Parse(string message)
-        {
-            var messageSplit = message.Split();
-
-            var sender = messageSplit[0].Substring(":".Length);
-            var target = messageSplit[2];
-            var text = message
-                .Substring(messageSplit[0].Length).TrimStart()
-                .Substring(messageSplit[1].Length).TrimStart()
-                .Substring(messageSplit[2].Length).TrimStart()
-                .Substring(":".Length);
-
-            return new(sender, target, text);
-        }
+        return new(sender, target, text);
     }
 }

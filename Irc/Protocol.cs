@@ -1,7 +1,6 @@
-﻿namespace Irc
+﻿namespace Irc;
+
+public class Protocol
 {
-    public class Protocol
-    {
-        public const int DefaultPort = 6667;
-    }
+    public const int DefaultPort = 6667;
 }

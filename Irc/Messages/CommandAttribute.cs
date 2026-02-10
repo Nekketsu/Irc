@@ -1,13 +1,12 @@
-﻿namespace Irc.Messages
-{
-    [AttributeUsage(AttributeTargets.Class)]
-    public class CommandAttribute : Attribute
-    {
-        public string Command { get; set; }
+﻿namespace Irc.Messages;
 
-        public CommandAttribute(string command)
-        {
-            Command = command;
-        }
+[AttributeUsage(AttributeTargets.Class)]
+public class CommandAttribute : Attribute
+{
+    public string Command { get; set; }
+
+    public CommandAttribute(string command)
+    {
+        Command = command;
     }
 }

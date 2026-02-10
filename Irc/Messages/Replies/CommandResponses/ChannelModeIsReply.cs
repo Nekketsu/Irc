@@ -1,32 +1,31 @@
 using Irc.Messages;
 
-namespace Messages.Replies.CommandResponses
+namespace Messages.Replies.CommandResponses;
+
+[Command(RPL_CHANNELMODEIS)]
+public class ChannelModeIsReply : Reply
 {
-    [Command(RPL_CHANNELMODEIS)]
-    public class ChannelModeIsReply : Reply
+    const string RPL_CHANNELMODEIS = "324";
+
+    public string ChannelName { get; private set; }
+    public string Mode { get; set; }
+    public string ModeParams { get; set; }
+
+    public ChannelModeIsReply(string sender, string target, string channelName, string mode, string modeParams = null) : base(sender, target, RPL_CHANNELMODEIS)
     {
-        const string RPL_CHANNELMODEIS = "324";
+        ChannelName = channelName;
+        Mode = mode;
+        ModeParams = modeParams;
+    }
 
-        public string ChannelName { get; private set; }
-        public string Mode { get; set; }
-        public string ModeParams { get; set; }
-
-        public ChannelModeIsReply(string sender, string target, string channelName, string mode, string modeParams = null) : base(sender, target, RPL_CHANNELMODEIS)
+    public override string InnerToString()
+    {
+        var text = $"{ChannelName} :{Mode}";
+        if (ModeParams is not null)
         {
-            ChannelName = channelName;
-            Mode = mode;
-            ModeParams = modeParams;
+            text = $"{text} {ModeParams}";
         }
 
-        public override string InnerToString()
-        {
-            var text = $"{ChannelName} :{Mode}";
-            if (ModeParams is not null)
-            {
-                text = $"{text} {ModeParams}";
-            }
-
-            return text;
-        }
+        return text;
     }
 }

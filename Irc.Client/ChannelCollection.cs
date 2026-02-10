@@ -1,39 +1,38 @@
 ﻿using System.Collections;
 
-namespace Irc.Client
+namespace Irc.Client;
+
+public class ChannelCollection : IEnumerable<Channel>
 {
-    public class ChannelCollection : IEnumerable<Channel>
+    private Dictionary<string, Channel> channels;
+
+    public ChannelCollection()
     {
-        private Dictionary<string, Channel> channels;
+        channels = new Dictionary<string, Channel>(ChannelNameEqualityComparer.Default);
+    }
+    public Channel this[string channelName]
+    {
+        get => channels.GetValueOrDefault(channelName);
+        set => channels[channelName] = value;
+    }
 
-        public ChannelCollection()
-        {
-            channels = new Dictionary<string, Channel>(ChannelNameEqualityComparer.Default);
-        }
-        public Channel this[string channelName]
-        {
-            get => channels.GetValueOrDefault(channelName);
-            set => channels[channelName] = value;
-        }
+    public IEnumerator<Channel> GetEnumerator()
+    {
+        return channels.Values.GetEnumerator();
+    }
 
-        public IEnumerator<Channel> GetEnumerator()
-        {
-            return channels.Values.GetEnumerator();
-        }
+    internal bool Remove(string channelName)
+    {
+        return channels.Remove(channelName);
+    }
 
-        internal bool Remove(string channelName)
-        {
-            return channels.Remove(channelName);
-        }
+    public bool Contains(string channelName)
+    {
+        return channels.ContainsKey(channelName);
+    }
 
-        public bool Contains(string channelName)
-        {
-            return channels.ContainsKey(channelName);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

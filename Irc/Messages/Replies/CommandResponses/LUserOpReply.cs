@@ -1,33 +1,32 @@
 using Irc.Messages;
 
-namespace Messages.Replies.CommandResponses
+namespace Messages.Replies.CommandResponses;
+
+[Command(RPL_LUSEROP)]
+public class LUserOpReply : Reply
 {
-    [Command(RPL_LUSEROP)]
-    public class LUserOpReply : Reply
+    const string RPL_LUSEROP = "252";
+
+    public int IrcOperatorsCount { get; }
+
+    public LUserOpReply(string sender, string target, int ircOperatorsCount) : base(sender, target, RPL_LUSEROP)
     {
-        const string RPL_LUSEROP = "252";
+        IrcOperatorsCount = ircOperatorsCount;
+    }
 
-        public int IrcOperatorsCount { get; }
+    public override string InnerToString()
+    {
+        return $"{IrcOperatorsCount} :operator(s) online";
+    }
 
-        public LUserOpReply(string sender, string target, int ircOperatorsCount) : base(sender, target, RPL_LUSEROP)
-        {
-            IrcOperatorsCount = ircOperatorsCount;
-        }
+    public new static LUserOpReply Parse(string message)
+    {
+        var messageSplit = message.Split();
 
-        public override string InnerToString()
-        {
-            return $"{IrcOperatorsCount} :operator(s) online";
-        }
+        var sender = messageSplit[0][":".Length..];
+        var target = messageSplit[2];
+        var ircOperatorsCount = int.Parse(messageSplit[3]);
 
-        public new static LUserOpReply Parse(string message)
-        {
-            var messageSplit = message.Split();
-
-            var sender = messageSplit[0].Substring(":".Length);
-            var target = messageSplit[2];
-            var ircOperatorsCount = int.Parse(messageSplit[3]);
-
-            return new(sender, target, ircOperatorsCount);
-        }
+        return new(sender, target, ircOperatorsCount);
     }
 }

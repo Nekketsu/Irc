@@ -1,46 +1,45 @@
 using Irc.Messages;
 using System.Text.RegularExpressions;
 
-namespace Messages.Replies.CommandResponses
+namespace Messages.Replies.CommandResponses;
+
+[Command(RPL_LUSERME)]
+public class LUserMeReply : Reply
 {
-    [Command(RPL_LUSERME)]
-    public class LUserMeReply : Reply
+    const string RPL_LUSERME = "255";
+
+    public int ClientCount { get; }
+    public int ServerCount { get; }
+
+    public LUserMeReply(string sender, string target, int clientCount, int serverCount) : base(sender, target, RPL_LUSERME)
     {
-        const string RPL_LUSERME = "255";
+        ClientCount = clientCount;
+        ServerCount = serverCount;
+    }
 
-        public int ClientCount { get; }
-        public int ServerCount { get; }
+    public override string InnerToString()
+    {
+        return $":I have {ClientCount} clients and {ServerCount} servers";
+    }
 
-        public LUserMeReply(string sender, string target, int clientCount, int serverCount) : base(sender, target, RPL_LUSERME)
-        {
-            ClientCount = clientCount;
-            ServerCount = serverCount;
-        }
+    public new static LUserMeReply Parse(string message)
+    {
+        var messageSplit = message.Split();
 
-        public override string InnerToString()
-        {
-            return $":I have {ClientCount} clients and {ServerCount} servers";
-        }
+        var sender = messageSplit[0][":".Length..];
+        var target = messageSplit[2];
 
-        public new static LUserMeReply Parse(string message)
-        {
-            var messageSplit = message.Split();
+        var text = message
+[messageSplit[0].Length..].TrimStart()
+[messageSplit[1].Length..].TrimStart()
+[messageSplit[2].Length..].TrimStart();
 
-            var sender = messageSplit[0].Substring(":".Length);
-            var target = messageSplit[2];
+        var numberRegex = new Regex(@"\d+");
+        var matches = numberRegex.Matches(text);
 
-            var text = message
-                .Substring(messageSplit[0].Length).TrimStart()
-                .Substring(messageSplit[1].Length).TrimStart()
-                .Substring(messageSplit[2].Length).TrimStart();
+        var clientCount = int.Parse(matches[0].Value);
+        var serverCount = int.Parse(matches[1].Value);
 
-            var numberRegex = new Regex(@"\d+");
-            var matches = numberRegex.Matches(text);
-
-            var clientCount = int.Parse(matches[0].Value);
-            var serverCount = int.Parse(matches[1].Value);
-
-            return new(sender, target, clientCount, serverCount);
-        }
+        return new(sender, target, clientCount, serverCount);
     }
 }

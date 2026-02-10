@@ -1,12 +1,11 @@
 ﻿using Messages.Replies.CommandResponses;
 
-namespace Irc.Client.Wpf.MessageHandlers.Replies.CommandResponses
+namespace Irc.Client.Wpf.MessageHandlers.Replies.CommandResponses;
+
+public class EndOfNamesReplyMessageHandler : IMessageHandler<EndOfNamesReply>
 {
-    public class EndOfNamesReplyMessageHandler : IMessageHandler<EndOfNamesReply>
+    public Task HandleAsync(EndOfNamesReply message)
     {
-        public Task HandleAsync(EndOfNamesReply message)
-        {
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }

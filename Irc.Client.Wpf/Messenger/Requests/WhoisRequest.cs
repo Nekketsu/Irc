@@ -1,12 +1,11 @@
-﻿namespace Irc.Client.Wpf.Messenger.Requests
-{
-    public class WhoisRequest
-    {
-        public string Nickname { get; }
+﻿namespace Irc.Client.Wpf.Messenger.Requests;
 
-        public WhoisRequest(string nickname)
-        {
-            Nickname = nickname;
-        }
+public class WhoisRequest
+{
+    public string Nickname { get; }
+
+    public WhoisRequest(string nickname)
+    {
+        Nickname = nickname;
     }
 }

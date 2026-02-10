@@ -1,19 +1,18 @@
-namespace Irc.Server.Service
+namespace Irc.Server.Service;
+
+public class Worker : BackgroundService
 {
-    public class Worker : BackgroundService
+    private readonly ILogger<Worker> _logger;
+    private readonly IrcServer ircServer;
+
+    public Worker(ILogger<Worker> logger)
     {
-        private readonly ILogger<Worker> _logger;
-        private readonly IrcServer ircServer;
+        _logger = logger;
+        ircServer = new IrcServer(new ConsoleLogger());
+    }
 
-        public Worker(ILogger<Worker> logger)
-        {
-            _logger = logger;
-            ircServer = new IrcServer(new ConsoleLogger());
-        }
-
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            await ircServer.RunAsync(stoppingToken);
-        }
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        await ircServer.RunAsync(stoppingToken);
     }
 }

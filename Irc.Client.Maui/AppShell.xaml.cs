@@ -1,10 +1,9 @@
-﻿namespace Irc.Client.Maui
+﻿namespace Irc.Client.Maui;
+
+public partial class AppShell : Shell
 {
-    public partial class AppShell : Shell
+    public AppShell()
     {
-        public AppShell()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

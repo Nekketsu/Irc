@@ -1,13 +1,12 @@
-namespace Irc.Client.Scripting
-{
-    public class ScriptAlreadyExistsException : Exception
-    {
-        public string FileName { get; }
+namespace Irc.Client.Scripting;
 
-        public ScriptAlreadyExistsException(string fileName)
-            : base($"A script with the name '{fileName}' already exists.")
-        {
-            FileName = fileName;
-        }
+public class ScriptAlreadyExistsException : Exception
+{
+    public string FileName { get; }
+
+    public ScriptAlreadyExistsException(string fileName)
+        : base($"A script with the name '{fileName}' already exists.")
+    {
+        FileName = fileName;
     }
 }

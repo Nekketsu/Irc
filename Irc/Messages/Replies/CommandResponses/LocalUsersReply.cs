@@ -1,46 +1,45 @@
 using Irc.Messages;
 using System.Text.RegularExpressions;
 
-namespace Messages.Replies.CommandResponses
+namespace Messages.Replies.CommandResponses;
+
+[Command(RPL_LOCALUSERS)]
+public class LocalUsersReply : Reply
 {
-    [Command(RPL_LOCALUSERS)]
-    public class LocalUsersReply : Reply
+    const string RPL_LOCALUSERS = "265";
+
+    public int CurrentClientCount { get; }
+    public int MaximumClientCount { get; }
+
+    public LocalUsersReply(string sender, string target, int currentClientCount, int maximumClientCount) : base(sender, target, RPL_LOCALUSERS)
     {
-        const string RPL_LOCALUSERS = "265";
+        CurrentClientCount = currentClientCount;
+        MaximumClientCount = maximumClientCount;
+    }
 
-        public int CurrentClientCount { get; }
-        public int MaximumClientCount { get; }
+    public override string InnerToString()
+    {
+        return $":Current local users {CurrentClientCount}, max {MaximumClientCount}";
+    }
 
-        public LocalUsersReply(string sender, string target, int currentClientCount, int maximumClientCount) : base(sender, target, RPL_LOCALUSERS)
-        {
-            CurrentClientCount = currentClientCount;
-            MaximumClientCount = maximumClientCount;
-        }
+    public new static LocalUsersReply Parse(string message)
+    {
+        var messageSplit = message.Split();
 
-        public override string InnerToString()
-        {
-            return $":Current local users {CurrentClientCount}, max {MaximumClientCount}";
-        }
+        var sender = messageSplit[0][":".Length..];
+        var target = messageSplit[1];
 
-        public new static LocalUsersReply Parse(string message)
-        {
-            var messageSplit = message.Split();
+        var text = message
+[messageSplit[0].Length..].TrimStart()
+[messageSplit[1].Length..].TrimStart()
+[messageSplit[2].Length..].TrimStart();
 
-            var sender = messageSplit[0].Substring(":".Length);
-            var target = messageSplit[1];
+        var numberRegex = new Regex(@"\d+");
+        var matches = numberRegex.Matches(text);
 
-            var text = message
-                .Substring(messageSplit[0].Length).TrimStart()
-                .Substring(messageSplit[1].Length).TrimStart()
-                .Substring(messageSplit[2].Length).TrimStart();
+        var currentClientCount = int.Parse(matches[0].Value);
+        var maximumClientCount = int.Parse(matches[1].Value);
 
-            var numberRegex = new Regex(@"\d+");
-            var matches = numberRegex.Matches(text);
-
-            var currentClientCount = int.Parse(matches[0].Value);
-            var maximumClientCount = int.Parse(matches[1].Value);
-
-            return new(sender, target, currentClientCount, maximumClientCount);
-        }
+        return new(sender, target, currentClientCount, maximumClientCount);
     }
 }

@@ -1,36 +1,35 @@
 ﻿using Microsoft.JSInterop;
 
-namespace Irc.Client.Maui.Blazor.Models
+namespace Irc.Client.Maui.Blazor.Models;
+
+public class ChannelChat : Chat
 {
-    public class ChannelChat : Chat
+    public UserCollection Users { get; }
+
+    public ChannelChat(Pages.Index index, Channel channel) : base(index)
     {
-        public UserCollection Users { get; }
+        Users = new();
 
-        public ChannelChat(Pages.Index index, Channel channel) : base(index)
+        Id = $"Channel_{channel.Name}";
+        Name = channel.Name;
+
+        channel.MessageReceived += Channel_MessageReceived;
+        channel.UserJoined += Channel_UserJoined;
+        Users = channel.Users;
+    }
+
+    private async void Channel_UserJoined(object sender, Events.UserEventArgs e)
+    {
+        if (index.CurrentChat == this)
         {
-            Users = new();
-
-            Id = $"Channel_{channel.Name}";
-            Name = channel.Name;
-
-            channel.MessageReceived += Channel_MessageReceived;
-            channel.UserJoined += Channel_UserJoined;
-            Users = channel.Users;
+            index.OnStateHasChanged();
         }
 
-        private async void Channel_UserJoined(object sender, Events.UserEventArgs e)
-        {
-            if (index.CurrentChat == this)
-            {
-                index.OnStateHasChanged();
-            }
+        await index.JSRuntime.InvokeVoidAsync("scrollToBottom", Id);
+    }
 
-            await index.JSRuntime.InvokeVoidAsync("scrollToBottom", Id);
-        }
-
-        private async void Channel_MessageReceived(object sender, Events.MessageEventArgs e)
-        {
-            await Speak(e.From, e.Message);
-        }
+    private async void Channel_MessageReceived(object sender, Events.MessageEventArgs e)
+    {
+        await Speak(e.From, e.Message);
     }
 }

@@ -4,43 +4,42 @@ using Irc.Client.Wpf.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
-namespace Irc.Client.Wpf
+namespace Irc.Client.Wpf;
+
+/// <summary>
+/// Interaction logic for App.xaml
+/// </summary>
+public partial class App : Application
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
+    public IServiceProvider Services { get; }
+
+    public new static App Current => (App)Application.Current;
+
+    public App()
     {
-        public IServiceProvider Services { get; }
+        Services = ConfigureServices();
+    }
 
-        public new static App Current => (App)Application.Current;
+    protected override void OnStartup(StartupEventArgs e)
+    {
+        base.OnStartup(e);
 
-        public App()
-        {
-            Services = ConfigureServices();
-        }
+        var mainWindow = new MainWindow();
+        var mainWindowViewModel = Services.GetRequiredService<MainWindowViewModel>();
+        mainWindow.Initialize(mainWindowViewModel);
+        mainWindow.Show();
 
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
+        MainWindow = mainWindow;
+    }
 
-            var mainWindow = new MainWindow();
-            var mainWindowViewModel = Services.GetRequiredService<MainWindowViewModel>();
-            mainWindow.Initialize(mainWindowViewModel);
-            mainWindow.Show();
+    private IServiceProvider ConfigureServices()
+    {
+        var services = new ServiceCollection();
 
-            MainWindow = mainWindow;
-        }
+        services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
+        services.AddSingleton<IrcViewModel>();
+        services.AddSingleton<MainWindowViewModel>();
 
-        private IServiceProvider ConfigureServices()
-        {
-            var services = new ServiceCollection();
-
-            services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
-            services.AddSingleton<IrcViewModel>();
-            services.AddSingleton<MainWindowViewModel>();
-
-            return services.BuildServiceProvider();
-        }
+        return services.BuildServiceProvider();
     }
 }

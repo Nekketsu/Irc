@@ -1,45 +1,44 @@
 using Irc.Messages;
 
-namespace Messages.Replies.CommandResponses
+namespace Messages.Replies.CommandResponses;
+
+[Command(RPL_MYINFO)]
+public class MyInfoReply : Reply
 {
-    [Command(RPL_MYINFO)]
-    public class MyInfoReply : Reply
+    const string RPL_MYINFO = "004";
+
+    public string ServerName { get; }
+    public string Version { get; }
+    public string AvailableUserModes { get; }
+    public string AvailableChannelModes { get; }
+    public string ChannelModesWithAParameter { get; }
+
+    public MyInfoReply(string sender, string target, string serverName, string version, string availableUserModes, string availableChannelModes, string channelModesWithAParameter) : base(sender, target, RPL_MYINFO)
     {
-        const string RPL_MYINFO = "004";
+        ServerName = serverName;
+        Version = version;
+        AvailableUserModes = availableUserModes;
+        AvailableChannelModes = availableChannelModes;
+        ChannelModesWithAParameter = channelModesWithAParameter;
+    }
 
-        public string ServerName { get; }
-        public string Version { get; }
-        public string AvailableUserModes { get; }
-        public string AvailableChannelModes { get; }
-        public string ChannelModesWithAParameter { get; }
+    public override string InnerToString()
+    {
+        return $":{ServerName} {Version} {AvailableUserModes} {AvailableChannelModes} :{ChannelModesWithAParameter}";
+    }
 
-        public MyInfoReply(string sender, string target, string serverName, string version, string availableUserModes, string availableChannelModes, string channelModesWithAParameter) : base(sender, target, RPL_MYINFO)
-        {
-            ServerName = serverName;
-            Version = version;
-            AvailableUserModes = availableUserModes;
-            AvailableChannelModes = availableChannelModes;
-            ChannelModesWithAParameter = channelModesWithAParameter;
-        }
+    public new static MyInfoReply Parse(string message)
+    {
+        var messageSplit = message.Split();
 
-        public override string InnerToString()
-        {
-            return $":{ServerName} {Version} {AvailableUserModes} {AvailableChannelModes} :{ChannelModesWithAParameter}";
-        }
+        var sender = messageSplit[0][":".Length..];
+        var target = messageSplit[2];
+        var serverName = messageSplit[3];
+        var version = messageSplit[4];
+        var availableUserModes = messageSplit[5];
+        var availableChannelModes = messageSplit[6];
+        var channelModesWithAParameter = messageSplit[7][":".Length..];
 
-        public new static MyInfoReply Parse(string message)
-        {
-            var messageSplit = message.Split();
-
-            var sender = messageSplit[0].Substring(":".Length);
-            var target = messageSplit[2];
-            var serverName = messageSplit[3];
-            var version = messageSplit[4];
-            var availableUserModes = messageSplit[5];
-            var availableChannelModes = messageSplit[6];
-            var channelModesWithAParameter = messageSplit[7].Substring(":".Length);
-
-            return new(sender, target, serverName, version, availableUserModes, availableChannelModes, channelModesWithAParameter);
-        }
+        return new(sender, target, serverName, version, availableUserModes, availableChannelModes, channelModesWithAParameter);
     }
 }

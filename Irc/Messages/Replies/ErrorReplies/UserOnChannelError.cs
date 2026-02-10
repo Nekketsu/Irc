@@ -1,27 +1,26 @@
 using Irc.Messages;
 
-namespace Messages.Replies.ErrorReplies
+namespace Messages.Replies.ErrorReplies;
+
+[Command(ERR_USERONCHANNEL)]
+public class UserOnChannelError : Reply
 {
-    [Command(ERR_USERONCHANNEL)]
-    public class UserOnChannelError : Reply
+    public const string DefaultMessage = "is already on channel";
+
+    const string ERR_USERONCHANNEL = "443";
+    public string Nickname { get; set; }
+    public string ChannelName { get; set; }
+    public string Message { get; private set; }
+
+    public UserOnChannelError(string sender, string target, string nickname, string channelName, string message) : base(sender, target, ERR_USERONCHANNEL)
     {
-        public const string DefaultMessage = "is already on channel";
+        Nickname = nickname;
+        ChannelName = channelName;
+        Message = message;
+    }
 
-        const string ERR_USERONCHANNEL = "443";
-        public string Nickname { get; set; }
-        public string ChannelName { get; set; }
-        public string Message { get; private set; }
-
-        public UserOnChannelError(string sender, string target, string nickname, string channelName, string message) : base(sender, target, ERR_USERONCHANNEL)
-        {
-            Nickname = nickname;
-            ChannelName = channelName;
-            Message = message;
-        }
-
-        public override string InnerToString()
-        {
-            return $"{Nickname} {ChannelName} :{Message}";
-        }
+    public override string InnerToString()
+    {
+        return $"{Nickname} {ChannelName} :{Message}";
     }
 }

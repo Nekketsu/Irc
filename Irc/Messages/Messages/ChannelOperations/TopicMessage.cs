@@ -1,50 +1,49 @@
-namespace Irc.Messages.Messages
+namespace Irc.Messages.Messages;
+
+[Command("TOPIC")]
+public class TopicMessage : Message
 {
-    [Command("TOPIC")]
-    public class TopicMessage : Message
+    public string From { get; set; }
+    public string ChannelName { get; set; }
+    public string Topic { get; set; }
+
+    public TopicMessage(string channelName)
     {
-        public string From { get; set; }
-        public string ChannelName { get; set; }
-        public string Topic { get; set; }
+        ChannelName = channelName;
+    }
 
-        public TopicMessage(string channelName)
+    public TopicMessage(string channelName, string topic) : this(channelName)
+    {
+        Topic = topic;
+    }
+
+    public TopicMessage(string from, string channelName, string topic) : this(channelName, topic)
+    {
+        From = from;
+    }
+
+
+    public override string ToString()
+    {
+        return Topic is null
+            ? $"{Command} {ChannelName}"
+            : From is null
+                ? $"{Command} {ChannelName} :{Topic}"
+                : $":{From} {Command} {ChannelName} :{Topic}";
+    }
+
+    public new static TopicMessage Parse(string message)
+    {
+        var messageSplit = message.Split();
+        var channelName = messageSplit[1];
+
+        var text = message[(message.IndexOf(messageSplit[1]) + messageSplit[1].Length)..].TrimStart();
+        if (text.StartsWith(':'))
         {
-            ChannelName = channelName;
+            var topic = text[1..];
+            return new TopicMessage(channelName, topic);
         }
 
-        public TopicMessage(string channelName, string topic) : this(channelName)
-        {
-            Topic = topic;
-        }
-
-        public TopicMessage(string from, string channelName, string topic) : this(channelName, topic)
-        {
-            From = from;
-        }
-
-
-        public override string ToString()
-        {
-            return Topic is null
-                ? $"{Command} {ChannelName}"
-                : From is null
-                    ? $"{Command} {ChannelName} :{Topic}"
-                    : $":{From} {Command} {ChannelName} :{Topic}";
-        }
-
-        public new static TopicMessage Parse(string message)
-        {
-            var messageSplit = message.Split();
-            var channelName = messageSplit[1];
-
-            var text = message.Substring(message.IndexOf(messageSplit[1]) + messageSplit[1].Length).TrimStart();
-            if (text.StartsWith(':'))
-            {
-                var topic = text.Substring(1);
-                return new TopicMessage(channelName, topic);
-            }
-
-            return new TopicMessage(channelName);
-        }
+        return new TopicMessage(channelName);
     }
 }

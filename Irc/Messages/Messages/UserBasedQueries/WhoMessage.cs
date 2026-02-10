@@ -1,18 +1,17 @@
-namespace Irc.Messages.Messages
+namespace Irc.Messages.Messages;
+
+[Command("WHO")]
+public class WhoMessage : Message
 {
-    [Command("WHO")]
-    public class WhoMessage : Message
+    public string Mask { get; set; }
+
+    public WhoMessage(string mask = null)
     {
-        public string Mask { get; set; }
+        Mask = mask;
+    }
 
-        public WhoMessage(string mask = null)
-        {
-            Mask = mask;
-        }
-
-        public override string ToString()
-        {
-            return $"{Command} {Mask}";
-        }
+    public override string ToString()
+    {
+        return $"{Command} {Mask}";
     }
 }

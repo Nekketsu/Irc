@@ -1,18 +1,17 @@
-namespace Irc.Messages.Messages
+namespace Irc.Messages.Messages;
+
+[Command("PING")]
+public class PingMessage : Message
 {
-    [Command("PING")]
-    public class PingMessage : Message
+    public string Server { get; set; }
+
+    public PingMessage(string server)
     {
-        public string Server { get; set; }
+        Server = server;
+    }
 
-        public PingMessage(string server)
-        {
-            Server = server;
-        }
-
-        public override string ToString()
-        {
-            return $"PING :{Server}";
-        }
+    public override string ToString()
+    {
+        return $"PING :{Server}";
     }
 }

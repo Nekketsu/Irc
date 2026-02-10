@@ -1,16 +1,15 @@
-﻿namespace Irc.Server.Console
+﻿namespace Irc.Server.Console;
+
+class Program
 {
-    class Program
+    static async Task Main(string[] args)
     {
-        static async Task Main(string[] args)
-        {
-            var stoppingTokenSource = new CancellationTokenSource();
-            System.Console.CancelKeyPress += (sender, args) => stoppingTokenSource.Cancel();
+        var stoppingTokenSource = new CancellationTokenSource();
+        System.Console.CancelKeyPress += (sender, args) => stoppingTokenSource.Cancel();
 
-            var ircServer = new IrcServer(new ConsoleLogger());
-            await ircServer.RunAsync(stoppingTokenSource.Token);
+        var ircServer = new IrcServer(new ConsoleLogger());
+        await ircServer.RunAsync(stoppingTokenSource.Token);
 
-            Environment.Exit(0);
-        }
+        Environment.Exit(0);
     }
 }

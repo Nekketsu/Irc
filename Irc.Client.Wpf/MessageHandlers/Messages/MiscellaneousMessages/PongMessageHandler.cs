@@ -1,12 +1,11 @@
 ﻿using Irc.Messages.Messages;
 
-namespace Irc.Client.Wpf.MessageHandlers.Messages.MiscellaneousMessages
+namespace Irc.Client.Wpf.MessageHandlers.Messages.MiscellaneousMessages;
+
+public class PongMessageHandler : IMessageHandler<PongMessage>
 {
-    public class PongMessageHandler : IMessageHandler<PongMessage>
+    public Task HandleAsync(PongMessage message)
     {
-        public Task HandleAsync(PongMessage message)
-        {
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }

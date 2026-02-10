@@ -4,58 +4,57 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 
-namespace Irc.Server
+namespace Irc.Server;
+
+public class IrcServer
 {
-    public class IrcServer
+    public ILogger Logger { get; }
+    private int port;
+
+    public string ServerName { get; private set; }
+    public Version Version { get; private set; }
+    public DateTime CreatedDateTime { get; private set; }
+
+    public List<IrcClient> IrcClients { get; set; }
+    public Dictionary<string, Channel> Channels { get; set; }
+
+    public IrcServer(ILogger logger, int port = Protocol.DefaultPort)
     {
-        public ILogger Logger { get; }
-        private int port;
+        Logger = logger;
 
-        public string ServerName { get; private set; }
-        public Version Version { get; private set; }
-        public DateTime CreatedDateTime { get; private set; }
+        ServerName = Environment.MachineName;
+        Version = Assembly.GetExecutingAssembly().GetName().Version;
 
-        public List<IrcClient> IrcClients { get; set; }
-        public Dictionary<string, Channel> Channels { get; set; }
+        this.port = port;
 
-        public IrcServer(ILogger logger, int port = Protocol.DefaultPort)
+        IrcClients = [];
+        Channels = [];
+    }
+
+    public async Task RunAsync(CancellationToken stoppingToken)
+    {
+        var tcpListener = new TcpListener(IPAddress.Any, port);
+        try
         {
-            Logger = logger;
+            tcpListener.Start();
+            CreatedDateTime = DateTime.Now;
+            Logger.LogDebug($"IRC Server started, {CreatedDateTime}");
 
-            ServerName = Environment.MachineName;
-            Version = Assembly.GetExecutingAssembly().GetName().Version;
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                var client = await tcpListener.AcceptTcpClientAsync().WithCancellation(stoppingToken);
 
-            this.port = port;
-
-            IrcClients = new List<IrcClient>();
-            Channels = new Dictionary<string, Channel>();
+                var ircClient = new IrcClient(this, client);
+                IrcClients.Add(ircClient);
+                ircClient.RunAsync(stoppingToken);
+            }
+        }
+        catch (OperationCanceledException) { }
+        finally
+        {
+            tcpListener.Stop();
         }
 
-        public async Task RunAsync(CancellationToken stoppingToken)
-        {
-            var tcpListener = new TcpListener(IPAddress.Any, port);
-            try
-            {
-                tcpListener.Start();
-                CreatedDateTime = DateTime.Now;
-                Logger.LogDebug($"IRC Server started, {CreatedDateTime}");
-
-                while (!stoppingToken.IsCancellationRequested)
-                {
-                    var client = await tcpListener.AcceptTcpClientAsync().WithCancellation(stoppingToken);
-
-                    var ircClient = new IrcClient(this, client);
-                    IrcClients.Add(ircClient);
-                    ircClient.RunAsync(stoppingToken);
-                }
-            }
-            catch (OperationCanceledException) { }
-            finally
-            {
-                tcpListener.Stop();
-            }
-
-            Logger.LogDebug($"IRC Server stopped, {CreatedDateTime}");
-        }
+        Logger.LogDebug($"IRC Server stopped, {CreatedDateTime}");
     }
 }

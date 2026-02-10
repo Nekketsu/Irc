@@ -1,42 +1,41 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace Irc.Client.Wpf.ViewModels
+namespace Irc.Client.Wpf.ViewModels;
+
+public partial class ConnectionDialogViewModel : ObservableObject
 {
-    public partial class ConnectionDialogViewModel : ObservableObject
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ConnectCommand))]
+    private string host;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ConnectCommand))]
+    private string nickname;
+
+    [ObservableProperty]
+    private int port = 6667;
+
+    public bool ShouldConnect { get; private set; }
+
+    public ConnectionDialogViewModel()
     {
-        [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(ConnectCommand))]
-        private string host;
+    }
 
-        [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(ConnectCommand))]
-        private string nickname;
+    public ConnectionDialogViewModel(string host, string nickname)
+    {
+        Host = host;
+        Nickname = nickname;
+    }
 
-        [ObservableProperty]
-        private int port = 6667;
+    [RelayCommand(CanExecute = nameof(CanConnect))]
+    private void Connect()
+    {
+        ShouldConnect = true;
+    }
 
-        public bool ShouldConnect { get; private set; }
-
-        public ConnectionDialogViewModel()
-        {
-        }
-
-        public ConnectionDialogViewModel(string host, string nickname)
-        {
-            Host = host;
-            Nickname = nickname;
-        }
-
-        [RelayCommand(CanExecute = nameof(CanConnect))]
-        private void Connect()
-        {
-            ShouldConnect = true;
-        }
-
-        private bool CanConnect()
-        {
-            return !string.IsNullOrWhiteSpace(Host) && !string.IsNullOrWhiteSpace(Nickname);
-        }
+    private bool CanConnect()
+    {
+        return !string.IsNullOrWhiteSpace(Host) && !string.IsNullOrWhiteSpace(Nickname);
     }
 }

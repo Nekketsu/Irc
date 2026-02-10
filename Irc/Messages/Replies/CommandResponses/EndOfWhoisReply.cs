@@ -1,42 +1,41 @@
 using Irc.Messages;
 
-namespace Messages.Replies.CommandResponses
+namespace Messages.Replies.CommandResponses;
+
+[Command(RPL_ENDOFWHOIS)]
+public class EndOfWhoisReply : Reply
 {
-    [Command(RPL_ENDOFWHOIS)]
-    public class EndOfWhoisReply : Reply
+    public const string DefaultMessage = "End of WHOIS list";
+
+    const string RPL_ENDOFWHOIS = "318";
+    public string Nickname { get; set; }
+    public string Message { get; set; }
+
+    public EndOfWhoisReply(string sender, string target, string nickname, string message) : base(sender, target, RPL_ENDOFWHOIS)
     {
-        public const string DefaultMessage = "End of WHOIS list";
+        Nickname = nickname;
+        Message = message;
+    }
 
-        const string RPL_ENDOFWHOIS = "318";
-        public string Nickname { get; set; }
-        public string Message { get; set; }
+    public override string InnerToString()
+    {
+        return $"{Nickname} :{Message}";
+    }
 
-        public EndOfWhoisReply(string sender, string target, string nickname, string message) : base(sender, target, RPL_ENDOFWHOIS)
-        {
-            Nickname = nickname;
-            Message = message;
-        }
+    public new static EndOfWhoisReply Parse(string message)
+    {
+        var messageSplit = message.Split();
 
-        public override string InnerToString()
-        {
-            return $"{Nickname} :{Message}";
-        }
+        var sender = messageSplit[0][":".Length..];
+        var target = messageSplit[2];
+        var nickname = messageSplit[3];
+        var text = message
+[messageSplit[0].Length..].TrimStart()
+[messageSplit[1].Length..].TrimStart()
+[messageSplit[2].Length..].TrimStart()
+[messageSplit[3].Length..].TrimStart()
+            .TrimStart(':');
 
-        public new static EndOfWhoisReply Parse(string message)
-        {
-            var messageSplit = message.Split();
-
-            var sender = messageSplit[0].Substring(":".Length);
-            var target = messageSplit[2];
-            var nickname = messageSplit[3];
-            var text = message
-                .Substring(messageSplit[0].Length).TrimStart()
-                .Substring(messageSplit[1].Length).TrimStart()
-                .Substring(messageSplit[2].Length).TrimStart()
-                .Substring(messageSplit[3].Length).TrimStart()
-                .TrimStart(':');
-
-            return new EndOfWhoisReply(sender, target, nickname, text);
-        }
+        return new EndOfWhoisReply(sender, target, nickname, text);
     }
 }

@@ -1,9 +1,8 @@
-﻿namespace Irc.Client.Wpf.Model
+﻿namespace Irc.Client.Wpf.Model;
+
+public enum ConnectionState
 {
-    public enum ConnectionState
-    {
-        Disconnected,
-        Connecting,
-        Connected
-    }
+    Disconnected,
+    Connecting,
+    Connected
 }

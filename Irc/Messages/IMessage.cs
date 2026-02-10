@@ -1,7 +1,6 @@
-namespace Irc.Messages
-{
-    public interface IMessage
-    {
+namespace Irc.Messages;
 
-    }
+public interface IMessage
+{
+
 }

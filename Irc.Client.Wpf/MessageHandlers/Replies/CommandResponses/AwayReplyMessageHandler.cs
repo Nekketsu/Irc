@@ -2,25 +2,24 @@
 using Irc.Client.Wpf.ViewModels.Tabs.Messages;
 using Irc.Messages.Replies.CommandResponses;
 
-namespace Irc.Client.Wpf.MessageHandlers.Replies.CommandResponses
+namespace Irc.Client.Wpf.MessageHandlers.Replies.CommandResponses;
+
+public class AwayReplyMessageHandler : IMessageHandler<AwayReply>
 {
-    public class AwayReplyMessageHandler : IMessageHandler<AwayReply>
+    private readonly IrcViewModel viewModel;
+
+    public AwayReplyMessageHandler(IrcViewModel viewModel)
     {
-        private readonly IrcViewModel viewModel;
+        this.viewModel = viewModel;
+    }
 
-        public AwayReplyMessageHandler(IrcViewModel viewModel)
-        {
-            this.viewModel = viewModel;
-        }
+    public Task HandleAsync(AwayReply message)
+    {
+        var text = $"{message.Nickname} is away: {message.Text}";
 
-        public Task HandleAsync(AwayReply message)
-        {
-            var text = $"{message.Nickname} is away: {message.Text}";
+        var messageViewModel = new MessageViewModel(text);
+        viewModel.DrawMessage(viewModel.Status, messageViewModel);
 
-            var messageViewModel = new MessageViewModel(text);
-            viewModel.DrawMessage(viewModel.Status, messageViewModel);
-
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }

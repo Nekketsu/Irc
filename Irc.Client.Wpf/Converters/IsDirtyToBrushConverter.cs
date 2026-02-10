@@ -3,46 +3,45 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace Irc.Client.Wpf.Converters
+namespace Irc.Client.Wpf.Converters;
+
+public class IsDirtyToBrushConverter : Freezable, IValueConverter
 {
-    public class IsDirtyToBrushConverter : Freezable, IValueConverter
+    public static readonly DependencyProperty CleanBrushProperty =
+        DependencyProperty.Register(nameof(CleanBrush), typeof(Brush), typeof(IsDirtyToBrushConverter));
+
+    public static readonly DependencyProperty DirtyBrushProperty =
+        DependencyProperty.Register(nameof(DirtyBrush), typeof(Brush), typeof(IsDirtyToBrushConverter));
+
+    public Brush CleanBrush
     {
-        public static readonly DependencyProperty CleanBrushProperty =
-            DependencyProperty.Register(nameof(CleanBrush), typeof(Brush), typeof(IsDirtyToBrushConverter));
+        get => (Brush)GetValue(CleanBrushProperty);
+        set => SetValue(CleanBrushProperty, value);
+    }
 
-        public static readonly DependencyProperty DirtyBrushProperty =
-            DependencyProperty.Register(nameof(DirtyBrush), typeof(Brush), typeof(IsDirtyToBrushConverter));
+    public Brush DirtyBrush
+    {
+        get => (Brush)GetValue(DirtyBrushProperty);
+        set => SetValue(DirtyBrushProperty, value);
+    }
 
-        public Brush CleanBrush
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is bool isDirty)
         {
-            get => (Brush)GetValue(CleanBrushProperty);
-            set => SetValue(CleanBrushProperty, value);
+            return isDirty ? DirtyBrush : CleanBrush;
         }
 
-        public Brush DirtyBrush
-        {
-            get => (Brush)GetValue(DirtyBrushProperty);
-            set => SetValue(DirtyBrushProperty, value);
-        }
+        return DependencyProperty.UnsetValue;
+    }
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is bool isDirty)
-            {
-                return isDirty ? DirtyBrush : CleanBrush;
-            }
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
 
-            return DependencyProperty.UnsetValue;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Freezable CreateInstanceCore()
-        {
-            return new IsDirtyToBrushConverter();
-        }
+    protected override Freezable CreateInstanceCore()
+    {
+        return new IsDirtyToBrushConverter();
     }
 }

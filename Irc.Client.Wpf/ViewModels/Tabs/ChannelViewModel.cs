@@ -5,22 +5,21 @@ using Irc.Client.Wpf.Messenger.Requests;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace Irc.Client.Wpf.ViewModels.Tabs
+namespace Irc.Client.Wpf.ViewModels.Tabs;
+
+public partial class ChannelViewModel : ChatViewModel, INotifyPropertyChanged
 {
-    public partial class ChannelViewModel : ChatViewModel, INotifyPropertyChanged
+    [ObservableProperty]
+    private ObservableCollection<string> users;
+
+    public ChannelViewModel(string target) : base(target)
     {
-        [ObservableProperty]
-        private ObservableCollection<string> users;
+    }
 
-        public ChannelViewModel(string target) : base(target)
-        {
-        }
-
-        [RelayCommand]
-        private void Query(string nickname)
-        {
-            var queryRequest = new QueryRequest(nickname);
-            messenger.Send(queryRequest);
-        }
+    [RelayCommand]
+    private void Query(string nickname)
+    {
+        var queryRequest = new QueryRequest(nickname);
+        messenger.Send(queryRequest);
     }
 }

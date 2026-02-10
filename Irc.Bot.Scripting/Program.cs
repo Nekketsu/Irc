@@ -16,7 +16,7 @@ if (string.IsNullOrWhiteSpace(server))
 
 Console.Write("Enter port (default: 6667): ");
 var portInput = Console.ReadLine();
-if (!int.TryParse(portInput, out int port))
+if (!int.TryParse(portInput, out var port))
     port = 6667;
 
 Console.Write("Enter bot nickname (default: ScriptBot): ");

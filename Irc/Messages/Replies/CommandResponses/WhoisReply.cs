@@ -1,42 +1,41 @@
 using Irc.Messages;
 
-namespace Messages.Replies.CommandResponses
+namespace Messages.Replies.CommandResponses;
+
+[Command(RPL_WHOISREPLY)]
+public class WhoisReply : Reply
 {
-    [Command(RPL_WHOISREPLY)]
-    public class WhoisReply : Reply
+    const string RPL_WHOISREPLY = "311";
+    public string Nickname { get; set; }
+    public string User { get; set; }
+    public string Host { get; set; }
+    public string RealName { get; set; }
+
+    public WhoisReply(string sender, string target, string nickname, string user, string host, string realName) : base(sender, target, RPL_WHOISREPLY)
     {
-        const string RPL_WHOISREPLY = "311";
-        public string Nickname { get; set; }
-        public string User { get; set; }
-        public string Host { get; set; }
-        public string RealName { get; set; }
+        Nickname = nickname;
+        User = user;
+        Host = host;
+        RealName = realName;
+    }
 
-        public WhoisReply(string sender, string target, string nickname, string user, string host, string realName) : base(sender, target, RPL_WHOISREPLY)
-        {
-            Nickname = nickname;
-            User = user;
-            Host = host;
-            RealName = realName;
-        }
+    public override string InnerToString()
+    {
+        return $"{Nickname} {User} {Host} * :{RealName}";
+    }
 
-        public override string InnerToString()
-        {
-            return $"{Nickname} {User} {Host} * :{RealName}";
-        }
+    public new static WhoisReply Parse(string message)
+    {
+        var messageSplit = message.Split();
 
-        public new static WhoisReply Parse(string message)
-        {
-            var messageSplit = message.Split();
+        var sender = message.Split(':').First();
+        var target = messageSplit[2];
+        var nickname = messageSplit[3];
+        var user = messageSplit[4];
+        var host = messageSplit[5];
 
-            var sender = message.Split(':').First();
-            var target = messageSplit[2];
-            var nickname = messageSplit[3];
-            var user = messageSplit[4];
-            var host = messageSplit[5];
+        var realName = message.Split(':').Last();
 
-            var realName = message.Split(':').Last();
-
-            return new WhoisReply(sender, target, nickname, user, host, realName);
-        }
+        return new WhoisReply(sender, target, nickname, user, host, realName);
     }
 }

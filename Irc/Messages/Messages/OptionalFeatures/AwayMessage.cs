@@ -1,38 +1,37 @@
-﻿namespace Irc.Messages.Messages.OptionalFeatures
+﻿namespace Irc.Messages.Messages.OptionalFeatures;
+
+[Command("AWAY")]
+public class AwayMessage : Message
 {
-    [Command("AWAY")]
-    public class AwayMessage : Message
+    public string Text { get; set; }
+
+    public AwayMessage() { }
+
+    public AwayMessage(string text)
     {
-        public string Text { get; set; }
+        Text = text;
+    }
 
-        public AwayMessage() { }
+    public override string ToString()
+    {
+        return string.IsNullOrEmpty(Text)
+            ? $"{Command}"
+            : $"{Command} :{Text}";
+    }
 
-        public AwayMessage(string text)
+    public new static AwayMessage Parse(string message)
+    {
+        var messageSplit = message.Split();
+
+        if (messageSplit.Length == 1)
         {
-            Text = text;
+            return new AwayMessage();
         }
 
-        public override string ToString()
-        {
-            return string.IsNullOrEmpty(Text)
-                ? $"{Command}"
-                : $"{Command} :{Text}";
-        }
+        var text = message
+[messageSplit[0].Length..].TrimStart()
+[":".Length..];
 
-        public new static AwayMessage Parse(string message)
-        {
-            var messageSplit = message.Split();
-
-            if (messageSplit.Length == 1)
-            {
-                return new AwayMessage();
-            }
-
-            var text = message
-                .Substring(messageSplit[0].Length).TrimStart()
-                .Substring(":".Length);
-
-            return new AwayMessage(message);
-        }
+        return new AwayMessage(message);
     }
 }

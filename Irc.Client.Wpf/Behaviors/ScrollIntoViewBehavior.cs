@@ -2,34 +2,33 @@
 using System.Collections.Specialized;
 using System.Windows.Controls;
 
-namespace Irc.Client.Wpf.Behaviors
+namespace Irc.Client.Wpf.Behaviors;
+
+public class ScrollIntoViewBehavior : Behavior<ListBox>
 {
-    public class ScrollIntoViewBehavior : Behavior<ListBox>
+    protected override void OnAttached()
     {
-        protected override void OnAttached()
+        var items = AssociatedObject.Items as INotifyCollectionChanged;
+        if (items is not null)
         {
-            var items = AssociatedObject.Items as INotifyCollectionChanged;
-            if (items is not null)
-            {
-                items.CollectionChanged += Items_CollectionChanged;
-            }
+            items.CollectionChanged += Items_CollectionChanged;
         }
+    }
 
-        private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == NotifyCollectionChangedAction.Add)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                AssociatedObject.ScrollIntoView(e.NewItems[e.NewItems.Count - 1]);
-            }
+            AssociatedObject.ScrollIntoView(e.NewItems[e.NewItems.Count - 1]);
         }
+    }
 
-        protected override void OnDetaching()
+    protected override void OnDetaching()
+    {
+        var items = AssociatedObject.Items as INotifyCollectionChanged;
+        if (items is not null)
         {
-            var items = AssociatedObject.Items as INotifyCollectionChanged;
-            if (items is not null)
-            {
-                items.CollectionChanged -= Items_CollectionChanged;
-            }
+            items.CollectionChanged -= Items_CollectionChanged;
         }
     }
 }

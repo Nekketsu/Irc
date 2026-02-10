@@ -1,15 +1,14 @@
-﻿namespace Irc.Client.Maui.Blazor
-{
-    public partial class App : Application
-    {
-        public App()
-        {
-            InitializeComponent();
-        }
+﻿namespace Irc.Client.Maui.Blazor;
 
-        protected override Window CreateWindow(IActivationState activationState)
-        {
-            return new Window(new MainPage());
-        }
+public partial class App : Application
+{
+    public App()
+    {
+        InitializeComponent();
+    }
+
+    protected override Window CreateWindow(IActivationState activationState)
+    {
+        return new Window(new MainPage());
     }
 }
